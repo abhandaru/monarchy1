@@ -10,3 +10,18 @@ java_library(
 )
 
 
+
+java_library(
+    name = "scala_reflect",
+    exports = [
+        "//external:jar/org/scala_lang/scala_reflect"
+    ],
+    runtime_deps = [
+        ":scala_library"
+    ],
+    visibility = [
+        "//3rdparty/jvm:__subpackages__"
+    ]
+)
+
+

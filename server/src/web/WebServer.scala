@@ -12,6 +12,8 @@ object WebServer extends App {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
+  implicit val queryCli = DatabaseModule.queryClient
+
   val route = {
     pathSingleSlash {
       complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
