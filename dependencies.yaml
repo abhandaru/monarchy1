@@ -1,0 +1,25 @@
+options:
+  buildHeader: ["load(\"@io_bazel_rules_scala//scala:scala_import.bzl\", \"scala_import\")"]
+  languages: ["java", "scala:2.12.6"]
+  resolvers:
+    - id: "mavencentral"
+      type: "default"
+      url: https://repo.maven.apache.org/maven2
+  strictVisibility: true
+  transitivity: runtime_deps
+  versionConflictPolicy: highest
+
+dependencies:
+  com.typesafe.akka:
+    akka-http:
+      lang: scala
+      version: 10.1.8
+    akka-http-core:
+      lang: scala
+      version: 10.1.8
+    akka-actor:
+      lang: scala
+      version: 2.5.19
+    akka-stream:
+      lang: scala
+      version: 2.5.19
