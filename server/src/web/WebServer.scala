@@ -19,7 +19,7 @@ object WebServer extends App {
       complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
     }
   }
-  val routeBindings = Http().bindAndHandle(route, "localhost", 8080)
+  val routeBindings = Http().bindAndHandle(route, "localhost", HerokuModule.Port)
 
   println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
   StdIn.readLine() // let it run until user presses return
