@@ -13,17 +13,13 @@ object WebServer extends App {
   implicit val executionContext = system.dispatcher
 
   implicit val queryCli = DatabaseModule.queryClient
-
+  val port = HerokuModule.Port
   val route = {
     pathSingleSlash {
       complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
     }
   }
-  val routeBindings = Http().bindAndHandle(route, "localhost", HerokuModule.Port)
+  val routeBindings = Http().bindAndHandle(route, "localhost", port)
 
-  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
-  StdIn.readLine() // let it run until user presses return
-  routeBindings
-    .flatMap(_.unbind()) // trigger unbinding from the port
-    .onComplete(_ => system.terminate()) // and shutdown when done
+  println(s"Server online at $port")
 }
