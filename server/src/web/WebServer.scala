@@ -7,6 +7,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.directives.DebuggingDirectives
 import akka.stream.ActorMaterializer
+import monarchy.controllers._
 
 object WebServer extends App {
   implicit val system = ActorSystem("monarchy-web")
@@ -14,11 +15,11 @@ object WebServer extends App {
   implicit val executionContext = system.dispatcher
 
   implicit val queryCli = DatabaseModule.queryClient
+  val rootController = new RootController
+
   val port = HerokuModule.Port
   val route = logRequestResult("monarchy-web") {
-    pathSingleSlash {
-      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
-    }
+    pathSingleSlash(rootController)
   }
   val routeLogged = DebuggingDirectives.logRequestResult("LOG:", Logging.InfoLevel)(route)
   val routeBindings = Http().bindAndHandle(routeLogged, HerokuModule.Host, port)
