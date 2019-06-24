@@ -3,6 +3,7 @@ scala_library(
   name='controllers',
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
+  resources=glob(['*.html']),
   deps=[
     '//3rdparty/jvm/com/typesafe/akka:akka_actor',
     '//3rdparty/jvm/com/typesafe/akka:akka_http',
@@ -18,3 +19,4 @@ scala_library(
     '//server/src/graphql',
   ]
 )
+

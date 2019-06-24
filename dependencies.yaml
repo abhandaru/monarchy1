@@ -67,3 +67,8 @@ dependencies:
     parboiled:
       lang: scala
       version: 2.1.6
+  org.typelevel:
+    cats-core:
+      lang: scala
+      version: 2.0.0-M4
+

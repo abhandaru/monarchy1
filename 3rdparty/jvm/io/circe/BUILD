@@ -6,7 +6,7 @@ scala_import(
     ],
     runtime_deps = [
         "//3rdparty/jvm/org/scala_lang:scala_library",
-        "//3rdparty/jvm/org/typelevel:cats_core_2_12",
+        "//3rdparty/jvm/org/typelevel:cats_core",
         ":circe_numbers_2_12"
     ],
     visibility = [

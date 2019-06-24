@@ -1,7 +1,7 @@
 load("@io_bazel_rules_scala//scala:scala_import.bzl", "scala_import")
-java_library(
-    name = "cats_core_2_12",
-    exports = [
+scala_import(
+    name = "cats_core",
+    jars = [
         "//external:jar/org/typelevel/cats_core_2_12"
     ],
     runtime_deps = [
@@ -11,7 +11,7 @@ java_library(
         ":machinist_2_12"
     ],
     visibility = [
-        "//3rdparty/jvm:__subpackages__"
+        "//visibility:public"
     ]
 )
 

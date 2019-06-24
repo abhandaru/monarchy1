@@ -10,7 +10,7 @@ import akka.stream.ActorMaterializer
 import io.circe._
 import io.circe.optics.JsonPath._
 import io.circe.parser._
-import monarchy.graphql.GraphqlRequestUnmarshaller._
+import monarchy.graphql.{GraphqlRequestUnmarshaller, GraphqlContext, GraphqlSchema}
 import sangria.ast.Document
 import sangria.execution.deferred.DeferredResolver
 import sangria.execution.{ErrorWithResolver, Executor, QueryAnalysisError}
@@ -23,48 +23,51 @@ import scala.util.{Failure, Success}
 
 class GraphqlController(implicit
   ec: ExecutionContext,
-  sys: ActorSystem
+  sys: ActorSystem,
+  gqlContext: GraphqlContext
 ) extends Controller {
+  import GraphqlRequestUnmarshaller._
+
   override def action(ctx: RequestContext) = {
     println(ctx)
     ???
-    // entity(as[Json]) { body ⇒
+    // entity(as[Json]) { body =>
     //   val query = queryParam orElse root.query.string.getOption(body)
     //   val operationName = operationNameParam orElse root.operationName.string.getOption(body)
     //   val variablesStr = variablesParam orElse root.variables.string.getOption(body)
     //   query.map(QueryParser.parse(_)) match {
-    //     case Some(Success(ast)) ⇒
+    //     case Some(Success(ast)) =>
     //       variablesStr.map(parse) match {
-    //         case Some(Left(error)) ⇒ complete(BadRequest, formatError(error))
-    //         case Some(Right(json)) ⇒ executeGraphQL(ast, operationName, json, tracing.isDefined)
-    //         case None ⇒ executeGraphQL(ast, operationName, root.variables.json.getOption(body) getOrElse Json.obj(), tracing.isDefined)
+    //         case Some(Left(error)) => complete(BadRequest, formatError(error))
+    //         case Some(Right(json)) => executeGraphQL(ast, operationName, json, tracing.isDefined)
+    //         case None => executeGraphQL(ast, operationName, root.variables.json.getOption(body) getOrElse Json.obj(), tracing.isDefined)
     //       }
-    //     case Some(Failure(error)) ⇒ complete(BadRequest, formatError(error))
-    //     case None ⇒ complete(BadRequest, formatError("No query to execute"))
+    //     case Some(Failure(error)) => complete(BadRequest, formatError(error))
+    //     case None => complete(BadRequest, formatError("No query to execute"))
     //   }
     // } ~
-    // entity(as[Document]) { document ⇒
+    // entity(as[Document]) { document =>
     //   variablesParam.map(parse) match {
-    //     case Some(Left(error)) ⇒ complete(BadRequest, formatError(error))
-    //     case Some(Right(json)) ⇒ executeGraphQL(document, operationNameParam, json, tracing.isDefined)
-    //     case None ⇒ executeGraphQL(document, operationNameParam, Json.obj(), tracing.isDefined)
+    //     case Some(Left(error)) => complete(BadRequest, formatError(error))
+    //     case Some(Right(json)) => executeGraphQL(document, operationNameParam, json, tracing.isDefined)
+    //     case None => executeGraphQL(document, operationNameParam, Json.obj(), tracing.isDefined)
     //   }
     // }
   }
 
-  def executeGraphQL(query: Document, operationName: Option[String], variables: Json, tracing: Boolean) = {
-    ???
-    // complete(Executor.execute(SchemaDefinition.StarWarsSchema, query, new CharacterRepo,
-    //   variables = if (variables.isNull) Json.obj() else variables,
-    //   operationName = operationName,
-    //   middleware = if (tracing) SlowLog.apolloTracing :: Nil else Nil,
-    //   deferredResolver = DeferredResolver.fetchers(SchemaDefinition.characters))
-    //     .map(OK -> _)
-    //     .recover {
-    //       case error: QueryAnalysisError => BadRequest -> error.resolveError
-    //       case error: ErrorWithResolver => InternalServerError -> error.resolveError
-    //     }
-    // )
+  def executeGraphQL(query: Document, operationName: Option[String], variables: Json) = {
+    Executor.execute(
+      GraphqlSchema.Def,
+      query,
+      gqlContext,
+      variables = if (variables.isNull) Json.obj() else variables,
+      operationName = operationName
+    )
+    .map(OK -> _)
+    .recover {
+      case e: QueryAnalysisError => BadRequest -> e.resolveError
+      case e: ErrorWithResolver => InternalServerError -> e.resolveError
+    }
   }
 
   def formatError(error: Throwable): Json = error match {
