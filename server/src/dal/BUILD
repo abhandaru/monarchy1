@@ -15,6 +15,5 @@ scala_library(
     '//3rdparty/jvm/com/typesafe/slick',
     '//3rdparty/jvm/com/github/tminglei:slick_pg',
     '//3rdparty/jvm/com/github/tminglei:slick_pg_core',
-    # '//common/util'
   ]
 )

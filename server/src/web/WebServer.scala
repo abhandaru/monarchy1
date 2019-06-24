@@ -13,13 +13,11 @@ object WebServer extends App {
   implicit val system = ActorSystem("monarchy-web")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
-
   implicit val queryCli = DatabaseModule.queryClient
-  val rootController = new RootController
 
   val port = HerokuModule.Port
   val route = logRequestResult("monarchy-web") {
-    pathSingleSlash(rootController)
+    pathSingleSlash(new RootController)
   }
   val routeLogged = DebuggingDirectives.logRequestResult("LOG:", Logging.InfoLevel)(route)
   val routeBindings = Http().bindAndHandle(routeLogged, HerokuModule.Host, port)
