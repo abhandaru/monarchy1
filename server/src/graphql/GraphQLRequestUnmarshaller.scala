@@ -17,18 +17,18 @@ object GraphqlRequestUnmarshaller {
 
   def explicitlyAccepts(mediaType: MediaType): Directive0 =
     headerValuePF {
-      case Accept(ranges) if ranges.exists(range ⇒ !range.isWildcard && range.matches(mediaType)) ⇒ ranges
-    }.flatMap(_ ⇒ pass)
+      case Accept(ranges) if ranges.exists(range => !range.isWildcard && range.matches(mediaType)) => ranges
+    }.flatMap(_ => pass)
 
   def unmarshallerContentTypes: Seq[ContentTypeRange] =
     mediaTypes.map(ContentTypeRange.apply)
 
   def mediaTypes: Seq[MediaType.WithFixedCharset] =
-    List(`application/graphql`)
+    List(`application/graphql`, MediaTypes.`application/json`)
 
   implicit final def documentMarshaller(implicit config: QueryRendererConfig = QueryRenderer.Compact): ToEntityMarshaller[Document] =
-    Marshaller.oneOf(mediaTypes: _*) { mediaType ⇒
-      Marshaller.withFixedContentType(ContentType(mediaType)) { json ⇒
+    Marshaller.oneOf(mediaTypes: _*) { mediaType =>
+      Marshaller.withFixedContentType(ContentType(mediaType)) { json =>
         HttpEntity(mediaType, QueryRenderer.render(json, config))
       }
     }
@@ -37,10 +37,9 @@ object GraphqlRequestUnmarshaller {
     Unmarshaller.byteStringUnmarshaller
       .forContentTypes(unmarshallerContentTypes: _*)
       .map {
-        case ByteString.empty ⇒ throw Unmarshaller.NoContentException
-        case data ⇒
+        case ByteString.empty => throw Unmarshaller.NoContentException
+        case data =>
           import sangria.parser.DeliveryScheme.Throw
-
           QueryParser.parse(data.decodeString(Charset.forName("UTF-8")))
       }
 }

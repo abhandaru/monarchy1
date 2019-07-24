@@ -54,7 +54,7 @@ scala_import(
         "//external:jar/io/circe/circe_optics_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/com/github/julien_truffaut:monocle_core_2_12",
+        "//3rdparty/jvm/com/github/julien_truffaut:monocle_core",
         "//3rdparty/jvm/org/scala_lang:scala_library",
         ":circe_core"
     ],

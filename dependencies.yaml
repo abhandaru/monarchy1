@@ -45,13 +45,54 @@ dependencies:
     circe-core:
       lang: scala
       version: 0.9.3
-    circe-parser::
+    circe-parser:
       lang: scala
       version: 0.9.3
     circe-optics:
       lang: scala
       version: 0.9.3
 
+  org.parboiled:
+    parboiled:
+      lang: scala
+      version: 2.1.6
+
+  org.typelevel:
+    cats-core:
+      lang: scala
+      version: 2.0.0-M4
+    cats-kernel:
+      lang: scala
+      version: 2.0.0-M4
+
+  com.github.julien-truffaut:
+    monocle-core:
+      lang: scala
+      version: 1.4.0
+
+  # json but less absurd
+  com.fasterxml.jackson.core:
+    jackson-annotations:
+      lang: java
+      version: 2.9.9
+    jackson-core:
+      lang: java
+      version: 2.9.9
+    jackson-databind:
+      lang: java
+      version: 2.9.9
+
+  com.fasterxml.jackson.datatype:
+    jackson-datatype-jsr310:
+      lang: java
+      version: 2.9.9
+
+  com.fasterxml.jackson.module:
+    jackson-module-scala:
+      lang: scala
+      version: 2.9.9
+
+  # graphql stuff
   org.sangria-graphql:
     sangria:
       lang: scala
@@ -63,12 +104,5 @@ dependencies:
       lang: scala
       version: 1.0.3
 
-  org.parboiled:
-    parboiled:
-      lang: scala
-      version: 2.1.6
-  org.typelevel:
-    cats-core:
-      lang: scala
-      version: 2.0.0-M4
+
 

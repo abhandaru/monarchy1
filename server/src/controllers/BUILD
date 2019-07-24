@@ -17,6 +17,7 @@ scala_library(
     '//3rdparty/jvm/org/sangria_graphql:sangria_marshalling_api',
     '//server/src/dal',
     '//server/src/graphql',
+    '//server/src/util',
   ]
 )
 

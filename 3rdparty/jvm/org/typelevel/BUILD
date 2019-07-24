@@ -6,7 +6,7 @@ scala_import(
     ],
     runtime_deps = [
         "//3rdparty/jvm/org/scala_lang:scala_library",
-        ":cats_kernel_2_12",
+        ":cats_kernel",
         ":cats_macros_2_12",
         ":machinist_2_12"
     ],
@@ -17,16 +17,16 @@ scala_import(
 
 
 
-java_library(
-    name = "cats_kernel_2_12",
-    exports = [
+scala_import(
+    name = "cats_kernel",
+    jars = [
         "//external:jar/org/typelevel/cats_kernel_2_12"
     ],
     runtime_deps = [
         "//3rdparty/jvm/org/scala_lang:scala_library"
     ],
     visibility = [
-        "//3rdparty/jvm:__subpackages__"
+        "//visibility:public"
     ]
 )
 

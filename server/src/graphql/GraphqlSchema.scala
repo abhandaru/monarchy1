@@ -31,6 +31,9 @@ object GraphqlSchema {
   def userSchema = ObjectType(
     "User",
     fields[GraphqlContext, dal.User](
+      Field("id", StringType,
+        resolve = _.value.id.toString
+      ),
       Field("username", StringType,
         resolve = _.value.username
       ),

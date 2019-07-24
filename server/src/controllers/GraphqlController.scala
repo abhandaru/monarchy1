@@ -2,6 +2,7 @@ package monarchy.controllers
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server._
@@ -14,54 +15,63 @@ import monarchy.graphql.{GraphqlRequestUnmarshaller, GraphqlContext, GraphqlSche
 import sangria.ast.Document
 import sangria.execution.deferred.DeferredResolver
 import sangria.execution.{ErrorWithResolver, Executor, QueryAnalysisError}
-import sangria.marshalling.circe._
+import sangria.marshalling.{InputUnmarshaller, ResultMarshaller}
 import sangria.parser.DeliveryScheme.Try
 import sangria.parser.{QueryParser, SyntaxError}
 import scala.concurrent.{Future, ExecutionContext}
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
+import monarchy.util.{Json => UJson}
+
+case class GraphqlBody(
+  query: String,
+  operationName: Option[String],
+  variables: Option[Map[String, Any]]
+)
+
+case class GraphqlErrors(errors: Seq[GraphqlError] = Nil)
+
+case class GraphqlError(
+  message: String,
+  locations: Seq[GraphqlLocation] = Nil
+)
+
+case class GraphqlLocation(
+  line: Int,
+  column: Int
+)
 
 class GraphqlController(implicit
   ec: ExecutionContext,
   sys: ActorSystem,
   gqlContext: GraphqlContext
-) extends Controller {
-  import GraphqlRequestUnmarshaller._
-
-  override def action(ctx: RequestContext) = {
-    println(ctx)
-    ???
-    // entity(as[Json]) { body =>
-    //   val query = queryParam orElse root.query.string.getOption(body)
-    //   val operationName = operationNameParam orElse root.operationName.string.getOption(body)
-    //   val variablesStr = variablesParam orElse root.variables.string.getOption(body)
-    //   query.map(QueryParser.parse(_)) match {
-    //     case Some(Success(ast)) =>
-    //       variablesStr.map(parse) match {
-    //         case Some(Left(error)) => complete(BadRequest, formatError(error))
-    //         case Some(Right(json)) => executeGraphQL(ast, operationName, json, tracing.isDefined)
-    //         case None => executeGraphQL(ast, operationName, root.variables.json.getOption(body) getOrElse Json.obj(), tracing.isDefined)
-    //       }
-    //     case Some(Failure(error)) => complete(BadRequest, formatError(error))
-    //     case None => complete(BadRequest, formatError("No query to execute"))
-    //   }
-    // } ~
-    // entity(as[Document]) { document =>
-    //   variablesParam.map(parse) match {
-    //     case Some(Left(error)) => complete(BadRequest, formatError(error))
-    //     case Some(Right(json)) => executeGraphQL(document, operationNameParam, json, tracing.isDefined)
-    //     case None => executeGraphQL(document, operationNameParam, Json.obj(), tracing.isDefined)
-    //   }
-    // }
+) extends Route {
+  override def apply(ctx: RequestContext) = {
+    entity(as[String]) { gqlRaw =>
+      c: RequestContext => {
+        val gql = UJson.parse[GraphqlBody](gqlRaw)
+        val execReq = QueryParser.parse(gql.query) match {
+          case Failure(e) => Future.successful(BadRequest -> formatError(e))
+          case Success(ast) =>
+            val variables = gql.variables.getOrElse(Map.empty[String, Any])
+            executeGraphQL(ast, gql.operationName, variables)
+        }
+        execReq.flatMap {
+          case (status, r) =>
+            val entity = HttpEntity(ContentTypes.`application/json`, UJson.stringify(r))
+            c.complete(HttpResponse(status, entity = entity))
+        }
+      }
+    }(ctx)
   }
 
-  def executeGraphQL(query: Document, operationName: Option[String], variables: Json) = {
+  def executeGraphQL(query: Document, opName: Option[String], vars: Map[String, Any]) = {
     Executor.execute(
-      GraphqlSchema.Def,
-      query,
-      gqlContext,
-      variables = if (variables.isNull) Json.obj() else variables,
-      operationName = operationName
+      schema = GraphqlSchema.Def,
+      queryAst = query,
+      userContext = gqlContext,
+      variables = InputUnmarshaller.mapVars(vars),
+      operationName = opName
     )
     .map(OK -> _)
     .recover {
@@ -70,19 +80,24 @@ class GraphqlController(implicit
     }
   }
 
-  def formatError(error: Throwable): Json = error match {
-    case syntaxError: SyntaxError =>
-      Json.obj("errors" -> Json.arr(
-      Json.obj(
-        "message" -> Json.fromString(syntaxError.getMessage),
-        "locations" -> Json.arr(Json.obj(
-          "line" -> Json.fromBigInt(syntaxError.originalError.position.line),
-          "column" -> Json.fromBigInt(syntaxError.originalError.position.column))))))
+  def formatError(error: Throwable): GraphqlErrors = error match {
+    case e: SyntaxError =>
+      GraphqlErrors(Seq(
+        GraphqlError(
+          message = e.getMessage,
+          locations = Seq(GraphqlLocation(
+            e.originalError.position.line,
+            e.originalError.position.column
+          ))
+        )
+      ))
     case NonFatal(e) => formatError(e.getMessage)
     case e => throw e
   }
 
-  def formatError(message: String): Json = {
-    Json.obj("errors" -> Json.arr(Json.obj("message" -> Json.fromString(message))))
+  def formatError(message: String): GraphqlErrors = {
+    GraphqlErrors(Seq(
+      GraphqlError(message = message)
+    ))
   }
 }

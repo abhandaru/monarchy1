@@ -1,4 +1,4 @@
--- This keeps track of when entities are updates.
+-- This keeps track of when entities are updated.
 CREATE OR REPLACE FUNCTION update_timestamps() RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = NOW();

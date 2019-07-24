@@ -14,11 +14,13 @@ object WebServer extends App {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
   implicit val queryCli = DatabaseModule.queryClient
+  implicit val graphqlContext = GraphqlModule.graphqlContext
 
   val port = HerokuModule.Port
   val route = logRequestResult("monarchy-web") {
     pathSingleSlash(new RootController) ~
-    path("admin")(new AdminController)
+    path("admin")(new AdminController) ~
+    path("graphql")(new GraphqlController)
   }
   val routeLogged = DebuggingDirectives.logRequestResult("LOG:", Logging.InfoLevel)(route)
   val routeBindings = Http().bindAndHandle(routeLogged, HerokuModule.Host, port)

@@ -18,6 +18,9 @@ scala_library(
     '//server/src/dal',
   ],
   exports=[
+    '//3rdparty/jvm/com/github/julien_truffaut:monocle_core',
     '//3rdparty/jvm/org/parboiled',
+    '//3rdparty/jvm/org/typelevel:cats_core',
+    '//3rdparty/jvm/org/typelevel:cats_kernel',
   ]
 )
