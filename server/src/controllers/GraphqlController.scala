@@ -38,24 +38,20 @@ class GraphqlController(implicit
   ec: ExecutionContext,
   sys: ActorSystem,
   gqlContext: GraphqlContext
-) extends Route {
-  override def apply(ctx: RequestContext) = {
-    entity(as[String]) { gqlRaw =>
-      c: RequestContext => {
-        val gql = Json.parse[GraphqlBody](gqlRaw)
-        val execReq = QueryParser.parse(gql.query) match {
-          case Failure(e) => Future.successful(BadRequest -> formatError(e))
-          case Success(ast) =>
-            val variables = gql.variables.getOrElse(Map.empty[String, Any])
-            executeGraphQL(ast, gql.operationName, variables)
-        }
-        execReq.flatMap {
-          case (status, r) =>
-            val entity = HttpEntity(ContentTypes.`application/json`, Json.stringify(r))
-            c.complete(HttpResponse(status, entity = entity))
-        }
-      }
-    }(ctx)
+) extends PostController[String] {
+  override def action(gqlRaw: String) = {
+    val gql = Json.parse[GraphqlBody](gqlRaw)
+    val execReq = QueryParser.parse(gql.query) match {
+      case Failure(e) => Future.successful(BadRequest -> formatError(e))
+      case Success(ast) =>
+        val variables = gql.variables.getOrElse(Map.empty)
+        executeGraphQL(ast, gql.operationName, variables)
+    }
+    execReq.map {
+      case (status, r) =>
+        val entity = HttpEntity(ContentTypes.`application/json`, Json.stringify(r))
+        HttpResponse(status, entity = entity)
+    }
   }
 
   def executeGraphQL(query: Document, opName: Option[String], vars: Map[String, Any]) = {
