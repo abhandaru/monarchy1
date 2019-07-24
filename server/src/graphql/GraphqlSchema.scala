@@ -2,7 +2,6 @@ package monarchy.graphql
 
 import monarchy.dal
 import sangria.execution.FieldTag
-import sangria.marshalling.circe._
 import sangria.schema._
 import scala.concurrent.ExecutionContext
 

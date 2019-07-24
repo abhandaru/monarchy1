@@ -4,23 +4,11 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '//3rdparty/jvm/io/circe:circe_core',
-    '//3rdparty/jvm/io/circe:circe_optics',
-    '//3rdparty/jvm/io/circe:circe_parser',
-    '//3rdparty/jvm/com/typesafe/akka:akka_actor',
-    '//3rdparty/jvm/com/typesafe/akka:akka_stream',
-    '//3rdparty/jvm/com/typesafe/akka:akka_http',
-    '//3rdparty/jvm/com/typesafe/akka:akka_http_core',
     '//3rdparty/jvm/org/sangria_graphql:sangria',
-    '//3rdparty/jvm/org/sangria_graphql:sangria_circe',
     '//3rdparty/jvm/org/sangria_graphql:sangria_marshalling_api',
-    '//3rdparty/jvm/org/typelevel:cats_core',
     '//server/src/dal',
   ],
   exports=[
-    '//3rdparty/jvm/com/github/julien_truffaut:monocle_core',
     '//3rdparty/jvm/org/parboiled',
-    '//3rdparty/jvm/org/typelevel:cats_core',
-    '//3rdparty/jvm/org/typelevel:cats_kernel',
   ]
 )

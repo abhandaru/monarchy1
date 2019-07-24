@@ -3,25 +3,18 @@ package monarchy.controllers
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server._
 import akka.http.scaladsl.server.Directives._
-import akka.stream.ActorMaterializer
-import io.circe._
-import io.circe.optics.JsonPath._
-import io.circe.parser._
-import monarchy.graphql.{GraphqlRequestUnmarshaller, GraphqlContext, GraphqlSchema}
+import monarchy.graphql.{GraphqlContext, GraphqlSchema}
+import monarchy.util.Json
 import sangria.ast.Document
-import sangria.execution.deferred.DeferredResolver
 import sangria.execution.{ErrorWithResolver, Executor, QueryAnalysisError}
-import sangria.marshalling.{InputUnmarshaller, ResultMarshaller}
-import sangria.parser.DeliveryScheme.Try
+import sangria.marshalling.InputUnmarshaller
 import sangria.parser.{QueryParser, SyntaxError}
 import scala.concurrent.{Future, ExecutionContext}
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
-import monarchy.util.{Json => UJson}
 
 case class GraphqlBody(
   query: String,
@@ -49,7 +42,7 @@ class GraphqlController(implicit
   override def apply(ctx: RequestContext) = {
     entity(as[String]) { gqlRaw =>
       c: RequestContext => {
-        val gql = UJson.parse[GraphqlBody](gqlRaw)
+        val gql = Json.parse[GraphqlBody](gqlRaw)
         val execReq = QueryParser.parse(gql.query) match {
           case Failure(e) => Future.successful(BadRequest -> formatError(e))
           case Success(ast) =>
@@ -58,7 +51,7 @@ class GraphqlController(implicit
         }
         execReq.flatMap {
           case (status, r) =>
-            val entity = HttpEntity(ContentTypes.`application/json`, UJson.stringify(r))
+            val entity = HttpEntity(ContentTypes.`application/json`, Json.stringify(r))
             c.complete(HttpResponse(status, entity = entity))
         }
       }
@@ -91,13 +84,7 @@ class GraphqlController(implicit
           ))
         )
       ))
-    case NonFatal(e) => formatError(e.getMessage)
+    case NonFatal(e) => GraphqlErrors(Seq(GraphqlError(message = e.getMessage)))
     case e => throw e
-  }
-
-  def formatError(message: String): GraphqlErrors = {
-    GraphqlErrors(Seq(
-      GraphqlError(message = message)
-    ))
   }
 }

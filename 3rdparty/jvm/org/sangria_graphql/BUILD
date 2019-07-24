@@ -36,23 +36,6 @@ scala_import(
 
 
 scala_import(
-    name = "sangria_circe",
-    jars = [
-        "//external:jar/org/sangria_graphql/sangria_circe_2_12"
-    ],
-    runtime_deps = [
-        "//3rdparty/jvm/io/circe:circe_core",
-        "//3rdparty/jvm/org/scala_lang:scala_library",
-        ":sangria_marshalling_api"
-    ],
-    visibility = [
-        "//visibility:public"
-    ]
-)
-
-
-
-scala_import(
     name = "sangria_marshalling_api",
     jars = [
         "//external:jar/org/sangria_graphql/sangria_marshalling_api_2_12"
