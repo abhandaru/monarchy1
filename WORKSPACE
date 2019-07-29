@@ -1,19 +1,19 @@
 # update this as needed
-rules_scala_version='f3113fb6e9e35cb8f441d2305542026d98afc0a2'
+RULES_SCALA_VERSION='f3113fb6e9e35cb8f441d2305542026d98afc0a2'
 load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_archive')
 
 http_archive(
-  name = "com_google_protobuf",
-  sha256 = "9510dd2afc29e7245e9e884336f848c8a6600a14ae726adb6befdb4f786f0be2",
-  strip_prefix = "protobuf-3.6.1.3",
-  urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.6.1.3.zip"],
+  name="com_google_protobuf",
+  sha256="9510dd2afc29e7245e9e884336f848c8a6600a14ae726adb6befdb4f786f0be2",
+  strip_prefix="protobuf-3.6.1.3",
+  urls=["https://github.com/protocolbuffers/protobuf/archive/v3.6.1.3.zip"],
 )
 
 http_archive(
   name='io_bazel_rules_scala',
-  url='https://github.com/bazelbuild/rules_scala/archive/%s.zip' % rules_scala_version,
+  url='https://github.com/bazelbuild/rules_scala/archive/%s.zip' % RULES_SCALA_VERSION,
   type='zip',
-  strip_prefix='rules_scala-%s' % rules_scala_version
+  strip_prefix='rules_scala-%s' % RULES_SCALA_VERSION
 )
 
 load('@io_bazel_rules_scala//scala:scala.bzl', 'scala_repositories')
