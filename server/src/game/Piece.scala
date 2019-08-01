@@ -1,23 +1,24 @@
 package monarchy.game
 
-case class PlayerContext(id: Long)
-
 object PieceGenerator {
   def apply(
     conf: PieceConf,
-    player: PlayerContext
+    playerId: PlayerId,
+    playerDir: Vec
   ): Piece = Piece(
     conf = conf,
-    player = player,
-    health = conf.maxHealth,
-    _wait = Math.floor(conf.maxWait / 2).toInt
+    playerId = playerId,
+    currentHealth = conf.maxHealth,
+    currentWait = Math.floor(conf.maxWait / 2).toInt,
+    currentDirection = playerDir
   )
 }
 
 case class Piece(
   conf: PieceConf,
-  player: PlayerContext,
-  health: Int,
-  _wait: Int = 0,
+  playerId: PlayerId,
+  currentHealth: Int,
+  currentWait: Int,
+  currentDirection: Vec,
   blockingAjustment: Double = 0.0
 )

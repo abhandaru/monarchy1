@@ -6,6 +6,10 @@ case class Tile(
 )
 
 case class Board(tiles: Seq[Tile]) {
+  def tile(p: Vec): Option[Tile] = {
+    tiles.find(_.point == p)
+  }
+
   def placePiece(p: Vec, piece: Piece): Board = {
     this.copy(tiles = tiles.map { t =>
       if (t.point == p) t.copy(piece = Some(piece)) else t
@@ -16,7 +20,7 @@ case class Board(tiles: Seq[Tile]) {
 object Board {
   val Standard: Board = {
     val size = 11
-    val taperSize = 3
+    val taperSize = 2
     val points = for {
       row <- 0 until size
       col <- 0 until size

@@ -17,9 +17,9 @@ class JsonTypeReference[T: TypeTag] extends TypeReference[T] {
 }
 
 object JsonTypeReference {
-  val mirror = runtimeMirror(this.getClass.getClassLoader)
+  val Mirror = runtimeMirror(this.getClass.getClassLoader)
   def extractType(paramType: Type): JType = {
-    val ctor = mirror.runtimeClass(paramType)
+    val ctor = Mirror.runtimeClass(paramType)
     val innerTypes = paramType.typeArgs.map(extractType).toList
     innerTypes match {
       case Nil => ctor
