@@ -13,7 +13,7 @@ object GameGenerator {
       rand = rand,
       players = rand.shuffle(players.sorted),
       board = initialPieces.foldLeft(Board.Standard) { case (b, (v, p)) =>
-        b.placePiece(v, p)
+        b.place(PlacedPiece(v, p))
       },
       turns = Seq(Turn())
     )

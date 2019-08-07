@@ -9,7 +9,7 @@ object Deltas {
   def rangeDeltas(max: Int): Deltas = {
     val deltas = for {
       r <- -max to max
-      maxCol = max - Math.abs(r)
+      maxCol = max - math.abs(r)
       c <- -maxCol to maxCol
     } yield Vec(r, c)
     deltas.toSet

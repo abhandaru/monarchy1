@@ -19,7 +19,7 @@ trait PieceConf {
 
 case object Assassin extends PieceConf {
   import Deltas._
-  val name = "Knight of Shadow"
+  val name = "Divine Shadow"
   val maxHealth = 35
   val maxWait = 1
   val power = 18
@@ -28,7 +28,7 @@ case object Assassin extends PieceConf {
   val movement = PointPattern(rangeDeltasNoCenter(4))
   val attackPatterns = SimpleAttackPatterns(AdjecentDeltas)
   val effectArea = new EffectArea {
-    override def effects(p0: Vec, ap: PointPattern): Set[Effect] = {
+    override def apply(p0: Vec, pat: PointPattern): Set[Effect] = {
       AdjecentDeltas.map(Attack(_, power))
     }
   }
@@ -36,7 +36,7 @@ case object Assassin extends PieceConf {
 
 case object Knight extends PieceConf {
   import Deltas._
-  val name = "Knight of Blade"
+  val name = "Divine Blade"
   val maxHealth = 50
   val maxWait = 1
   val power = 22
@@ -49,7 +49,7 @@ case object Knight extends PieceConf {
 
 case object Scout extends PieceConf {
   import Deltas._
-  val name = "Knight of Bow"
+  val name = "Divine Arrow"
   val maxHealth = 40
   val maxWait = 2
   val power = 18
@@ -81,7 +81,7 @@ case object Witch extends PieceConf {
   }
 
   val effectArea = new EffectArea {
-    override def effects(p0: Vec, pat: PointPattern): Set[Effect] = {
+    override def apply(p0: Vec, pat: PointPattern): Set[Effect] = {
       pat(p0).map(Attack(_, power))
     }
   }
@@ -127,7 +127,7 @@ case object Furgon extends PieceConf {
   val attackPatterns = SimpleAttackPatterns(rangeDeltas(2))
   val effectArea = new EffectArea {
     val deltas = rangeDeltas(1)
-    override def effects(p0: Vec, pat: PointPattern): Set[Effect] = {
+    override def apply(p0: Vec, pat: PointPattern): Set[Effect] = {
       val pointSet = for {
         p <- pat(p0)
         d <- deltas
@@ -150,8 +150,21 @@ case object Cleric extends PieceConf {
   val attackPatterns = SimpleAttackPatterns(NoDelta)
   val effectArea = new EffectArea {
     val deltas = rangeDeltas(1)
-    override def effects(p0: Vec, ap: PointPattern): Set[Effect] = {
+    override def apply(p0: Vec, ap: PointPattern): Set[Effect] = {
       Set(HealAll(power))
     }
   }
+  override val blockable = false
+}
+
+case object Shrub extends PieceConf {
+  val name = "Banyan"
+  val maxHealth = 1
+  val maxWait = 0
+  val power = 0
+  val armor = 0
+  val blockable = 0
+  val movement = PointPattern(Deltas.empty)
+  val attackPatterns = SimpleAttackPatterns(Deltas.empty)
+  val effectArea = UniformAttackArea(Deltas.empty)
 }
