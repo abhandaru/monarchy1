@@ -4,7 +4,7 @@ sealed trait TurnAction
 case class TileSelect(p: Vec) extends TurnAction
 case object TileDeselect extends TurnAction
 case class MoveSelect(p: Vec) extends TurnAction
-case class AttackSelect(pat: PointPattern) extends TurnAction
+case class AttackSelect(pat: Deltas) extends TurnAction
 case class DirSelect(dir: Vec) extends TurnAction
 
 case class Turn(
@@ -33,7 +33,7 @@ case class Turn(
   def move: Option[Vec] =
     actions.collectFirst { case MoveSelect(p) => p }
 
-  def attack: Option[PointPattern] =
+  def attack: Option[Deltas] =
     actions.collectFirst { case AttackSelect(pat) => pat }
 
   def dir: Option[Vec] =

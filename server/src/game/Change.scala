@@ -15,8 +15,8 @@ object Accept {
 }
 
 sealed trait Reject extends Change[Nothing] {
-  override def map[U](f: Any => U) = this
-  override def flatMap[U](f: Any => Change[U]) = this
+  override def map[U](f: Nothing => U) = this
+  override def flatMap[U](f: Nothing => Change[U]) = this
 }
 
 object Reject {

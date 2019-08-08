@@ -1,5 +1,11 @@
 package monarchy.game
 
+object PointPattern {
+  def infer(origin: Vec, deltas: Deltas): PointPattern = {
+    PointPattern(deltas.map(_ - origin))
+  }
+}
+
 case class PointPattern(deltas: Deltas) {
   def apply(p0: Vec): Set[Vec] = deltas.map(_ + p0)
 }
