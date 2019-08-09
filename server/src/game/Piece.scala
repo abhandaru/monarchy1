@@ -9,7 +9,7 @@ object PieceGenerator {
     conf = conf,
     playerId = playerId,
     currentHealth = conf.maxHealth,
-    currentWait = Math.floor(conf.maxWait / 2).toInt,
+    currentWait = math.floor(conf.maxWait / 2).toInt,
     currentDirection = playerDir
   )
 }
@@ -21,4 +21,7 @@ case class Piece(
   currentWait: Int,
   currentDirection: Vec,
   blockingAjustment: Double = 0.0
-)
+) {
+  def canMove = currentWait == 0
+  def canAttack = currentWait == 0
+}
