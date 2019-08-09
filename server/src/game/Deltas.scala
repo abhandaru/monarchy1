@@ -1,7 +1,8 @@
 package monarchy.game
 
 object Deltas {
-  val NoDelta = Set(Vec(0, 0))
+  val Origin = Vec(0, 0)
+  val NoDelta = Set(Origin)
   val AdjecentDeltas = Set(Vec(-1, 0), Vec(0, 1), Vec(1, 0), Vec(0, -1))
 
   def empty: Deltas = Set.empty[Vec]

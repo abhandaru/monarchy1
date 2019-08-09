@@ -20,22 +20,3 @@ case class SimpleAttackPatterns(deltas: Deltas) extends AttackPatterns {
     PointPattern(Set(d))
   }
 }
-
-trait Effect
-
-case class Attack(point: Vec, power: Int) extends Effect
-case class GrowPlant(point: Vec) extends Effect
-case class HealAll(power: Int) extends Effect
-
-trait EffectArea {
-  def apply(p0: Vec, pat: PointPattern): Set[Effect]
-}
-
-case class UniformAttackArea(deltas: Set[Vec], power: Int) extends EffectArea {
-  override def apply(p0: Vec, pat: PointPattern) = {
-    for {
-      p <- pat(p0)
-      d <- deltas
-    } yield Attack(p + d, power)
-  }
-}
