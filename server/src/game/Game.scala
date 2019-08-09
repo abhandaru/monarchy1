@@ -116,7 +116,7 @@ case class Game(
             case Some(_) if !attacks(points) => Reject.AttackIllegal
             case Some(piece) =>
               val pattern = PointPattern.infer(tile.point, points)
-              val effects = piece.conf.effectArea(tile.point, pattern).sorted
+              val effects = piece.conf.effectArea(tile.point, pattern).toSeq.sorted
               val updates = effects.flatMap {
                 // Damage another unit. Compute blocking, directionality, and damage.
                 case Attack(pt, power) =>
