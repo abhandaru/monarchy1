@@ -7,6 +7,7 @@ class BoardSpec extends WordSpec with Matchers {
   "Board$" should {
     "have correct Standard [[Board]]" in {
       assert(PlanarTooling.compare(
+        Board.Standard.tiles,
         """
         |██░░░░░░░██
         |█░░░░░░░░░█
@@ -19,8 +20,7 @@ class BoardSpec extends WordSpec with Matchers {
         |░░░░░░░░░░░
         |█░░░░░░░░░█
         |██░░░░░░░██
-        """,
-        Board.Standard.tiles
+        """
       ))
     }
   }

@@ -5,30 +5,42 @@ object PlanarTooling {
   val SpaceChars = Set('#', '█')
 
   case class Substitution(vec: Vec, index: Option[Int])
+  case class Plane(rep: String, origin: Vec = Deltas.Origin)
 
-  def substitutions(rep: String): Seq[Substitution] = {
+  def substitutions(plane: Plane): Seq[Substitution] = {
+    val Plane(rep, origin) = plane
     val lines = rep.trim.stripMargin.split("\n")
     for {
       (line, i) <- lines.zipWithIndex
       (char, j) <- line.zipWithIndex
       if !SpaceChars(char)
       index = Option(char).filterNot(EmptyChars).map(_ - 48)
-    } yield Substitution(Vec(i, j), index)
+    } yield Substitution(Vec(i, j) - origin, index)
   }
 
-  def points(rep: String): Set[Vec] = {
-    substitutions(rep).map(_.vec).toSet
+  def points(plane: Plane): Set[Vec] = {
+    substitutions(plane).map(_.vec).toSet
   }
 
-  def compare[T: PlanarToolingSupport](rep: String, ts: Iterable[T]): Boolean = {
+  def compare[T: PlanarToolingSupport](ts: Iterable[T], plane: Plane): Boolean = {
     val conversion = implicitly[PlanarToolingSupport[T]]
-    val ref = points(rep)
+    val ref = points(plane)
     val test = ts.map(conversion).toSet
     if (ref == test) true else {
       println(s"PlanarTooling - want ${ref.size} points")
       println(s"PlanarTooling - found ${test.size} points")
       false
     }
+  }
+
+
+  def compare[T: PlanarToolingSupport](ts: Iterable[T], rep: String): Boolean = {
+    compare(ts, rep.plane)
+  }
+
+  implicit class PlanarStringOps(val rep: String) extends AnyVal {
+    def plane: Plane = Plane(rep)
+    def origin(i: Int, j: Int): Plane = Plane(rep, Vec(i, j))
   }
 }
 
