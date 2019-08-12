@@ -51,9 +51,10 @@ object PlanarToolingSupport {
     override def apply(t: T) = ext(t)
   }
 
-  implicit object VecSupport extends Support[Vec](identity)
-  implicit object TileSupport extends Support[Tile](_.point)
-  implicit object EffectSupport extends Support[Effect]({
+  implicit object Vec extends Support[Vec](identity)
+  implicit object Tile extends Support[Tile](_.point)
+  implicit object EffectLocation extends Support[EffectLocation](_.point)
+  implicit object Effect extends Support[Effect]({
     case HealAll(_) => Deltas.Origin
     case Attack(p, _) => p
     case GrowPlant(p) => p

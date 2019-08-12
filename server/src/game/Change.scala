@@ -32,8 +32,9 @@ object Reject {
   case object CannotMove extends Reject
   case object CannotSelect extends Reject
   case object ChangeOutOfTurn extends Reject
-  case object DirIllegal extends Reject
-  case object MoveIllegal extends Reject
-  case object AttackIllegal extends Reject
+  case object IllegalAttackSelection extends Reject
+  case object IllegalDirSelection extends Reject
+  case object IllegalMoveSelection extends Reject
   case object PieceActionWithoutSelection extends Reject
+  case object PieceActionWithoutOwnership extends Reject
 }

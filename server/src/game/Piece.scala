@@ -20,8 +20,8 @@ case class Piece(
   currentHealth: Int,
   currentWait: Int,
   currentDirection: Vec,
-  blockingAjustment: Double = 0.0
+  blockingAjustment: Double = 0.0,
+  paralyzed: Boolean = false
 ) {
-  def canMove = currentWait == 0
-  def canAttack = currentWait == 0
+  def canAct = !paralyzed && currentWait == 0
 }

@@ -41,7 +41,7 @@ case class Game(
       tile <- currentTile
       piece <- currentPiece
       if currentTurn.canMove
-      if piece.canMove
+      if piece.canAct
     } yield {
       val points = piece.conf.movement(tile.point)
       Game.reachablePoints(board, piece, tile.point, points)
@@ -49,16 +49,35 @@ case class Game(
     moveSet.getOrElse { Deltas.empty }
   }
 
-  def directions: Deltas = Deltas.AdjecentDeltas
+  def directions: Deltas = {
+    val dirSet = for {
+      piece <- currentPiece
+      if currentTurn.canDir
+      if piece.canAct
+    } yield Deltas.AdjecentDeltas
+    dirSet.getOrElse { Set.empty }
+  }
 
   def attacks: Set[Deltas] = {
     val attackSet = for {
       tile <- currentTile
       piece <- currentPiece
       if currentTurn.canAttack
-      if piece.canAttack
+      if piece.canAct
     } yield piece.conf.attackPatterns.pointSets(tile.point)
     attackSet.getOrElse { Set.empty }
+  }
+
+  def effects(attack: Deltas): Set[EffectLocation] = {
+    val effectSet = for {
+      tile <- currentTile
+      piece <- currentPiece
+    } yield {
+      val pattern = PointPattern.infer(tile.point, attack)
+      val rawEffects = piece.conf.effectArea(tile.point, pattern)
+      rawEffects.flatMap(EffectLocation(board, piece, _))
+    }
+    effectSet.getOrElse { Set.empty }
   }
 
   def tileSelect(pid: PlayerId, p: Vec): Change[Game] = {
@@ -78,8 +97,10 @@ case class Game(
         case Some(tile) =>
           tile.piece match {
             case None => Reject.PieceActionWithoutSelection
-            case Some(_) if !movements(p) => Reject.MoveIllegal
-            case Some(piece) => Accept(game.copy(board = game.board.move(tile.point, p)))
+            case Some(_) if !movements(p) => Reject.IllegalMoveSelection
+            case Some(piece) if piece.playerId != pid => Reject.PieceActionWithoutOwnership
+            case Some(piece) =>
+              Accept(game.copy(board = game.board.move(tile.point, p)))
           }
       }
     } yield nextGame
@@ -94,9 +115,10 @@ case class Game(
         case Some(tile) =>
           tile.piece match {
             case None => Reject.PieceActionWithoutSelection
-            case Some(_) if !directions(dir) => Reject.DirIllegal
+            case Some(_) if !directions(dir) => Reject.IllegalDirSelection
+            case Some(piece) if piece.playerId != pid => Reject.PieceActionWithoutOwnership
             case Some(piece) =>
-              val nextPiece = PlacedPiece(tile.point, piece.copy(currentDirection = dir))
+              val nextPiece = PieceLocation(tile.point, piece.copy(currentDirection = dir))
               val nextBoard = game.board.place(nextPiece)
               Accept(game.copy(board = nextBoard))
           }
@@ -104,26 +126,28 @@ case class Game(
     } yield nextGame
   }
 
-  def attackSelect(pid: PlayerId, points: Deltas): Change[Game] = {
+  def attackSelect(pid: PlayerId, attack: Deltas): Change[Game] = {
     for {
       _ <- playerGuard(pid)
-      game <- turnGuard(AttackSelect(points))
+      game <- turnGuard(AttackSelect(attack))
       nextGame <- currentTile match {
         case None => Reject.PieceActionWithoutSelection
         case Some(tile) =>
           tile.piece match {
             case None => Reject.PieceActionWithoutSelection
-            case Some(_) if !attacks(points) => Reject.AttackIllegal
+            case Some(_) if !attacks(attack) => Reject.IllegalAttackSelection
+            case Some(piece) if piece.playerId != pid => Reject.PieceActionWithoutOwnership
             case Some(piece) =>
-              val pattern = PointPattern.infer(tile.point, points)
-              val effects = piece.conf.effectArea(tile.point, pattern).toSeq.sorted
-              val updates = effects.flatMap {
+              val pattern = PointPattern.infer(tile.point, attack)
+              val effects = piece.conf.effectArea(tile.point, pattern)
+              val effectLocations = effects.flatMap(EffectLocation(board, piece, _)).toSeq.sorted
+              val updates = effectLocations.flatMap {
                 // Damage another unit. Compute blocking, directionality, and damage.
-                case Attack(pt, power) =>
+                case EffectLocation(pt, Attack(_, power)) =>
                   game.board.tile(pt) match {
-                    case None => Nil
-                    case Some(Tile(_, None)) => Nil
-                    case Some(Tile(_, Some(pieceN))) => Seq {
+                    case None => None
+                    case Some(Tile(_, None)) => None
+                    case Some(Tile(_, Some(pieceN))) => Some {
                       def damage = math.round(power * (1 - pieceN.conf.armor)).toInt
                       if (piece.conf.blockable) {
                         val blockingBase = pieceN.conf.blocking + pieceN.blockingAjustment
@@ -141,32 +165,32 @@ case class Game(
                         }
                         val blockingOutcome = rand.nextDouble <= blockingProb
                         if (blockingOutcome) {
-                          PlacedPiece(pt, pieceN.copy(
+                          PieceLocation(pt, pieceN.copy(
                             currentDirection = blockingDir,
                             blockingAjustment = pieceN.blockingAjustment - ((blockingBase/blockingProb) - blockingProb)
                           ))
                         } else {
-                          PlacedPiece(pt, pieceN.copy(
+                          PieceLocation(pt, pieceN.copy(
                             blockingAjustment = pieceN.blockingAjustment + blockingBase,
                             currentHealth = pieceN.currentHealth - damage
                           ))
                         }
                       } else {
-                        PlacedPiece(pt, pieceN.copy(currentHealth = pieceN.currentHealth - damage))
+                        PieceLocation(pt, pieceN.copy(currentHealth = pieceN.currentHealth - damage))
                       }
                     }
                   }
                 // Adds a shrub unit for unoccupied tiles.
-                case GrowPlant(pt) =>
+                case EffectLocation(pt, GrowPlant(_)) =>
                   if (Game.canOccupy(game.board, pt))
-                    Seq(PlacedPiece(pt, PieceBuilder(Shrub, pid, piece.currentDirection)))
+                    Some(PieceLocation(pt, PieceBuilder(Shrub, pid, piece.currentDirection)))
                   else
-                    Nil
+                    None
                 // Heals all units for the same player
-                case HealAll(power) =>
-                  game.board.pieces(piece.playerId).map {
-                    case pp @ PlacedPiece(_, pieceN) =>
-                      pp.copy(piece = pieceN.copy(currentHealth = pieceN.currentHealth + power))
+                case EffectLocation(pt, HealAll(power)) =>
+                  game.board.piece(pt).map {
+                    case pl @ PieceLocation(_, pieceN) =>
+                      pl.copy(piece = pieceN.copy(currentHealth = pieceN.currentHealth + power))
                   }
               }
               val nextBoard = updates.foldLeft(game.board) { _ place _ }
@@ -180,8 +204,8 @@ case class Game(
   def commitTurn(pid: PlayerId): Change[Game] = {
     playerGuard(pid).map { _ =>
       val updatesForAll = board.pieces.map {
-        case pp @ PlacedPiece(pt, piece) =>
-          pp.copy(
+        case pl @ PieceLocation(pt, piece) =>
+          pl.copy(
             piece = piece.copy(
               currentWait = piece.currentWait - 1,
               blockingAjustment = piece.blockingAjustment * Game.BlockingAdjustmentDecay
@@ -196,7 +220,7 @@ case class Game(
           case MoveSelect(_) => math.floor(piece.conf.maxWait / 2).toInt
           case AttackSelect(_) => math.ceil(piece.conf.maxWait / 2).toInt
         }.sum
-        PlacedPiece(tile.point, piece.copy(currentWait = totalWait))
+        PieceLocation(tile.point, piece.copy(currentWait = totalWait))
       }
       val updates = updatesForAll ++ updateForPiece.toSeq
       val nextBoard = updates.foldLeft(board) { _ place _ }
