@@ -33,6 +33,10 @@ trait EffectArea {
   def apply(p0: Vec, pat: PointPattern): Set[Effect]
 }
 
+case object NullEffectArea extends EffectArea {
+  override def apply(p0: Vec, pat: PointPattern) = Set.empty
+}
+
 case class UniformAttackArea(deltas: Set[Vec], power: Int) extends EffectArea {
   override def apply(p0: Vec, pat: PointPattern) = {
     for {

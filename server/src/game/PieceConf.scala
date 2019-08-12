@@ -166,5 +166,5 @@ case object Shrub extends PieceConf {
   val blocking = 0.0
   val movement = PointPattern(Deltas.empty)
   val attackPatterns = SimpleAttackPatterns(Deltas.empty)
-  val effectArea = UniformAttackArea(Deltas.empty, power)
+  val effectArea = NullEffectArea
 }

@@ -11,7 +11,7 @@ case class Game(
   def currentTurn: Turn = turns.head
 
   def currentPlayer: Player = {
-    players(turns.size % players.size)
+    players((turns.size - 1) % players.size)
   }
 
   def currentSelection: Option[Vec] = {
@@ -159,7 +159,7 @@ case class Game(
                 // Adds a shrub unit for unoccupied tiles.
                 case GrowPlant(pt) =>
                   if (Game.canOccupy(game.board, pt))
-                    Seq(PlacedPiece(pt, PieceGenerator(Shrub, pid, currentPlayer.direction)))
+                    Seq(PlacedPiece(pt, PieceBuilder(Shrub, pid, piece.currentDirection)))
                   else
                     Nil
                 // Heals all units for the same player
@@ -217,14 +217,16 @@ object Game {
   val BlockingAdjustmentDecay = 0.9
 
   def reachablePoints(b: Board, piece: Piece, p0: Vec, points: Deltas): Deltas = {
-    def recurrence(start: Vec, visited: Deltas): Deltas = {
-      val adj = Deltas.AdjecentDeltas.map(start + _)
-      val valid = (adj -- visited) & points
-      val accessible = valid.filter(canPassThrough(b, piece, _))
-      val reached = visited ++ accessible
-      reached ++ accessible.flatMap(recurrence(_, reached))
+    def neighbors(p: Vec): Deltas = {
+      for {
+        d <- Deltas.AdjecentDeltas
+        pNext = p + d
+        if points(pNext)
+        if canPassThrough(b, piece, pNext)
+      } yield pNext
     }
-    recurrence(p0, Deltas.empty).filter(canOccupy(b, _))
+    GraphOperations.reachableFrom(p0, neighbors)
+      .filter(canOccupy(b, _))
   }
 
   def canOccupy(b: Board, p: Vec): Boolean = {

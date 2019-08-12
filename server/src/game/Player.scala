@@ -8,6 +8,5 @@ object Player {
 
 case class Player(
   id: PlayerId,
-  direction: Vec,
   formation: Seq[(Vec, PieceConf)]
 )
