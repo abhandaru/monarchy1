@@ -5,7 +5,7 @@ case class Tile(
   piece: Option[Piece] = None
 )
 
-case class PlacedPiece(
+case class PieceLocation(
   point: Vec,
   piece: Piece
 )
@@ -14,13 +14,16 @@ case class Board(tiles: Seq[Tile]) {
   def tile(p: Vec): Option[Tile] =
     tiles.find(_.point == p)
 
-  def pieces: Seq[PlacedPiece] =
-    tiles.collect { case t if t.piece.nonEmpty => PlacedPiece(t.point, t.piece.get) }
+  def pieces: Seq[PieceLocation] =
+    tiles.collect(Board.PieceFilter)
 
-  def pieces(pid: PlayerId): Seq[PlacedPiece] =
+  def pieces(pid: PlayerId): Seq[PieceLocation] =
     pieces.filter(_.piece.playerId == pid)
 
-  def place(piece: PlacedPiece): Board =
+  def piece(p: Vec): Option[PieceLocation] =
+    tile(p).collect(Board.PieceFilter)
+
+  def place(piece: PieceLocation): Board =
     updateTile(piece.point, Some(piece.piece))
 
   def remove(point: Vec): Board =
@@ -54,5 +57,10 @@ object Board {
       tl || bl || tr || br
     }
     Board(legalPoints.map(Tile(_, None)))
+  }
+
+  val PieceFilter: PartialFunction[Tile, PieceLocation] = {
+    case t if t.piece.nonEmpty =>
+      PieceLocation(t.point, t.piece.get)
   }
 }

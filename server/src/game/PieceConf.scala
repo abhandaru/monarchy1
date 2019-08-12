@@ -29,7 +29,7 @@ case object Assassin extends PieceConf {
   val attackPatterns = SimpleAttackPatterns(AdjecentDeltas)
   val effectArea = new EffectArea {
     override def apply(p0: Vec, pat: PointPattern): Set[Effect] = {
-      AdjecentDeltas.map(Attack(_, power))
+      AdjecentDeltas.map { d => Attack(p0 + d, power) }
     }
   }
 }

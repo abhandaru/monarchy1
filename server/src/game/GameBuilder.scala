@@ -18,7 +18,7 @@ object GameBuilder {
       (player, i) <- playersOrdered.zipWithIndex
       playerDir = Directions(i)
       (p, pieceConf) <- player.formation
-    } yield PlacedPiece(p, PieceBuilder(pieceConf, player.id, playerDir))
+    } yield PieceLocation(p, PieceBuilder(pieceConf, player.id, playerDir))
     Game(
       rand = rand,
       players = playersOrdered,
