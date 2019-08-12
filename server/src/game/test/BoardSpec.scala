@@ -26,7 +26,7 @@ class BoardSpec extends WordSpec with Matchers {
   }
 
   "Board" should {
-    val knight = PieceGenerator(Knight, PlayerId(1), Vec(1, 0))
+    val knight = PieceBuilder(Knight, PlayerId(1), Vec(1, 0))
     val board = BoardTooling.from(
       """
       |██░░░░░░░██

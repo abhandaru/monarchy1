@@ -53,4 +53,9 @@ object PlanarToolingSupport {
 
   implicit object VecSupport extends Support[Vec](identity)
   implicit object TileSupport extends Support[Tile](_.point)
+  implicit object EffectSupport extends Support[Effect]({
+    case HealAll(_) => Deltas.Origin
+    case Attack(p, _) => p
+    case GrowPlant(p) => p
+  })
 }

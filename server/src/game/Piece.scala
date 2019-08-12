@@ -1,6 +1,6 @@
 package monarchy.game
 
-object PieceGenerator {
+object PieceBuilder {
   def apply(
     conf: PieceConf,
     playerId: PlayerId,
