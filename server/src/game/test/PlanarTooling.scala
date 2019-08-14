@@ -27,12 +27,11 @@ object PlanarTooling {
     val ref = points(plane)
     val test = ts.map(conversion).toSet
     if (ref == test) true else {
-      println(s"PlanarTooling - want ${ref.size} points")
-      println(s"PlanarTooling - found ${test.size} points")
+      println(s"[PlanarTooling] missing - ${(ref -- test).mkString(", ")}")
+      println(s"[PlanarTooling] extra   + ${(test -- ref).mkString(", ")}")
       false
     }
   }
-
 
   def compare[T: PlanarToolingSupport](ts: Iterable[T], rep: String): Boolean = {
     compare(ts, rep.plane)

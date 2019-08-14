@@ -8,7 +8,7 @@ object GameBuilder {
    * `2pi/n_players * i`. This probably will not make any sense for more than
    * 4 players given the taxicab geometry
    */
-  val Directions = Array(Vec(0, 1), Vec(0, -1))
+  val Directions = Array(Vec(1, 0), Vec(-1, 0))
 
 
   def apply(seed: Int, players: Seq[Player]): Game = {
@@ -22,7 +22,7 @@ object GameBuilder {
     Game(
       rand = rand,
       players = playersOrdered,
-      board = initialPieces.foldLeft(Board.Standard)(_ place _),
+      board = Board.Standard.commit(initialPieces),
       turns = Seq(Turn())
     )
   }

@@ -13,6 +13,7 @@ trait PieceConf {
   def teleports: Boolean = false
 
   def attackPatterns: AttackPatterns
+  def attackAlongLos: Boolean = false
   def effectArea: EffectArea
   def blockable: Boolean = true
 }
@@ -58,6 +59,7 @@ case object Scout extends PieceConf {
   val movement = PointPattern(rangeDeltasNoCenter(4))
   val attackPatterns = SimpleAttackPatterns(rangeDeltasNoCenter(6))
   val effectArea = UniformAttackArea(NoDelta, power)
+  override val attackAlongLos = true
 }
 
 case object Witch extends PieceConf {
@@ -149,9 +151,26 @@ case object Cleric extends PieceConf {
   val movement = PointPattern(rangeDeltasNoCenter(3))
   val attackPatterns = SimpleAttackPatterns(NoDelta)
   val effectArea = new EffectArea {
-    val deltas = rangeDeltas(1)
-    override def apply(p0: Vec, ap: PointPattern): Set[Effect] = {
+    override def apply(p0: Vec, pat: PointPattern): Set[Effect] = {
       Set(HealAll(power))
+    }
+  }
+  override val blockable = false
+}
+
+case object FrostGolem extends PieceConf {
+  import Deltas._
+  val name = "Ice Sentinel"
+  val maxHealth = 60
+  val maxWait = 2
+  val power = 0
+  val armor = 0.0
+  val blocking = 0.0
+  val movement = PointPattern(rangeDeltasNoCenter(2))
+  val attackPatterns = SimpleAttackPatterns(rangeDeltasNoCenter(4))
+  val effectArea = new EffectArea {
+    override def apply(p0: Vec, pat: PointPattern): Set[Effect] = {
+      pat(p0).map(Paralyze(_))
     }
   }
   override val blockable = false
@@ -167,4 +186,5 @@ case object Shrub extends PieceConf {
   val movement = PointPattern(Deltas.empty)
   val attackPatterns = SimpleAttackPatterns(Deltas.empty)
   val effectArea = NullEffectArea
+  override val movesAside = false
 }

@@ -10,21 +10,17 @@ case class Game(
 ) {
   def currentTurn: Turn = turns.head
 
-  def currentPlayer: Player = {
+  def currentPlayer: Player =
     players((turns.size - 1) % players.size)
-  }
 
-  def currentSelection: Option[Vec] = {
+  def currentSelection: Option[Vec] =
     currentTurn.move orElse currentTurn.select
-  }
 
-  def currentTile: Option[Tile] = {
+  def currentTile: Option[Tile] =
     currentSelection.flatMap(board.tile)
-  }
 
-  def currentPiece: Option[Piece] = {
+  def currentPiece: Option[Piece] =
     currentTile.flatMap(_.piece)
-  }
 
   def selections: Deltas = {
     currentTurn.canSelect match {
@@ -80,13 +76,11 @@ case class Game(
     effectSet.getOrElse { Set.empty }
   }
 
-  def tileSelect(pid: PlayerId, p: Vec): Change[Game] = {
+  def tileSelect(pid: PlayerId, p: Vec): Change[Game] =
     playerGuard(pid).flatMap(_ => turnGuard(TileSelect(p)))
-  }
 
-  def tileDeselect(pid: PlayerId): Change[Game] = {
+  def tileDeselect(pid: PlayerId): Change[Game] =
     playerGuard(pid).flatMap(_ => turnGuard(TileDeselect))
-  }
 
   def moveSelect(pid: PlayerId, p: Vec): Change[Game] = {
     for {
@@ -119,7 +113,7 @@ case class Game(
             case Some(piece) if piece.playerId != pid => Reject.PieceActionWithoutOwnership
             case Some(piece) =>
               val nextPiece = PieceLocation(tile.point, piece.copy(currentDirection = dir))
-              val nextBoard = game.board.place(nextPiece)
+              val nextBoard = game.board.commit(nextPiece)
               Accept(game.copy(board = nextBoard))
           }
       }
@@ -127,6 +121,7 @@ case class Game(
   }
 
   def attackSelect(pid: PlayerId, attack: Deltas): Change[Game] = {
+    import EffectGeometry._
     for {
       _ <- playerGuard(pid)
       game <- turnGuard(AttackSelect(attack))
@@ -141,7 +136,7 @@ case class Game(
               val pattern = PointPattern.infer(tile.point, attack)
               val effects = piece.conf.effectArea(tile.point, pattern)
               val effectLocations = effects.flatMap(EffectLocation(board, piece, _)).toSeq.sorted
-              val updates = effectLocations.flatMap {
+              val effectUpdates = effectLocations.flatMap {
                 // Damage another unit. Compute blocking, directionality, and damage.
                 case EffectLocation(pt, Attack(_, power)) =>
                   game.board.tile(pt) match {
@@ -149,34 +144,41 @@ case class Game(
                     case Some(Tile(_, None)) => None
                     case Some(Tile(_, Some(pieceN))) => Some {
                       def damage = math.round(power * (1 - pieceN.conf.armor)).toInt
-                      if (piece.conf.blockable) {
-                        val blockingBase = pieceN.conf.blocking + pieceN.blockingAjustment
+                      def canBlock = piece.conf.blockable && pieceN.canBlock
+                      if (canBlock) {
+                        val blockingBase = pieceN.conf.blocking
+                        val blocking = pieceN.currentBlocking
                         // Compute angle of vec from origin to target with way unit is facing.
                         val attackDir = pt - tile.point
-                        val theta = attackDir angle pieceN.currentDirection
-                        val (blockingProb, blockingDir) = if (theta <= math.Pi / 4) {
-                          (0.0, pieceN.currentDirection * -1)
-                        } else if (theta >= 3 * math.Pi / 4) {
-                          (blockingBase, pieceN.currentDirection)
-                        } else {
-                          val dir = pieceN.currentDirection
-                          val turnDir = if (attackDir.curl(dir) > 0) dir.perpendicular else dir.perpendicular * -1
-                          (blockingBase / 2, turnDir)
+                        val snapped = directionSnap(piece.currentDirection, attackDir)
+                        val (anchor, blockingProb, blockingDir) = snapped match {
+                          case Clockwise90(dir) =>        (2, blocking / 2, -dir)
+                          case CounterClockwise90(dir) => (2, blocking / 2, -dir)
+                          case HalfRotation(dir) =>       (1,     blocking, -dir)
+                          case NoRotation(dir) =>         (0,          0.0, -dir)
                         }
                         val blockingOutcome = rand.nextDouble <= blockingProb
                         if (blockingOutcome) {
                           PieceLocation(pt, pieceN.copy(
                             currentDirection = blockingDir,
-                            blockingAjustment = pieceN.blockingAjustment - ((blockingBase/blockingProb) - blockingProb)
+                            blockingAjustment = pieceN.blockingAjustment - (anchor - blockingBase)
                           ))
                         } else {
-                          PieceLocation(pt, pieceN.copy(
-                            blockingAjustment = pieceN.blockingAjustment + blockingBase,
-                            currentHealth = pieceN.currentHealth - damage
-                          ))
+                          val health = math.max(pieceN.currentHealth - damage, 0)
+                          health match {
+                            case 0 => PieceRemoval(pt)
+                            case h => PieceLocation(pt, pieceN.copy(
+                              blockingAjustment = pieceN.blockingAjustment + blockingBase,
+                              currentHealth = h
+                            ))
+                          }
                         }
                       } else {
-                        PieceLocation(pt, pieceN.copy(currentHealth = pieceN.currentHealth - damage))
+                        val health = math.max(pieceN.currentHealth - damage, 0)
+                        health match {
+                          case 0 => PieceRemoval(pt)
+                          case h => PieceLocation(pt, pieceN.copy(currentHealth = h))
+                        }
                       }
                     }
                   }
@@ -192,8 +194,22 @@ case class Game(
                     case pl @ PieceLocation(_, pieceN) =>
                       pl.copy(piece = pieceN.copy(currentHealth = pieceN.currentHealth + power))
                   }
+                // Paralyzes the targeted tiles
+                case EffectLocation(pt, Paralyze(_)) =>
+                  game.board.piece(pt).map {
+                    case pl @ PieceLocation(_, pieceN) =>
+                      pl.copy(piece = pieceN.copy(paralyzed = true))
+                  }
               }
-              val nextBoard = updates.foldLeft(game.board) { _ place _ }
+              // The attacker turns in the snapped avg. direction of the attacks.
+              val attackerUpdate = {
+                val attackDir = attack.foldLeft(Deltas.Origin)(_ + _ - tile.point)
+                val nextDir = directionSnap(piece.currentDirection, attackDir).result
+                PieceLocation(tile.point, piece.copy(currentDirection = nextDir))
+              }
+              // Fold updates over the board-state.
+              val updates = effectUpdates :+ attackerUpdate
+              val nextBoard = game.board.commit(updates)
               val nextGame = game.copy(board = nextBoard)
               Accept(nextGame)
           }
@@ -223,7 +239,7 @@ case class Game(
         PieceLocation(tile.point, piece.copy(currentWait = totalWait))
       }
       val updates = updatesForAll ++ updateForPiece.toSeq
-      val nextBoard = updates.foldLeft(board) { _ place _ }
+      val nextBoard = board.commit(updates)
       this.copy(board = nextBoard, turns = Turn() +: turns)
     }
   }
