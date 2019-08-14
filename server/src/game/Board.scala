@@ -28,12 +28,6 @@ case class Board(tiles: Seq[Tile]) {
   def piece(p: Vec): Option[PieceLocation] =
     tile(p).collect(Board.PieceFilter)
 
-  // def place(piece: PieceLocation): Board =
-  //   updateTile(piece.point, Some(piece.piece))
-
-  // def remove(point: Vec): Board =
-  //   updateTile(point, None)
-
   def move(from: Vec, to: Vec): Board = {
     val piece = tile(from).flatMap(_.piece)
     updateTile(from, None).updateTile(to, piece)
