@@ -10,7 +10,8 @@ class RootController(implicit ec: ExecutionContext, queryCli: dal.QueryClient) e
   override def action(ctx: RequestContext) = {
     val q = dal.UserQuery.filter(_.id === 1L)
     queryCli.first(q).map { userMaybe =>
-      HttpResponse(StatusCodes.OK, entity = userMaybe.toString)
+      val userText = userMaybe.map(u => s"User(id=${u.id}, username=${u.username})")
+      HttpResponse(StatusCodes.OK, entity = userText.toString)
     }
   }
 }

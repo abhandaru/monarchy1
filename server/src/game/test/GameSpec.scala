@@ -56,7 +56,7 @@ class GameSpec extends WordSpec with Matchers {
 
     "have correct current piece for (7, 7)" in {
       val Accept(nextGame) = selectionChange
-      val piece = PieceBuilder(Assassin, PlayerId(1), Vec(0, 1))
+      val piece = PieceBuilder(Assassin, PlayerId(1), Vec(1, 0))
       assert(nextGame.currentPiece == Some(piece))
     }
 
@@ -138,7 +138,7 @@ class GameSpec extends WordSpec with Matchers {
 
     "correctly apply piece movement after move" in {
       val Accept(nextGame) = moveChange
-      val piece = PieceBuilder(Assassin, PlayerId(1), Vec(0, 1))
+      val piece = PieceBuilder(Assassin, PlayerId(1), Vec(1, 0))
       assert(nextGame.board.tile(Vec(7, 7)).get.piece.isEmpty)
       assert(nextGame.board.tile(Vec(6, 5)).get.piece == Some(piece))
     }
@@ -226,22 +226,28 @@ class GameSpec extends WordSpec with Matchers {
       assert(nextGame.attacks.isEmpty)
     }
 
-    "have applied damage to other piece correctly" in {
+    "have applied direction to attacker correctly" in {
+      val Accept(nextGame) = attackChange
+      val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(6, 5))
+      assert(piece.currentDirection == Vec(0, -1))
+    }
+
+    "have applied damage to defender correctly" in {
       val Accept(nextGame) = attackChange
       val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(6, 4))
       assert(piece.currentHealth == 36)
     }
 
-    "have applied blocking-adjustments to other piece correctly" in {
+    "have applied blocking-adjustments to defender correctly" in {
       val Accept(nextGame) = attackChange
       val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(6, 4))
       assert(piece.blockingAjustment === 0.8)
     }
 
-    "have applied direction change to other piece correctly" in {
+    "have applied direction change to defender correctly" in {
       val Accept(nextGame) = attackChange
       val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(6, 4))
-      assert(piece.currentDirection == Vec(0, -1)) // Facing up the board
+      assert(piece.currentDirection == Vec(-1, 0)) // Facing up the board
     }
   }
 

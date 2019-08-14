@@ -1,7 +1,7 @@
 package monarchy.game
 
 object Deltas {
-  val Origin = Vec(0, 0)
+  val Origin = Vec.Zero
   val NoDelta = Set(Origin)
   val AdjecentDeltas = Set(Vec(-1, 0), Vec(0, 1), Vec(1, 0), Vec(0, -1))
 
@@ -17,6 +17,6 @@ object Deltas {
   }
 
   def rangeDeltasNoCenter(max: Int): Deltas = {
-    rangeDeltas(max) - Vec(0, 0)
+    rangeDeltas(max) - Vec.Zero
   }
 }

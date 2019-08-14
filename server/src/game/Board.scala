@@ -5,10 +5,15 @@ case class Tile(
   piece: Option[Piece] = None
 )
 
+sealed trait CanChangeBoard {
+  def point: Vec
+}
+
+case class PieceRemoval(point: Vec) extends CanChangeBoard
 case class PieceLocation(
   point: Vec,
   piece: Piece
-)
+) extends CanChangeBoard
 
 case class Board(tiles: Seq[Tile]) {
   def tile(p: Vec): Option[Tile] =
@@ -23,16 +28,25 @@ case class Board(tiles: Seq[Tile]) {
   def piece(p: Vec): Option[PieceLocation] =
     tile(p).collect(Board.PieceFilter)
 
-  def place(piece: PieceLocation): Board =
-    updateTile(piece.point, Some(piece.piece))
+  // def place(piece: PieceLocation): Board =
+  //   updateTile(piece.point, Some(piece.piece))
 
-  def remove(point: Vec): Board =
-    updateTile(point, None)
+  // def remove(point: Vec): Board =
+  //   updateTile(point, None)
 
   def move(from: Vec, to: Vec): Board = {
     val piece = tile(from).flatMap(_.piece)
     updateTile(from, None).updateTile(to, piece)
   }
+
+  def commit(changes: Seq[CanChangeBoard]): Board = {
+    changes.foldLeft(this) {
+      case (b, PieceRemoval(p)) => b.updateTile(p, None)
+      case (b, PieceLocation(p, piece)) => b.updateTile(p, Some(piece))
+    }
+  }
+
+  def commit(c: CanChangeBoard): Board = commit(Seq(c))
 
   def updateTile(p: Vec, piece: Option[Piece]): Board = {
     this.copy(tiles = tiles.map { t =>

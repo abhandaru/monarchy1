@@ -2,9 +2,12 @@ package monarchy.game
 
 object Vec {
   implicit val Ord: Ordering[Vec] = Ordering.by { v => (v.i, v.j) }
+  val Zero = Vec(0, 0)
 }
 
 case class Vec(i: Int, j: Int) {
+  def unary_- = Vec(-i, -j)
+
   def +(v: Vec): Vec = Vec(i + v.i, j + v.j)
   def -(v: Vec): Vec = Vec(i - v.i, j - v.j)
   def *(s: Int): Vec = Vec(i * s, j * s)
@@ -31,5 +34,9 @@ case class Vec(i: Int, j: Int) {
    */
   def curl(v: Vec): Int = i * v.j - j * v.i
 
-  def perpendicular: Vec = Vec(-j, -i)
+  /**
+   * The 2-space rotation boils down to something very simple.
+   * See: https://en.wikipedia.org/wiki/Rotation_matrix
+   */
+  def perpendicular: Vec = Vec(-j, i)
 }

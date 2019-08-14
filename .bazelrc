@@ -1,1 +1,4 @@
+build --strategy=Scalac=worker
+build --worker_sandboxing
+
 test --test_output=all

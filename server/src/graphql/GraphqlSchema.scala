@@ -35,9 +35,6 @@ object GraphqlSchema {
       ),
       Field("username", StringType,
         resolve = _.value.username
-      ),
-      Field("phoneNumber", StringType,
-        resolve = _.value.phoneNumber
       )
     )
   )

@@ -23,5 +23,12 @@ case class Piece(
   blockingAjustment: Double = 0.0,
   paralyzed: Boolean = false
 ) {
-  def canAct = !paralyzed && currentWait == 0
+  def canAct: Boolean =
+    !paralyzed && currentWait == 0
+
+  def canBlock: Boolean =
+    !paralyzed
+
+  def currentBlocking: Double =
+    conf.blocking + blockingAjustment
 }

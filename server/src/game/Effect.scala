@@ -8,8 +8,9 @@ package monarchy.game
 sealed trait Effect
 
 case class Attack(point: Vec, power: Int) extends Effect
-case class HealAll(power: Int) extends Effect
 case class GrowPlant(point: Vec) extends Effect
+case class HealAll(power: Int) extends Effect
+case class Paralyze(point: Vec) extends Effect
 
 /**
  * NOTE: An [[Ordering]] is provided for deterministic order of execution when
@@ -26,6 +27,7 @@ object Effect {
     case Attack(p, pwr) => (0, p.i, p.j, pwr)
     case HealAll(_) =>     (1, 0, 0, 0)
     case GrowPlant(p) =>   (2, p.i, p.j, 0)
+    case Paralyze(p) =>    (3, p.i, p.j, 0)
   }
 }
 
