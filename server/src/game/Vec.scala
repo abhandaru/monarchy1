@@ -3,6 +3,8 @@ package monarchy.game
 object Vec {
   implicit val Ord: Ordering[Vec] = Ordering.by { v => (v.i, v.j) }
   val Zero = Vec(0, 0)
+  val I = Vec(1, 0)
+  val J = Vec(0, 1)
 }
 
 case class Vec(i: Int, j: Int) {
@@ -11,6 +13,7 @@ case class Vec(i: Int, j: Int) {
   def +(v: Vec): Vec = Vec(i + v.i, j + v.j)
   def -(v: Vec): Vec = Vec(i - v.i, j - v.j)
   def *(s: Int): Vec = Vec(i * s, j * s)
+  def /(s: Int): Vec = Vec(i / s, j / s)
 
   def dot(v: Vec): Int = i * v.i + j * v.j
   def norm: Double = math.sqrt(i * i + j * j)
@@ -19,7 +22,7 @@ case class Vec(i: Int, j: Int) {
   def angle(v: Vec): Double = math.acos(dot(v) / (norm * v.norm))
 
   /**
-   * The curl is the 3rd component of the cross-product.
+   * The cross product in 2-space boils down to the following.
    *
    *  i   j  k
    *  i1 j1 k1
@@ -32,7 +35,7 @@ case class Vec(i: Int, j: Int) {
    *  0 + 0 + k * (i1*j2 - j1*i2)
    *  i1*j2 - j1*i2
    */
-  def curl(v: Vec): Int = i * v.j - j * v.i
+  def cross(v: Vec): Int = i * v.j - j * v.i
 
   /**
    * The 2-space rotation boils down to something very simple.

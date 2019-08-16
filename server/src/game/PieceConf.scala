@@ -121,7 +121,7 @@ case object Furgon extends PieceConf {
   import Deltas._
   val name = "Grove Sentinel"
   val maxHealth = 48
-  val maxWait = 2
+  val maxWait = 1
   val power = 0
   val armor = 0.0
   val blocking = 0.5
