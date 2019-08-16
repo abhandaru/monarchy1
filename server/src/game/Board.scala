@@ -28,6 +28,9 @@ case class Board(tiles: Seq[Tile]) {
   def piece(p: Vec): Option[PieceLocation] =
     tile(p).collect(Board.PieceFilter)
 
+  def occupied(p: Vec): Boolean =
+    tile(p).exists(_.piece.nonEmpty)
+
   def move(from: Vec, to: Vec): Board = {
     val piece = tile(from).flatMap(_.piece)
     updateTile(from, None).updateTile(to, piece)

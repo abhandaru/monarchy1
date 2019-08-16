@@ -10,8 +10,8 @@ class GameSpec extends WordSpec with Matchers {
   val game = GameBuilder(
     seed = 77,
     players = Seq(
-      Player(PlayerId(2L), Seq((Vec(6, 4), Knight))),
-      Player(PlayerId(1L), Seq((Vec(7, 7), Assassin)))
+      Player(PlayerId(2L), Seq((Vec(6, 4), Knight), (Vec(5, 6), Scout))),
+      Player(PlayerId(1L), Seq((Vec(7, 7), Assassin), (Vec(8, 6), Pyromancer)))
     )
   )
 
@@ -29,11 +29,16 @@ class GameSpec extends WordSpec with Matchers {
     }
 
     "have correct selections for player ID=1" in {
-      assert(game.selections == Set(Vec(7, 7)))
+      assert(game.selections == Set(Vec(7, 7), Vec(8, 6)))
     }
 
     "have no movements without a selection" in {
       assert(game.movements == Deltas.empty)
+    }
+
+    "have applied initial wait to pyro" in {
+      val Some(PieceLocation(p, piece)) = game.board.piece(Vec(8, 6))
+      assert(piece.currentWait == 1)
     }
 
     "reject selection from player ID=2" in {
@@ -75,10 +80,10 @@ class GameSpec extends WordSpec with Matchers {
         |###########
         |#######░###
         |######░░░##
-        |#####░░░░░#
+        |#####░█░░░#
         |####█░░░░░░
         |###░░░░█░░░
-        |####░░░░░░░
+        |####░░█░░░░
         |█####░░░░░█
         |██####░░░██
         """
@@ -141,6 +146,26 @@ class GameSpec extends WordSpec with Matchers {
       val piece = PieceBuilder(Assassin, PlayerId(1), Vec(1, 0))
       assert(nextGame.board.tile(Vec(7, 7)).get.piece.isEmpty)
       assert(nextGame.board.tile(Vec(6, 5)).get.piece == Some(piece))
+    }
+
+    "have all pieces be in the correct position" in {
+      val Accept(nextGame) = moveChange
+      assert(PlanarTooling.compare(
+        nextGame.board.pieces,
+        """
+        |██#######██
+        |█#########█
+        |###########
+        |###########
+        |###########
+        |######░####
+        |####░░#####
+        |###########
+        |######░####
+        |█#########█
+        |██#######██
+        """
+      ))
     }
 
     "have correct attack options for moved piece" in {
@@ -248,6 +273,86 @@ class GameSpec extends WordSpec with Matchers {
       val Accept(nextGame) = attackChange
       val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(6, 4))
       assert(piece.currentDirection == Vec(-1, 0)) // Facing up the board
+    }
+
+    "reject direction selection from player ID=2" in {
+      val change = for {
+        g1 <- attackChange
+        g2 <- g1.directionSelect(PlayerId(2L), -Vec.J)
+      } yield g2
+      assert(change == Reject.ChangeOutOfTurn)
+    }
+
+    "reject direction selection from player ID=1 with bad coordinates" in {
+      val change = for {
+        g1 <- attackChange
+        g2 <- g1.directionSelect(PlayerId(1L), Vec(1, 1))
+      } yield g2
+      assert(change == Reject.IllegalDirSelection)
+    }
+
+    //
+    // Tests below will inspect state for a valid direction change by player 1.
+    //
+    val directionChange = for {
+      g1 <- attackChange
+      g2 <- g1.directionSelect(PlayerId(1L), -Vec.J)
+    } yield g2
+
+
+    "accept direction selection from player ID=1 with dir" in {
+      assert(directionChange.accepted)
+    }
+
+    "have applied direction to selected piece correctly" in {
+      val Accept(nextGame) = directionChange
+      val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(6, 5))
+      assert(piece.currentDirection == -Vec.J)
+    }
+
+    "have no available direction choices after changing dir" in {
+      val Accept(nextGame) = directionChange
+      assert(nextGame.directions.isEmpty)
+    }
+
+    "reject commit turn from player ID=2 off turn" in {
+      val change = for {
+        g1 <- directionChange
+        g2 <- g1.commitTurn(PlayerId(2L))
+      } yield g2
+      assert(change == Reject.ChangeOutOfTurn)
+    }
+
+    //
+    // Tests below will inspect state for a valid end-turn action.
+    //
+    val commitTurnChange = for {
+      g1 <- directionChange
+      g2 <- g1.commitTurn(PlayerId(1L))
+    } yield g2
+
+    "have applied wait decrement on pyro" in {
+      val Accept(nextGame) = commitTurnChange
+      val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(8, 6))
+      assert(piece.currentWait == 0)
+    }
+
+    "have applied blocking-adjustment decay" in {
+      val Accept(nextGame) = commitTurnChange
+      val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(6, 4))
+      assert(piece.blockingAjustment === 0.72)
+    }
+
+    "have applied wait on assassin after attacking" in {
+      val Accept(nextGame) = commitTurnChange
+      val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(6, 5))
+      assert(piece.currentWait == 1)
+    }
+
+    "correctly insert a fresh [[Turn]]" in {
+      val Accept(nextGame) = commitTurnChange
+      assert(nextGame.turns.size == 2)
+      assert(nextGame.currentTurn.actions.isEmpty)
     }
   }
 

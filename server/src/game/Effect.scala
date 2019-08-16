@@ -6,11 +6,14 @@ package monarchy.game
  * game engine.
  */
 sealed trait Effect
+sealed trait LocalEffect extends Effect {
+  def point: Vec
+}
 
-case class Attack(point: Vec, power: Int) extends Effect
-case class GrowPlant(point: Vec) extends Effect
+case class Attack(point: Vec, power: Int) extends LocalEffect
+case class GrowPlant(point: Vec) extends LocalEffect
 case class HealAll(power: Int) extends Effect
-case class Paralyze(point: Vec) extends Effect
+case class Paralyze(point: Vec) extends LocalEffect
 
 /**
  * NOTE: An [[Ordering]] is provided for deterministic order of execution when

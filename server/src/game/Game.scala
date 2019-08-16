@@ -71,7 +71,7 @@ case class Game(
     } yield {
       val pattern = PointPattern.infer(tile.point, attack)
       val rawEffects = piece.conf.effectArea(tile.point, pattern)
-      rawEffects.flatMap(EffectLocation(board, piece, _))
+      rawEffects.flatMap(EffectLocation(board, PieceLocation(tile.point, piece), _))
     }
     effectSet.getOrElse { Set.empty }
   }
@@ -135,7 +135,9 @@ case class Game(
             case Some(piece) =>
               val pattern = PointPattern.infer(tile.point, attack)
               val effects = piece.conf.effectArea(tile.point, pattern)
-              val effectLocations = effects.flatMap(EffectLocation(board, piece, _)).toSeq.sorted
+              val effectLocations = effects.flatMap(
+                EffectLocation(game.board, PieceLocation(tile.point, piece), _)
+              ).toSeq.sorted
               val effectUpdates = effectLocations.flatMap {
                 // Damage another unit. Compute blocking, directionality, and damage.
                 case EffectLocation(pt, Attack(_, power)) =>
@@ -184,10 +186,10 @@ case class Game(
                   }
                 // Adds a shrub unit for unoccupied tiles.
                 case EffectLocation(pt, GrowPlant(_)) =>
-                  if (Game.canOccupy(game.board, pt))
-                    Some(PieceLocation(pt, PieceBuilder(Shrub, pid, piece.currentDirection)))
-                  else
+                  if (game.board.occupied(pt))
                     None
+                  else
+                    Some(PieceLocation(pt, PieceBuilder(Shrub, pid, piece.currentDirection)))
                 // Heals all units for the same player
                 case EffectLocation(pt, HealAll(power)) =>
                   game.board.piece(pt).map {
@@ -221,9 +223,10 @@ case class Game(
     playerGuard(pid).map { _ =>
       val updatesForAll = board.pieces.map {
         case pl @ PieceLocation(pt, piece) =>
+          val waitDecrement = if (pid == piece.playerId) 1 else 0
           pl.copy(
             piece = piece.copy(
-              currentWait = piece.currentWait - 1,
+              currentWait = piece.currentWait - waitDecrement,
               blockingAjustment = piece.blockingAjustment * Game.BlockingAdjustmentDecay
             )
           )
@@ -233,8 +236,8 @@ case class Game(
         piece <- tile.piece
       } yield {
         val totalWait = currentTurn.actions.collect {
-          case MoveSelect(_) => math.floor(piece.conf.maxWait / 2).toInt
-          case AttackSelect(_) => math.ceil(piece.conf.maxWait / 2).toInt
+          case MoveSelect(_) => math.floor(piece.conf.maxWait / 2.0).toInt
+          case AttackSelect(_) => math.ceil(piece.conf.maxWait / 2.0).toInt
         }.sum
         PieceLocation(tile.point, piece.copy(currentWait = totalWait))
       }
@@ -266,11 +269,7 @@ object Game {
       } yield pNext
     }
     GraphOperations.reachableFrom(p0, neighbors)
-      .filter(canOccupy(b, _))
-  }
-
-  def canOccupy(b: Board, p: Vec): Boolean = {
-    b.tile(p).exists(_.piece.isEmpty)
+      .filterNot(b.occupied)
   }
 
   def canPassThrough(b: Board, piece: Piece, p: Vec): Boolean = {
