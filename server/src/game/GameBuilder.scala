@@ -22,16 +22,16 @@ object GameBuilder {
    */
   val Directions = Array(Vec(1, 0), Vec(-1, 0))
 
-
   def apply(seed: Int, players: Seq[Player]): Game = {
     val rand = new Random(seed)
     val playersOrdered = rand.shuffle(players.sorted)
-    val initialPieces = for {
+    val piecesAdditions = for {
       (player, i) <- playersOrdered.zipWithIndex
       playerDir = Directions(i)
       (p, pieceConf) <- player.formation
     } yield {
-      val pl = PieceLocation(p, PieceBuilder(pieceConf, player.id, playerDir))
+      val pieceId = PieceId(p.hashCode)
+      val pl = PieceAdd(p, PieceBuilder(pieceId, pieceConf, player.id, playerDir))
       pl.copy(
         piece = pl.piece.copy(
           currentWait = initialWait(pl.piece.conf, i)
@@ -41,7 +41,7 @@ object GameBuilder {
     Game(
       rand = rand,
       players = playersOrdered,
-      board = Board.Standard.commit(initialPieces),
+      board = Board.Standard.commitAggregation(piecesAdditions),
       turns = Seq(Turn())
     )
   }

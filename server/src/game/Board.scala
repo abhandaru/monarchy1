@@ -5,22 +5,18 @@ case class Tile(
   piece: Option[Piece] = None
 )
 
-sealed trait CanChangeBoard {
-  def point: Vec
-}
-
-case class PieceRemoval(point: Vec) extends CanChangeBoard
 case class PieceLocation(
   point: Vec,
   piece: Piece
-) extends CanChangeBoard
+)
 
-case class Board(tiles: Seq[Tile]) {
-  def tile(p: Vec): Option[Tile] =
-    tiles.find(_.point == p)
+case class Board(private val tileIndex: Map[Vec, Tile]) {
+  def tiles: Seq[Tile] = tileIndex.values.toSeq
+
+  def tile(p: Vec): Option[Tile] = tileIndex.get(p)
 
   def pieces: Seq[PieceLocation] =
-    tiles.collect(Board.PieceFilter)
+    tiles.collect(Board.PieceFilter).toSeq
 
   def pieces(pid: PlayerId): Seq[PieceLocation] =
     pieces.filter(_.piece.playerId == pid)
@@ -32,27 +28,38 @@ case class Board(tiles: Seq[Tile]) {
     tile(p).exists(_.piece.nonEmpty)
 
   def move(from: Vec, to: Vec): Board = {
-    val piece = tile(from).flatMap(_.piece)
-    updateTile(from, None).updateTile(to, piece)
+    val updated = for {
+      tFrom <- tile(from)
+      tTo <- tile(to)
+    } yield updateTile(tFrom.copy(piece = None)).updateTile(tTo.copy(piece = tFrom.piece))
+    updated.getOrElse(this)
   }
 
-  def commit(changes: Seq[CanChangeBoard]): Board = {
-    changes.foldLeft(this) {
-      case (b, PieceRemoval(p)) => b.updateTile(p, None)
-      case (b, PieceLocation(p, piece)) => b.updateTile(p, Some(piece))
+  def commit(c: TileChange): Board = commitAggregation(Seq(c))
+
+  def commitAggregation(changes: Seq[TileChange]): Board = {
+    changes.foldLeft(this) { case (b, change) =>
+      b.tile(change.point) match {
+        case None => b
+        case Some(tileN) => b.updateTile(change(tileN))
+      }
     }
   }
 
-  def commit(c: CanChangeBoard): Board = commit(Seq(c))
-
-  def updateTile(p: Vec, piece: Option[Piece]): Board = {
-    this.copy(tiles = tiles.map { t =>
-      if (t.point == p) t.copy(piece = piece) else t
-    })
+  def updateTile(t: Tile): Board = {
+    tileIndex.isDefinedAt(t.point) match {
+      case false => this // nothing to update
+      case true => this.copy(tileIndex = tileIndex + (t.point -> t))
+    }
   }
 }
 
 object Board {
+  def apply(tiles: Seq[Tile]): Board = {
+    val tileIndex = tiles.map { t => t.point -> t }.toMap
+    Board(tileIndex)
+  }
+
   val Standard: Board = {
     val size = 11
     val taperSize = 2
@@ -74,4 +81,20 @@ object Board {
     case t if t.piece.nonEmpty =>
       PieceLocation(t.point, t.piece.get)
   }
+}
+
+trait TileChange extends (Tile => Tile) {
+  def point: Vec
+}
+
+case class PieceAdd(point: Vec, piece: Piece) extends TileChange {
+  override def apply(t: Tile) = t.copy(piece = Some(piece))
+}
+
+case class PieceRemoval(point: Vec) extends TileChange {
+  override def apply(t: Tile) = t.copy(piece = None)
+}
+
+case class PieceUpdate(point: Vec, fn: Piece => Piece) extends TileChange {
+  override def apply(t: Tile) = t.copy(piece = t.piece.map(fn))
 }

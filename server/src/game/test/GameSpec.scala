@@ -10,8 +10,8 @@ class GameSpec extends WordSpec with Matchers {
   val game = GameBuilder(
     seed = 77,
     players = Seq(
-      Player(PlayerId(2L), Seq((Vec(6, 4), Knight), (Vec(5, 6), Scout))),
-      Player(PlayerId(1L), Seq((Vec(7, 7), Assassin), (Vec(8, 6), Pyromancer)))
+      Player(PlayerId(2L), Seq((Vec(6, 4), Knight), (Vec(5, 6), FrostGolem))),
+      Player(PlayerId(1L), Seq((Vec(7, 7), Assassin), (Vec(8, 6), Scout)))
     )
   )
 
@@ -36,9 +36,14 @@ class GameSpec extends WordSpec with Matchers {
       assert(game.movements == Deltas.empty)
     }
 
-    "have applied initial wait to pyro" in {
+    "have applied initial wait to scount" in {
       val Some(PieceLocation(p, piece)) = game.board.piece(Vec(8, 6))
       assert(piece.currentWait == 1)
+    }
+
+    "have applied no initial wait to frost golem" in {
+      val Some(PieceLocation(p, piece)) = game.board.piece(Vec(5, 6))
+      assert(piece.currentWait == 0)
     }
 
     "reject selection from player ID=2" in {
@@ -61,8 +66,7 @@ class GameSpec extends WordSpec with Matchers {
 
     "have correct current piece for (7, 7)" in {
       val Accept(nextGame) = selectionChange
-      val piece = PieceBuilder(Assassin, PlayerId(1), Vec(1, 0))
-      assert(nextGame.currentPiece == Some(piece))
+      assert(nextGame.currentPiece.get.conf == Assassin)
     }
 
     "allow for movement after tile selection" in {
@@ -143,9 +147,8 @@ class GameSpec extends WordSpec with Matchers {
 
     "correctly apply piece movement after move" in {
       val Accept(nextGame) = moveChange
-      val piece = PieceBuilder(Assassin, PlayerId(1), Vec(1, 0))
       assert(nextGame.board.tile(Vec(7, 7)).get.piece.isEmpty)
-      assert(nextGame.board.tile(Vec(6, 5)).get.piece == Some(piece))
+      assert(nextGame.board.tile(Vec(6, 5)).get.piece.get.conf == Assassin)
     }
 
     "have all pieces be in the correct position" in {
@@ -331,7 +334,7 @@ class GameSpec extends WordSpec with Matchers {
       g2 <- g1.commitTurn(PlayerId(1L))
     } yield g2
 
-    "have applied wait decrement on pyro" in {
+    "have applied wait decrement on frost golem" in {
       val Accept(nextGame) = commitTurnChange
       val Some(PieceLocation(p, piece)) = nextGame.board.piece(Vec(8, 6))
       assert(piece.currentWait == 0)

@@ -50,7 +50,8 @@ object PlanarToolingSupport {
     override def apply(t: T) = ext(t)
   }
 
-  implicit def canChangeBoard[T <: CanChangeBoard]: PlanarToolingSupport[T] = new Support(_.point)
+  // implicit def tileChange[T <: TileChange]: PlanarToolingSupport[T] = new Support(_.point)
+  implicit object PieceLocation extends Support[PieceLocation](_.point)
   implicit object EffectLocation extends Support[EffectLocation](_.point)
   implicit object Effect extends Support[Effect]({
     case HealAll(_) => Deltas.Origin
