@@ -10,10 +10,12 @@ sealed trait LocalEffect extends Effect {
   def point: Vec
 }
 
-case class Attack(point: Vec, power: Int) extends LocalEffect
+sealed trait FocusBreaking
+
+case class Attack(point: Vec, power: Int) extends LocalEffect with FocusBreaking
 case class GrowPlant(point: Vec) extends LocalEffect
 case class HealAll(power: Int) extends Effect
-case class Paralyze(point: Vec) extends LocalEffect
+case class Paralyze(point: Vec) extends LocalEffect with FocusBreaking
 
 /**
  * NOTE: An [[Ordering]] is provided for deterministic order of execution when

@@ -14,7 +14,9 @@ object EffectLocation {
           case PieceLocation(p, _) => EffectLocation(p, e)
         }
     }
-    piece.conf.attackAlongLos match {
+    // Adjust for line-of-sight attacks.
+    val losAdjust = piece.conf.attackAlongLos
+    losAdjust match {
       case false => els
       case true => els.map { el =>
         val pointsInTheWay = EffectGeometry.pointsAlongSegment(p0, el.point)
@@ -24,5 +26,3 @@ object EffectLocation {
     }
   }
 }
-
-// trait EffectHandler extends PartialFunction[EffectLocation, CanChangeBoard]

@@ -14,6 +14,7 @@ trait PieceConf {
 
   def attackPatterns: AttackPatterns
   def attackAlongLos: Boolean = false
+  def attackRequiresFocus: Boolean = false
   def effectArea: EffectArea
   def blockable: Boolean = true
 }
@@ -174,6 +175,7 @@ case object FrostGolem extends PieceConf {
     }
   }
   override val blockable = false
+  override val attackRequiresFocus = true
 }
 
 case object Shrub extends PieceConf {
