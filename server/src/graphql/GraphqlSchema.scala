@@ -20,7 +20,7 @@ object GraphqlSchema {
         resolve = { node =>
           import dal.PostgresProfile.Implicits._
           val id = node.arg(Args.Id).toLong
-          val query = dal.UserQuery.filter(_.id === id)
+          val query = dal.User.query.filter(_.id === id)
           node.ctx.queryCli.first(query)
         }
       )

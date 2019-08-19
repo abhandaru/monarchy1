@@ -9,6 +9,7 @@ scala_library(
     '//3rdparty/jvm/com/typesafe/akka:akka_http',
     '//3rdparty/jvm/com/typesafe/akka:akka_http_core',
     '//3rdparty/jvm/com/typesafe/akka:akka_stream',
+    '//3rdparty/jvm/io/jsonwebtoken:jjwt',
     '//3rdparty/jvm/org/sangria_graphql:sangria',
     '//3rdparty/jvm/org/sangria_graphql:sangria_marshalling_api',
     '//server/src/dal',

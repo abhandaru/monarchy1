@@ -11,12 +11,12 @@ case class User(
   updatedAt: Instant = Instant.now
 )
 
-object UserSchema {
-  import PostgresProfile.Implicits._
-  class Def(tag: Tag) extends TableDef[User](tag, "users") {
-    def username = column[String]("username")
-    def phoneNumber = column[String]("phone_number")
-    def secret = column[String]("secret")
-    def * = (id, username, phoneNumber, secret, createdAt, updatedAt) <> ((User.apply _).tupled, User.unapply)
-  }
+import PostgresProfile.Implicits._
+object User extends TableSchema(TableQuery[UserTable])
+
+class UserTable(tag: Tag) extends TableDef[User](tag, "users") {
+  def username = column[String]("username")
+  def phoneNumber = column[String]("phone_number")
+  def secret = column[String]("secret")
+  def * = (id, username, phoneNumber, secret, createdAt, updatedAt) <> ((User.apply _).tupled, User.unapply)
 }

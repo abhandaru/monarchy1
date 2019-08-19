@@ -51,12 +51,10 @@ dependencies:
     jackson-databind:
       lang: java
       version: 2.9.9
-
   com.fasterxml.jackson.datatype:
     jackson-datatype-jsr310:
       lang: java
       version: 2.9.9
-
   com.fasterxml.jackson.module:
     jackson-module-scala:
       lang: scala
@@ -77,5 +75,8 @@ dependencies:
       lang: scala
       version: 1.0.3
 
-
-
+  # authentication
+  io.jsonwebtoken:
+    jjwt:
+      lang: java
+      version: 0.9.1
