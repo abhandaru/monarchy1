@@ -11,3 +11,5 @@ abstract class TableDef[E](
   def createdAt = column[Instant]("created_at", O.AutoInc)
   def updatedAt = column[Instant]("updated_at", O.AutoInc)
 }
+
+class TableSchema[TT <: Table[_]](val query: TableQuery[TT])

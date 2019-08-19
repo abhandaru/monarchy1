@@ -8,7 +8,7 @@ import monarchy.dal
 class RootController(implicit ec: ExecutionContext, queryCli: dal.QueryClient) extends Controller {
   import dal.PostgresProfile.Implicits._
   override def action(ctx: RequestContext) = {
-    val q = dal.UserQuery.filter(_.id === 1L)
+    val q = dal.User.query.filter(_.id === 1L)
     queryCli.first(q).map { userMaybe =>
       val userText = userMaybe.map(u => s"User(id=${u.id}, username=${u.username})")
       HttpResponse(StatusCodes.OK, entity = userText.toString)
