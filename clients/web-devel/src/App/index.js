@@ -1,4 +1,4 @@
-import Dashboard from '../Dashboard';
+import Landing from '../Landing';
 import importedComponent from 'react-imported-component';
 import Loading from '../components/Loading';
 import React from 'react';
@@ -19,7 +19,7 @@ const App = () => {
     <Router>
       <div>
         <Switch>
-          <Route exact path="/" component={Dashboard} />
+          <Route exact path="/" component={Landing} />
           <Route exact path="/matchmaking" component={AysncMatchmaking} />
           <Route component={AsyncNotFound} />
         </Switch>

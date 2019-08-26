@@ -8,6 +8,7 @@ scala_binary(
     '//3rdparty/jvm/com/typesafe/akka:akka_http',
     '//3rdparty/jvm/com/typesafe/akka:akka_http_core',
     '//3rdparty/jvm/com/typesafe/akka:akka_stream',
+    '//server/src/auth',
     '//server/src/controllers',
     '//server/src/dal',
     '//server/src/graphql',

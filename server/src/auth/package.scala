@@ -1,5 +1,5 @@
 package monarchy
 
-package object controllers {
+package object auth {
   type AuthFilter = Auth => Boolean
 }
