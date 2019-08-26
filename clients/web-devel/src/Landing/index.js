@@ -1,19 +1,15 @@
 import Auth from '../lib/auth';
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Dashboard from '../Dashboard';
+import LoginView from './LoginView';
 
 export default class Landing extends React.Component {
   state = {
     auth: Auth.poll()
   };
 
-  renderLogin() {
-    return <div>Login form</div>;
-  }
-
   render() {
     const { auth } = this.state;
-    return auth.loggedIn ? <Dashboard /> : this.renderLogin();
+    return auth.loggedIn ? <Dashboard /> : <LoginView />;
   }
 }
