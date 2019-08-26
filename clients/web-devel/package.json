@@ -11,13 +11,13 @@
     "build:bundleanalyzer": "yarn build -- --env.addons=bundleanalyzer"
   },
   "dependencies": {
+    "js-cookie": "^2.2.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-delay-render": "^0.1.2",
     "react-dom": "^16.8.6",
     "react-imported-component": "^5.5.3",
-    "react-router-dom": "^5.0.1",
-    "semantic-ui-react": "^0.87.3"
+    "react-router-dom": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
@@ -46,13 +46,18 @@
   },
   "babel": {
     "presets": [
-      ["@babel/preset-env", { "modules": false }],
+      [
+        "@babel/preset-env",
+        {
+          "modules": false
+        }
+      ],
       "@babel/preset-react"
     ],
     "plugins": [
-    "react-hot-loader/babel",
-    "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-proposal-class-properties"
+      "react-hot-loader/babel",
+      "@babel/plugin-syntax-dynamic-import",
+      "@babel/plugin-proposal-class-properties"
     ]
   }
 }

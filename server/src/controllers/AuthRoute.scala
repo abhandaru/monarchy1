@@ -4,15 +4,10 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.HttpCookiePair
 import akka.http.scaladsl.server._
 import io.jsonwebtoken.{Jwts, MalformedJwtException, SignatureException}
+import monarchy.auth._
 import monarchy.dal.{QueryClient, PostgresProfile, User}
 import scala.concurrent.{Future, ExecutionContext}
 import scala.util.{Try, Success, Failure}
-
-sealed trait Auth
-
-/** This "user" has no access. */
-case object NullAuth extends Auth
-case class Authenticated(user: User) extends Auth
 
 case class AuthRoute(filter: AuthFilter, route: Route)(implicit
   ec: ExecutionContext,

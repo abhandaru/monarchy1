@@ -56,7 +56,7 @@ class GraphqlController(implicit
 
   def executeGraphQL(query: Document, opName: Option[String], vars: Map[String, Any]) = {
     Executor.execute(
-      schema = GraphqlSchema.Def,
+      schema = GraphqlSchema,
       queryAst = query,
       userContext = gqlContext,
       variables = InputUnmarshaller.mapVars(vars),
