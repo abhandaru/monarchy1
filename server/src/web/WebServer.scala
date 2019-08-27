@@ -20,7 +20,7 @@ object WebServer extends App {
   val route = logRequestResult("monarchy-web") {
     pathSingleSlash(new RootController) ~
     path("admin")(AuthRoute(AuthRoute.Pass, new AdminController)) ~
-    path("graphql")(AuthRoute(AuthRoute.Pass, new GraphqlController))
+    path("graphql")(CorsModule.corsHandler(AuthRoute(AuthRoute.Pass, new GraphqlController)))
   }
   val routeLogged = DebuggingDirectives.logRequestResult("LOG:", Logging.InfoLevel)(route)
   val routeBindings = Http().bindAndHandle(routeLogged, HerokuModule.Host, port)
