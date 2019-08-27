@@ -43,7 +43,12 @@ const config = {
       template: `public/index.html`,
       favicon: `public/favicon.ico`
     })
-  ]
+  ],
+  resolve: {
+    alias: {
+      '~': commonPaths.appEntry
+    }
+  }
 };
 
 module.exports = config;

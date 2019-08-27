@@ -1,15 +1,16 @@
-import Auth from '../lib/auth';
-import React from 'react';
-import Dashboard from '../Dashboard';
+import * as React from 'react';
+import Auth from '~/api/auth';
+import Dashboard from '~/Dashboard';
 import LoginView from './LoginView';
 
-export default class Landing extends React.Component {
-  state = {
-    auth: Auth.poll()
-  };
+const Landing = (props) => {
+  // State
+  const [auth, setAuth] = React.useState(Auth.poll());
 
-  render() {
-    const { auth } = this.state;
-    return auth.loggedIn ? <Dashboard /> : <LoginView />;
-  }
+  // Effects
+  React.useEffect(() => Auth.apply(auth));
+
+  return auth.loggedIn ? <Dashboard auth={auth} /> : <LoginView onLogin={setAuth} />;
 }
+
+export default Landing;
