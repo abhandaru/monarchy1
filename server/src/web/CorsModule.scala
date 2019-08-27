@@ -31,8 +31,8 @@ object CorsModule {
 
   // Handles preflight OPTIONS requests.
   private def preflightRequestHandler: Route = options {
-    complete(HttpResponse(StatusCodes.OK).
-             withHeaders(`Access-Control-Allow-Methods`(OPTIONS, POST, PUT, GET, DELETE)))
+    complete(HttpResponse(StatusCodes.OK)
+      .withHeaders(`Access-Control-Allow-Methods`(OPTIONS, POST, PUT, GET, DELETE)))
   }
 
   // Wrap the Route with this method to enable adding of CORS headers
