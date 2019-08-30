@@ -57,7 +57,6 @@ object AuthRoute {
   val UserBearerKey = "X-Monarchy-Bearer-Token"
   val UserIdKey = "X-Monarchy-User-Id"
   val Reject = HttpResponse(StatusCodes.Unauthorized)
-  val Pass: Auth => Boolean = _ => true
 
   def headers(hs: Seq[HttpHeader]): Option[(Long, String)] =
     extract(hs.map { h => h.name -> h.value }.toMap)

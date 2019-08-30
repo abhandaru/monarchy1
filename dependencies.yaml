@@ -80,3 +80,13 @@ dependencies:
     jjwt:
       lang: java
       version: 0.9.1
+
+  # redis
+  com.github.etaty:
+    rediscala:
+      lang: scala
+      version: 1.8.0
+  org.reactivestreams:
+    reactive-streams:
+      lang: java
+      version: 1.0.3
