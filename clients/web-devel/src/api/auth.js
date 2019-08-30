@@ -8,9 +8,6 @@ const poll = () => {
   const userId = Cookies.get(UserKey);
   const bearerTokey = Cookies.get(BearerKey);
   const user = JSON.parse(Cookies.get(UserDataKey) || null);
-
-  console.log('poll', userId, bearerTokey, user, Boolean(userId));
-
   return {
     loggedIn: Boolean(userId),
     userId,

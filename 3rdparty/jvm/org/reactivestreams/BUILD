@@ -5,7 +5,7 @@ java_library(
         "//external:jar/org/reactivestreams/reactive_streams"
     ],
     visibility = [
-        "//3rdparty/jvm:__subpackages__"
+        "//visibility:public"
     ]
 )
 
