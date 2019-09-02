@@ -9,7 +9,7 @@ import monarchy.dal.{QueryClient, PostgresProfile, User}
 import scala.concurrent.{Future, ExecutionContext}
 import scala.util.{Try, Success, Failure}
 
-case class AuthRoute(filter: AuthFilter, route: Route)(implicit
+case class AuthRoute[T](filter: AuthFilter, controller: AuthController)(implicit
   ec: ExecutionContext,
   queryCli: QueryClient
 ) extends Route {
@@ -19,7 +19,7 @@ case class AuthRoute(filter: AuthFilter, route: Route)(implicit
     fetchAuth(ctx).flatMap { auth =>
       filter(auth) match {
         case false => ctx.complete(Future.successful(Reject))
-        case true => route(ctx)
+        case true => controller(AuthContext(auth, ctx))
       }
     }
   }

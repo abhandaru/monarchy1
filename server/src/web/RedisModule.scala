@@ -4,7 +4,6 @@ import akka.actor.{ActorSystem, Props, ActorRef}
 import java.net.{InetSocketAddress, URI}
 import redis.RedisClient
 import scala.concurrent.ExecutionContext
-import monarchy.streaming.RedisActorPublisher
 
 object RedisModule {
   val DefaultRedisUrl = "http://localhost:6379"
@@ -24,13 +23,6 @@ object RedisModule {
       host = redisUri.getHost,
       port = redisUri.getPort,
       password = password
-    )
-  }
-
-  def redisActorPublisher(implicit actorSys: ActorSystem): ActorRef = {
-    actorSys.actorOf(
-      Props(classOf[RedisActorPublisher], RedisModule.RedisSocketAddr)
-        .withDispatcher("rediscala.rediscala-client-worker-dispatcher")
     )
   }
 }

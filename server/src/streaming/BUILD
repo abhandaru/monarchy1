@@ -9,6 +9,7 @@ scala_library(
     '//3rdparty/jvm/com/typesafe/akka:akka_http_core',
     '//3rdparty/jvm/com/github/etaty:rediscala',
     '//3rdparty/jvm/org/reactivestreams:reactive_streams',
+    '//server/src/auth',
     '//server/src/util',
   ]
 )
