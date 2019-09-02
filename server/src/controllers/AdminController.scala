@@ -4,8 +4,8 @@ import scala.concurrent.{Future, ExecutionContext}
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server._
 
-class AdminController(implicit ec: ExecutionContext) extends Controller {
-  override def action(ctx: RequestContext) = {
+class AdminController(implicit ec: ExecutionContext) extends GetController {
+  override def action(ctx: AuthContext) = {
     Future.successful(HttpResponse(
       StatusCodes.OK,
       entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, AdminController.Html)

@@ -9,30 +9,33 @@ import akka.http.scaladsl.server.directives.DebuggingDirectives
 import akka.stream.ActorMaterializer
 import monarchy.auth.AuthFilter
 import monarchy.controllers._
-import monarchy.streaming.StreamingFlow
+import monarchy.streaming.MessageTopologyBuilder
 
 object WebServer extends App {
-  implicit val system = ActorSystem("monarchy-web")
+  import AuthFilter._
+
+  implicit val actorSys = ActorSystem("monarchy-web")
   implicit val materializer = ActorMaterializer()
-  implicit val executionContext = system.dispatcher
+  implicit val executionContext = actorSys.dispatcher
   implicit val queryCli = DatabaseModule.queryClient
   implicit val redisCli = RedisModule.redisClient
   implicit val graphqlContext = GraphqlModule.graphqlContext
 
   // Request handlers
-  implicit val webSocketService = StreamingFlow(RedisModule.redisActorPublisher)
-
-  // TODO (adu): Remove, just for testing!
-  import scala.concurrent.duration._
-  system.scheduler.schedule(2 seconds, 2 seconds)(redisCli.publish("ping", System.currentTimeMillis))
+  val rootController = AuthRoute(All, new RootController)
+  val adminController = AuthRoute(Admin, new AdminController)
+  val graphqlController = CorsModule.corsHandler(AuthRoute(All, new GraphqlController))
+  val connectController = AuthRoute(LoggedIn, { c =>
+    val messageFlow = MessageTopologyBuilder(RedisModule.RedisSocketAddr).build
+    handleWebSocketMessages(messageFlow)(c.request)
+  })
 
   val port = HerokuModule.Port
   val route = logRequestResult("monarchy-web") {
-    import AuthFilter._
-    pathSingleSlash(new RootController) ~
-    path("admin")(AuthRoute(Admin, new AdminController)) ~
-    path("graphql")(CorsModule.corsHandler(AuthRoute(All, new GraphqlController))) ~
-    path("connect")(AuthRoute(LoggedIn, handleWebSocketMessages(webSocketService)))
+    pathSingleSlash(rootController) ~
+      path("admin")(adminController) ~
+      path("graphql")(graphqlController) ~
+      path("connect")(connectController)
   }
   val routeLogged = DebuggingDirectives.logRequestResult("LOG:", Logging.InfoLevel)(route)
   val routeBindings = Http().bindAndHandle(routeLogged, HerokuModule.Host, port)

@@ -39,7 +39,7 @@ class GraphqlController(implicit
   sys: ActorSystem,
   gqlContext: GraphqlContext
 ) extends PostController[String] {
-  override def action(gqlRaw: String) = {
+  override def action(ctx: AuthContext, gqlRaw: String) = {
     val gql = Json.parse[GraphqlBody](gqlRaw)
     val execReq = QueryParser.parse(gql.query) match {
       case Failure(e) => Future.successful(BadRequest -> formatError(e))
