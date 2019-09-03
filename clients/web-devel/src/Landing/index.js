@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Auth from '~/api/auth';
-import Dashboard from '~/Dashboard';
+import DashboardView from '~/views/DashboardView';
 import LoginView from './LoginView';
 
 const Landing = (props) => {
@@ -10,7 +10,7 @@ const Landing = (props) => {
   // Effects
   React.useEffect(() => Auth.apply(auth));
 
-  return auth.loggedIn ? <Dashboard auth={auth} /> : <LoginView onLogin={setAuth} />;
+  return auth.loggedIn ? <DashboardView auth={auth} /> : <LoginView onLogin={setAuth} />;
 }
 
 export default Landing;

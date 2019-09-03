@@ -26,7 +26,7 @@ object WebServer extends App {
   val adminController = AuthRoute(Admin, new AdminController)
   val graphqlController = CorsModule.corsHandler(AuthRoute(All, new GraphqlController))
   val connectController = AuthRoute(LoggedIn, { c =>
-    val messageFlow = MessageTopologyBuilder(RedisModule.RedisSocketAddr).build
+    val messageFlow = MessageTopologyBuilder(RedisModule.RedisSocketAddr, c.auth).build
     handleWebSocketMessages(messageFlow)(c.request)
   })
 

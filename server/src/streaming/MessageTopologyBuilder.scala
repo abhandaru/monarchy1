@@ -7,14 +7,19 @@ import akka.stream.ActorMaterializer
 import akka.stream.OverflowStrategy
 import akka.stream.scaladsl._
 import java.net.InetSocketAddress
-import monarchy.auth._
+import monarchy.auth.Auth
+import redis.RedisClient
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
-case class MessageTopologyBuilder(redisAddr: InetSocketAddress)(implicit
+case class MessageTopologyBuilder(
+  redisAddr: InetSocketAddress,
+  auth: Auth
+)(implicit
   ec: ExecutionContext,
   actorSys: ActorSystem,
-  materializer: ActorMaterializer
+  materializer: ActorMaterializer,
+  redisClient: RedisClient
 ) {
   def build: Flow[Message, Message, _] = {
     val clientRef = actorSys.actorOf(Props(new ClientActor))
@@ -25,7 +30,7 @@ case class MessageTopologyBuilder(redisAddr: InetSocketAddress)(implicit
       Flow[Message]
         .mapConcat(drainNonText)
         .mapAsync(1)(resolveText)
-        .map { case s => Ping }
+        .mapConcat(ActionExtractor(auth, _))
         .to(Sink.actorRef[Action](clientRef, PoisonPill))
     }
 
@@ -37,8 +42,8 @@ case class MessageTopologyBuilder(redisAddr: InetSocketAddress)(implicit
           redisProxyRef ! Connect(outActor)
           NotUsed
         }.collect {
-          case Pong(at) => TextMessage(s"""{"type":"Pong","at":$at}""")
-          case Redis(s) => TextMessage(s"""{"type":"Redis","data":$s}""")
+          case Pong(at) => TextMessage(s"""{"name":"Pong","at":$at}""")
+          case Redis(s) => TextMessage(s"""{"name":"Redis","data":$s}""")
         }
     }
 
