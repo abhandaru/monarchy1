@@ -1,6 +1,6 @@
 load('@io_bazel_rules_scala//scala:scala.bzl', 'scala_library')
 scala_library(
-  name='dal',
+  name='dal-write',
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
