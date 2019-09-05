@@ -6,10 +6,11 @@ import redis.actors.RedisSubscriberActor
 import redis.api.pubsub.{PMessage, Message}
 
 object RedisActor {
-  val Channels = Seq("ping", "matchmaking")
+  import StreamingChannel._
+  val Channels = Seq(Public, Matchmaking)
   val Patterns = Nil
   val ConnectionCallback: Boolean => Unit = {
-    connected => println(s"connected: $connected")
+    ok => println(s"connected: $ok")
   }
 }
 
@@ -19,12 +20,12 @@ case class RedisActor(inet: InetSocketAddress, proxyRef: ActorRef)
 
   // See definitions for message types here:
   // https://github.com/etaty/rediscala/blob/master/src/main/scala/redis/api/pubsub/pubsub.scala
-  def onMessage(m: Message) = {
-    val Message(channel, data) = m
-    proxyRef ! s"redis/${m.channel} >> ${m.data.utf8String}"
+  override def onMessage(m: Message) = {
+    proxyRef ! RedisPub(m.channel, m.data.utf8String)
   }
 
-  def onPMessage(m: PMessage) = {
-    proxyRef ! s"redis/${m.channel} >> ${m.data.utf8String}"
+  override def onPMessage(m: PMessage) = {
+    proxyRef ! RedisPub(m.channel, m.data.utf8String)
   }
 }
+
