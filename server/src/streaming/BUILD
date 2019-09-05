@@ -10,6 +10,7 @@ scala_library(
     '//3rdparty/jvm/com/github/etaty:rediscala',
     '//3rdparty/jvm/org/reactivestreams:reactive_streams',
     '//server/src/auth',
+    '//server/src/dal',
     '//server/src/util',
   ]
 )

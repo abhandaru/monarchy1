@@ -12,16 +12,19 @@ import monarchy.controllers._
 import monarchy.streaming.MessageTopologyBuilder
 
 object WebServer extends App {
-  import AuthFilter._
-
   implicit val actorSys = ActorSystem("monarchy-web")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = actorSys.dispatcher
   implicit val queryCli = DatabaseModule.queryClient
   implicit val redisCli = RedisModule.redisClient
   implicit val graphqlContext = GraphqlModule.graphqlContext
+  implicit val streamAxnRenderer = StreamingModule.streamActionRenderer
+
+  // import concurrent.duration._
+  // actorSys.scheduler.schedule(2 seconds, 2 seconds)(redisCli.publish("monarchy/streaming/public", System.currentTimeMillis))
 
   // Request handlers
+  import AuthFilter._
   val rootController = AuthRoute(All, new RootController)
   val adminController = AuthRoute(Admin, new AdminController)
   val graphqlController = CorsModule.corsHandler(AuthRoute(All, new GraphqlController))

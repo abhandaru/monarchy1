@@ -1,10 +1,12 @@
 package monarchy.streaming
 
-import monarchy.auth.Authenticated
 import akka.actor.{Actor, ActorRef}
+import monarchy.auth.Authenticated
+import monarchy.util.Async
 import redis.RedisClient
+import scala.concurrent.{ExecutionContext, Future}
 
-class ClientActor(implicit redisCli: RedisClient) extends Actor {
+class ClientActor(implicit ec: ExecutionContext, redisCli: RedisClient) extends Actor {
   var next: Option[ActorRef] = None
   def receive = {
     case Connect(ref) => next = Some(ref)
@@ -12,7 +14,10 @@ class ClientActor(implicit redisCli: RedisClient) extends Actor {
     case ChallengeSeek(auth) => challengeSeek(auth)
   }
 
-  def challengeSeek(auth: Authenticated): Unit = {
-    println(s"$auth is looking for a challenge")
+  def challengeSeek(auth: Authenticated): Future[_] = {
+    Async.join(
+      redisCli.set(StreamingKey.Challenge(auth.user.id), "true", exSeconds = Some(300)),
+      redisCli.publish(StreamingChannel.Matchmaking, """{"foo":1}""")
+    )
   }
 }

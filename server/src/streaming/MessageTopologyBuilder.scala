@@ -18,6 +18,7 @@ case class MessageTopologyBuilder(
 )(implicit
   ec: ExecutionContext,
   actorSys: ActorSystem,
+  actionRenderer: StreamActionRenderer,
   materializer: ActorMaterializer,
   redisClient: RedisClient
 ) {
@@ -31,20 +32,18 @@ case class MessageTopologyBuilder(
         .mapConcat(drainNonText)
         .mapAsync(1)(resolveText)
         .mapConcat(ActionExtractor(auth, _))
-        .to(Sink.actorRef[Action](clientRef, PoisonPill))
+        .to(Sink.actorRef[StreamAction](clientRef, PoisonPill))
     }
 
     val outgoingSource: Source[Message, NotUsed] = {
-      Source.actorRef[Action](10, OverflowStrategy.fail)
-        .mapMaterializedValue { outActor =>
-          // give the user actor a way to send messages out
-          clientRef ! Connect(outActor)
-          redisProxyRef ! Connect(outActor)
+      Source.actorRef[StreamAction](10, OverflowStrategy.fail)
+        .mapMaterializedValue { ref =>
+          clientRef ! Connect(ref)
+          redisProxyRef ! Connect(ref)
           NotUsed
-        }.collect {
-          case Pong(at) => TextMessage(s"""{"name":"Pong","at":$at}""")
-          case Redis(s) => TextMessage(s"""{"name":"Redis","data":$s}""")
         }
+        .mapAsync(1)(actionRenderer.apply)
+        .collect(liftAsMessage)
     }
 
     // then combine both to a flow
@@ -61,5 +60,9 @@ case class MessageTopologyBuilder(
 
   def resolveText(tm: TextMessage): Future[String] = {
     tm.toStrict(5.seconds).map(_.text)
+  }
+
+  def liftAsMessage: PartialFunction[Option[String], TextMessage] = {
+    case Some(s) => TextMessage(s)
   }
 }
