@@ -1,14 +1,21 @@
-import { AppContainer } from 'react-hot-loader';
+import './index.css';
+import App from '~/App';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import Reducer from '~/state/reducer';
+import { AppContainer } from 'react-hot-loader';
+import { createStore, compose } from 'redux'
+import { Provider } from 'react-redux'
 
-import './index.css';
+const devTools = window.__REDUX_DEVTOOLS_EXTENSION__;
+const store = compose(devTools ? devTools() : _ => _)(createStore)(Reducer);
 
 const render = Component =>
   ReactDOM.render(
     <AppContainer>
-      <Component />
+      <Provider store={store}>
+        <Component />
+      </Provider>
     </AppContainer>,
     document.getElementById('root')
   );

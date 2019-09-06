@@ -1,7 +1,8 @@
-import Landing from '../Landing';
 import importedComponent from 'react-imported-component';
-import Loading from '../components/Loading';
+import LandingView from '~/views/LandingView';
+import Loading from '~/components/Loading';
 import React from 'react';
+import StreamConnection from './StreamConnection';
 import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 
 const AysncMatchmaking = importedComponent(
@@ -17,13 +18,14 @@ const AsyncNotFound = importedComponent(
 const App = () => {
   return (
     <Router>
-      <div>
+      <>
+        <StreamConnection />
         <Switch>
-          <Route exact path="/" component={Landing} />
+          <Route exact path="/" component={LandingView} />
           <Route exact path="/matchmaking" component={AysncMatchmaking} />
           <Route component={AsyncNotFound} />
         </Switch>
-      </div>
+      </>
     </Router>
   );
 };
