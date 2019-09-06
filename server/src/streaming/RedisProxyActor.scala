@@ -16,9 +16,3 @@ class RedisProxyActor extends Actor {
       }
   }
 }
-
-object StreamingChannel {
-  def base(suffix: String) = s"monarchy/streaming/$suffix"
-  final val Public = base("public")
-  final val Matchmaking = base("matchmaking")
-}
