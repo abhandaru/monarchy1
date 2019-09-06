@@ -7,7 +7,7 @@ const UserDataKey = 'X-Monarchy-User-Data';
 const poll = () => {
   const userId = Cookies.get(UserKey);
   const bearerTokey = Cookies.get(BearerKey);
-  const user = JSON.parse(Cookies.get(UserDataKey) || null);
+  const user = JSON.parse(Cookies.get(UserDataKey) || 'null');
   return {
     loggedIn: Boolean(userId),
     userId,

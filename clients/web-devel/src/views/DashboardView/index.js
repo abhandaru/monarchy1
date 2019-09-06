@@ -1,18 +1,14 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
 import Alert from 'react-bootstrap/Alert';
-import styles from './index.css';
-import webSocket from '~/api/webSocket';
 import MatchmakingView from '~/views/MatchmakingView';
-
-// TODO (adu): Factor this out into a reducer.
-webSocket.onmessage = (m) => console.log(m);
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import styles from './index.css';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux'
 
 const Dashboard = (props) => {
-  const { auth } = props;
-  const onChange = React.useCallback((e) => webSocket.send(e.target.value));
+  const auth = useSelector(_ => _.auth);
   return (
     <>
       <Navbar bg='light' variant='light'>
@@ -25,7 +21,6 @@ const Dashboard = (props) => {
         <Alert variant='primary'>
           Welcome, you are logged in as <b>{auth.user.username}</b>
         </Alert>
-
         <MatchmakingView />
       </div>
     </>
