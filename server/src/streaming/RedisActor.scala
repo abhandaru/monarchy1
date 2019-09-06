@@ -29,3 +29,8 @@ case class RedisActor(inet: InetSocketAddress, proxyRef: ActorRef)
   }
 }
 
+object StreamingChannel {
+  def base(suffix: String) = s"monarchy/streaming/$suffix"
+  final val Public = base("public")
+  final val Matchmaking = base("matchmaking")
+}
