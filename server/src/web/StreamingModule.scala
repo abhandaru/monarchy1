@@ -13,12 +13,14 @@ object StreamingModule {
   ): StreamActionRenderer = {
     // Just cache these.
     val matchmaking = new MatchmakingRenderer
+    val personal = new PersonalRenderer
     val pong = new PongRenderer
     val redisRaw = new RedisRawRenderer
 
     // Give parent renderer a mapping spec.
     StreamActionRenderer({
       case axn: Matchmaking => matchmaking(axn)
+      case axn: Personal => personal(axn)
       case axn: Pong => pong(axn)
       case axn: RedisRaw => redisRaw(axn)
     })

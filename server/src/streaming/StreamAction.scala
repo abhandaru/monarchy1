@@ -33,6 +33,7 @@ case class RedisPub(channel: String, text: String) extends StreamAction
 
 /** Outbound actions */
 case class Matchmaking(check: Boolean) extends StreamAction
+case class Personal(gameId: Option[String]) extends StreamAction
 case class Pong(at: Long) extends StreamAction
 case class RedisRaw(text: String) extends StreamAction
 

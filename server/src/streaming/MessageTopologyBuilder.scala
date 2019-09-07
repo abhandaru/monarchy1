@@ -24,8 +24,8 @@ case class MessageTopologyBuilder(
 ) {
   def build: Flow[Message, Message, _] = {
     val clientRef = actorSys.actorOf(Props(new ClientActor))
-    val redisProxyRef = actorSys.actorOf(Props(new RedisProxyActor))
-    val redisRef = actorSys.actorOf(Props(RedisActor(redisAddr, redisProxyRef)))
+    val redisProxyRef = actorSys.actorOf(Props(new RedisProxyActor(auth)))
+    val redisRef = actorSys.actorOf(Props(RedisActor(redisAddr, redisProxyRef, auth)))
 
     val incomingSink: Sink[Message, NotUsed] = {
       Flow[Message]

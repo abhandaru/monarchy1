@@ -33,3 +33,7 @@ class PongRenderer(implicit val ec: ExecutionContext) extends ActionRenderer[Pon
 class RedisRawRenderer(implicit val ec: ExecutionContext) extends ActionRenderer[RedisRaw] {
   override def render(axn: RedisRaw) = Future.successful(axn.text)
 }
+
+class PersonalRenderer(implicit val ec: ExecutionContext) extends ActionRenderer[Personal] {
+  override def render(axn: Personal) = Future.successful(Map("gameId" -> axn.gameId))
+}
