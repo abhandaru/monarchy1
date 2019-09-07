@@ -26,7 +26,7 @@ const ChallengeView = (props) => {
           {action}
         </div>
       </td>
-      <td>1000?</td>
+      <td>{challenge.rating}</td>
     </tr>
   );
 };

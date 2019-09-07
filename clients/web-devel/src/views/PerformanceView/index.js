@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DynamicPage = () => {
+const PerformanceView = () => {
   return (
     <div>
       <h3>Dynamic Page</h3>
@@ -9,4 +9,4 @@ const DynamicPage = () => {
   );
 };
 
-export default DynamicPage;
+export default PerformanceView;

@@ -5,8 +5,8 @@ import React from 'react';
 import StreamConnection from './StreamConnection';
 import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 
-const AysncMatchmaking = importedComponent(
-  () => import(/* webpackChunkName:'Matchmaking' */ '../Matchmaking'),
+const AysncPerformanceView = importedComponent(
+  () => import(/* webpackChunkName:'PerformanceView' */ '../views/PerformanceView'),
   { LoadingComponent: Loading }
 );
 
@@ -22,7 +22,7 @@ const App = () => {
         <StreamConnection />
         <Switch>
           <Route exact path="/" component={LandingView} />
-          <Route exact path="/matchmaking" component={AysncMatchmaking} />
+          <Route exact path="/performance" component={AysncPerformanceView} />
           <Route component={AsyncNotFound} />
         </Switch>
       </>

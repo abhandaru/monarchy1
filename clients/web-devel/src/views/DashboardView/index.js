@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Alert from 'react-bootstrap/Alert';
+import ConnectionView from './ConnectionView';
 import MatchmakingView from '~/views/MatchmakingView';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -13,9 +14,12 @@ const Dashboard = (props) => {
     <>
       <Navbar bg='light' variant='light'>
         <Navbar.Brand href='/'>Monarchy</Navbar.Brand>
-        <Nav className='mr-auto'>
-          <Link to='/matchmaking'>Enter matchmaking</Link>
-        </Nav>
+        <Navbar.Collapse>
+          <Nav className='mr-auto'>
+            <Link to='/performance'>Match performance</Link>
+          </Nav>
+          <ConnectionView />
+        </Navbar.Collapse>
       </Navbar>
       <div className={styles.root}>
         <Alert variant='primary'>
