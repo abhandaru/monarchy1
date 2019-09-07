@@ -3,8 +3,12 @@ import * as React from 'react';
 import streamProxy from '~/api/streamProxy';
 import { useDispatch, useSelector } from 'react-redux'
 
+const PingPeriod = 5000;
+
 const messageConverter = (message) => {
   switch (message.name) {
+    case 'Pong':
+      return Actions.pong(message.data);
     case 'Matchmaking':
       return Actions.matchmakingSet(message.data);
     default:
@@ -15,12 +19,18 @@ const messageConverter = (message) => {
 const StreamConnection = () => {
   const dispatch = useDispatch();
   const auth = useSelector(_ => _.auth);
+
+  // Equivalent of componentDidMount
+  React.useEffect(() => {
+    console.log('componentDidMount')
+    setInterval(() => dispatch(Actions.ping()), PingPeriod);
+  }, []);
+
   // Open port when auth changes
   React.useEffect(() => {
     if (auth.loggedIn) {
       streamProxy.connect();
       streamProxy.listen((message) => {
-        console.log('StreamConnection.component', message);
         const action = messageConverter(message);
         action && dispatch(action);
       });

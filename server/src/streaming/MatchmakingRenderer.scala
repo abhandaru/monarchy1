@@ -5,11 +5,16 @@ import redis.RedisClient
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
+object MatchmakingRenderer {
+  case class Data(userId: String, username: String, rating: Int)
+}
+
 class MatchmakingRenderer(implicit val ec: ExecutionContext, queryCli: dal.QueryClient, redisCli: RedisClient)
   extends ActionRenderer[Matchmaking] {
   import dal.PostgresProfile.Implicits._
+  import MatchmakingRenderer._
 
-  override def render(axn: Matchmaking): Future[_] = {
+  override def render(axn: Matchmaking): Future[Seq[Data]] = {
     val fetchUsers = for {
       cursor <- redisCli.scan(cursor = 0, matchGlob = Some(StreamingKey.ChallengeScan))
       userIds = for {
@@ -20,7 +25,11 @@ class MatchmakingRenderer(implicit val ec: ExecutionContext, queryCli: dal.Query
     } yield users
     fetchUsers.map { users =>
       users.map { user =>
-        Map("userId" -> user.id, "username" -> user.username)
+        Data(
+          userId = user.id.toString,
+          username = user.username,
+          rating = user.rating
+        )
       }
     }
   }
