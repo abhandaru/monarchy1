@@ -9,5 +9,12 @@ scala_library(
     '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_databind',
     '//3rdparty/jvm/com/fasterxml/jackson/datatype:jackson_datatype_jsr310',
     '//3rdparty/jvm/com/fasterxml/jackson/module:jackson_module_scala',
+  ],
+  exports=[
+    '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_annotations',
+    '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_core',
+    '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_databind',
+    '//3rdparty/jvm/com/fasterxml/jackson/datatype:jackson_datatype_jsr310',
+    '//3rdparty/jvm/com/fasterxml/jackson/module:jackson_module_scala',
   ]
 )

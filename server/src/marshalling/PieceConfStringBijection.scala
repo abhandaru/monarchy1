@@ -2,7 +2,7 @@ package monarchy.marshalling
 
 import monarchy.game._
 
-object PieceConfJsonBijection extends JsonBijection[PieceConf] {
+object PieceConfStringBijection extends StringBijection[PieceConf] {
   override def apply(conf: PieceConf): String = conf.toString
   override def invert(json: String): PieceConf = json match {
     case "Assassin" => Assassin

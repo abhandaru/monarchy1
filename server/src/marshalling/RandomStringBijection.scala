@@ -4,7 +4,7 @@ import java.io
 import java.util.Base64
 import scala.util.Random
 
-object RandomJsonBijection extends JsonBijection[Random] {
+object RandomStringBijection extends StringBijection[Random] {
   override def apply(rand: Random): String = {
     val baos = new io.ByteArrayOutputStream
     val stream = new io.ObjectOutputStream(baos)

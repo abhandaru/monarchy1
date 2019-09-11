@@ -8,31 +8,56 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.{DeserializationContext, DeserializationFeature, ObjectMapper, SerializerProvider}
 import scala.reflect.ClassTag
+import scala.util.Random
 
 object GameJsonObjectMapper extends JsonObjectMapper {
   registerModule(GameModule)
 }
 
 object GameModule extends SimpleModule {
-  addSerializer(RandomTo.sym, RandomTo)
+  addDeserializer(BoardFrom.sym, BoardFrom)
+  addDeserializer(PieceConfFrom.sym, PieceConfFrom)
   addDeserializer(RandomFrom.sym, RandomFrom)
+  addDeserializer(TurnActionFrom.sym, TurnActionFrom)
+  addDeserializer(EffectFrom.sym, EffectFrom)
+  addSerializer(classOf[Board], BoardTo)
+  addSerializer(classOf[PieceConf], PieceConfTo)
+  addSerializer(classOf[Random], RandomTo)
+  addSerializer(classOf[TurnAction], TurnActionTo)
+  addSerializer(classOf[Effect], EffectTo)
 }
 
-abstract class BijectionDeserializer[T: ClassTag](bjt: JsonBijection[T])
-  extends StdDeserializer[Any](implicitly[ClassTag[T]].runtimeClass) {
+object TypeUtil {
+  def classFromTag[T: ClassTag]: Class[_] = {
+    implicitly[ClassTag[T]].runtimeClass
+  }
+}
+import TypeUtil._
+
+abstract class Serializer[T: ClassTag] extends StdSerializer[Any](classFromTag[T], true)
+abstract class Deserializer[T: ClassTag] extends StdDeserializer[Any](classFromTag[T]) {
   val sym: Class[Any] = _valueClass.asInstanceOf[Class[Any]]
-  override def deserialize(jp: JsonParser, ctx: DeserializationContext): T = {
-    bjt.invert(jp.getText)
-  }
 }
 
-abstract class BijectionSerializer[T: ClassTag](bjt: JsonBijection[T])
-  extends StdSerializer[Any](implicitly[ClassTag[T]].runtimeClass, true) {
-  val sym: Class[Any] = implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[Any]]
+class ProxySerializer[T: ClassTag](map: T => Any) extends Serializer[T] {
   override def serialize(value: Any, jgen: JsonGenerator, pvd: SerializerProvider) = {
-    jgen.writeString(bjt.apply(value.asInstanceOf[T]))
+    pvd.defaultSerializeValue(map(value.asInstanceOf[T]), jgen)
   }
 }
 
-  object RandomTo extends BijectionSerializer[scala.util.Random](RandomJsonBijection)
-  object RandomFrom extends BijectionDeserializer[scala.util.Random](RandomJsonBijection)
+class ProxyDeserializer[A: ClassTag, B: ClassTag](map: B => A) extends Deserializer[A] {
+  override def deserialize(jp: JsonParser, ctx: DeserializationContext): A = {
+    map(ctx.readValue(jp, classFromTag[B]).asInstanceOf[B])
+  }
+}
+
+object RandomTo extends ProxySerializer(RandomStringBijection)
+object RandomFrom extends ProxyDeserializer(RandomStringBijection.inverse)
+object PieceConfTo extends ProxySerializer(PieceConfStringBijection)
+object PieceConfFrom extends ProxyDeserializer(PieceConfStringBijection.inverse)
+object BoardTo extends ProxySerializer(BoardProxyBijection)
+object BoardFrom extends ProxyDeserializer(BoardProxyBijection.inverse)
+object TurnActionTo extends ProxySerializer(TurnActionProxyBijection)
+object TurnActionFrom extends ProxyDeserializer(TurnActionProxyBijection.inverse)
+object EffectTo extends ProxySerializer(EffectProxyBijection)
+object EffectFrom extends ProxyDeserializer(EffectProxyBijection.inverse)
