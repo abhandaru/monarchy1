@@ -1,4 +1,4 @@
-package monarchy.streaming
+package monarchy.streaming.topology
 
 import akka.actor._
 import akka.http.scaladsl.model.ws.{BinaryMessage, TextMessage, Message}
@@ -8,6 +8,9 @@ import akka.stream.OverflowStrategy
 import akka.stream.scaladsl._
 import java.net.InetSocketAddress
 import monarchy.auth.Auth
+import monarchy.streaming.core._
+import monarchy.streaming.format.StreamActionRenderer
+import monarchy.streaming.process.ClientActionProxy
 import redis.RedisClient
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
@@ -19,6 +22,7 @@ case class MessageTopologyBuilder(
   ec: ExecutionContext,
   actorSys: ActorSystem,
   actionRenderer: StreamActionRenderer,
+  clientActionProxy: ClientActionProxy,
   materializer: ActorMaterializer,
   redisClient: RedisClient
 ) {

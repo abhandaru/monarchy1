@@ -1,6 +1,7 @@
-package monarchy.streaming
+package monarchy.streaming.format
 
 import monarchy.dal
+import monarchy.streaming.core.{Matchmaking, StreamingKey}
 import redis.RedisClient
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try

@@ -1,6 +1,7 @@
-package monarchy.streaming
+package monarchy.streaming.topology
 
 import monarchy.auth.{Auth, Authenticated}
+import monarchy.streaming.core._
 import monarchy.util.Json
 import scala.collection.immutable.Iterable
 

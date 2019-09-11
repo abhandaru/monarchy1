@@ -1,4 +1,4 @@
-package monarchy.streaming
+package monarchy.streaming.core
 
 import akka.actor.ActorRef
 import monarchy.auth.Authenticated
@@ -29,12 +29,10 @@ case class ChallengeSeekCancel(auth: Authenticated) extends StreamAction
  * to other actors and proxying data-sources to merge into the output stream.
  */
 case class Connect(next: ActorRef) extends StreamAction
-case class RedisPub(channel: String, text: String) extends StreamAction
+case class RedisPub(channel: String, text: String, pattern: Option[String] = None) extends StreamAction
 
 /** Outbound actions */
 case class Matchmaking(check: Boolean) extends StreamAction
-case class Personal(gameId: Option[String]) extends StreamAction
+case class GameCreate(gameId: Long) extends StreamAction
 case class Pong(at: Long) extends StreamAction
 case class RedisRaw(text: String) extends StreamAction
-
-

@@ -6,7 +6,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 
-object JsonObjectMapper extends ObjectMapper with ScalaObjectMapper {
+/**
+ * Convenience instance used across this packaged.
+ * Defaults here are meant to be "sensible", for some defintion of sensible.
+ */
+object JsonObjectMapper extends JsonObjectMapper
+
+class JsonObjectMapper extends ObjectMapper with ScalaObjectMapper {
   // Load serialization bindings for Java8 Instant
   registerModule(new JavaTimeModule)
 
@@ -23,3 +29,4 @@ object JsonObjectMapper extends ObjectMapper with ScalaObjectMapper {
   // Write dates as milliseconds
   configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
 }
+

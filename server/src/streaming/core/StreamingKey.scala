@@ -1,4 +1,4 @@
-package monarchy.streaming
+package monarchy.streaming.core
 
 import scala.language.implicitConversions
 
@@ -15,4 +15,5 @@ object StreamingKey {
   implicit def render(k: StreamingKey[_]): String = k.toString
   case object ChallengeScan extends StreamingScanKey("challenge")
   case class Challenge(userId: Long) extends StreamingKey[Boolean](s"challenge/$userId")
+  case class Game(gameId: Long) extends StreamingKey[Map[String, Any]](s"game/$gameId")
 }

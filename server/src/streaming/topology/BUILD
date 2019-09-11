@@ -1,6 +1,6 @@
 load('@io_bazel_rules_scala//scala:scala.bzl', 'scala_library')
 scala_library(
-  name='streaming',
+  name='topology',
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
@@ -11,6 +11,9 @@ scala_library(
     '//3rdparty/jvm/org/reactivestreams:reactive_streams',
     '//server/src/auth',
     '//server/src/dal',
+    '//server/src/streaming/core',
+    '//server/src/streaming/format',
+    '//server/src/streaming/process',
     '//server/src/util',
   ]
 )
