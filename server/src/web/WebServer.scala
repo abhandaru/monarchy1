@@ -9,7 +9,7 @@ import akka.http.scaladsl.server.directives.DebuggingDirectives
 import akka.stream.ActorMaterializer
 import monarchy.auth.AuthFilter
 import monarchy.controllers._
-import monarchy.streaming.MessageTopologyBuilder
+import monarchy.streaming.topology.MessageTopologyBuilder
 
 object WebServer extends App {
   implicit val actorSys = ActorSystem("monarchy-web")
@@ -19,9 +19,7 @@ object WebServer extends App {
   implicit val redisCli = RedisModule.redisClient
   implicit val graphqlContext = GraphqlModule.graphqlContext
   implicit val streamAxnRenderer = StreamingModule.streamActionRenderer
-
-  // import concurrent.duration._
-  // actorSys.scheduler.schedule(2 seconds, 2 seconds)(redisCli.publish("monarchy/streaming/public", System.currentTimeMillis))
+  implicit val clientAxnProxy = StreamingModule.clientActionProxy
 
   // Request handlers
   import AuthFilter._

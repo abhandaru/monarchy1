@@ -1,5 +1,6 @@
-package monarchy.streaming
+package monarchy.streaming.format
 
+import monarchy.streaming.core._
 import monarchy.util.{Json, Async}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
@@ -32,4 +33,8 @@ class PongRenderer(implicit val ec: ExecutionContext) extends ActionRenderer[Pon
 
 class RedisRawRenderer(implicit val ec: ExecutionContext) extends ActionRenderer[RedisRaw] {
   override def render(axn: RedisRaw) = Future.successful(axn.text)
+}
+
+class GameCreateRenderer(implicit val ec: ExecutionContext) extends ActionRenderer[GameCreate] {
+  override def render(axn: GameCreate) = Future.successful(Map("gameId" -> axn.gameId))
 }

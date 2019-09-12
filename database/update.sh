@@ -5,7 +5,7 @@ ROOT=$(git rev-parse --show-toplevel)
 cd $ROOT
 
 # Get VIEW SQL
-SQL_SCRIPT=$(cat ./database/3-user-rating.sql)
+SQL_SCRIPT=$(cat ./database/4-formation-schema.sql)
 
 echo "[views/local] saving locally"
 echo "$SQL_SCRIPT" | psql -d monarchy_local

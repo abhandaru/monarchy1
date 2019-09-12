@@ -6,4 +6,7 @@ sealed trait Auth
 
 /** This "user" has no access. */
 case object NullAuth extends Auth
-case class Authenticated(user: User) extends Auth
+
+case class Authenticated(user: User) extends Auth {
+  def userId: Long = user.id
+}

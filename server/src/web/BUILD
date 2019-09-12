@@ -14,6 +14,9 @@ scala_binary(
     '//server/src/controllers',
     '//server/src/dal',
     '//server/src/graphql',
-    '//server/src/streaming',
+    '//server/src/streaming/core',
+    '//server/src/streaming/format',
+    '//server/src/streaming/process',
+    '//server/src/streaming/topology',
   ]
 )

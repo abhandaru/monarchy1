@@ -26,6 +26,7 @@ object Args {
   val Id = Argument("id", StringType, description = "ID of this entity.")
   val Auth = Argument("q", deriveInput[AuthQuery](), description = "Query to initiate auth request.")
   val Login = Argument("q", deriveInput[LoginQuery](), description = "Query to verify login credentials.")
+  val UserId = Argument("userId", StringType, description = "[[User]] ID query scope.")
 }
 
 
