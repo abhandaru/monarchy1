@@ -1,8 +1,9 @@
 package monarchy.streaming.process
 
 import monarchy.dal
-import monarchy.dalwrite.WriteQueryBuilder
-import monarchy.{game => gg}
+import monarchy.dalwrite.{GameNode, WriteQueryBuilder}
+import monarchy.game._
+import monarchy.marshalling.GameJsonObjectMapper
 import monarchy.streaming.core._
 import monarchy.util.{Async, Json}
 import redis.RedisClient
@@ -40,10 +41,15 @@ class ChallengeAcceptProcessor(implicit
           Async.join(
             redisCli.del(challengeKey, opponentChallengeKey),
             redisCli.publish(StreamingChannel.Matchmaking, Json.stringify(Matchmaking(true))),
-            redisCli.publish(StreamingChannel.gameCreate(userId), Json.stringify(GameCreate(77L))),
-            redisCli.publish(StreamingChannel.gameCreate(opponentUserId), Json.stringify(GameCreate(77L)))
-          ).map { case (count, _,  _, _) =>
-            println(s"removed $count challenges on $challengeKey, $opponentChallengeKey and accept")
+            create(Seq(userId, opponentUserId))
+          ).flatMap { case (count, _,  gameId) =>
+            val channelEvent = Json.stringify(GameCreate(gameId))
+            Async.join(
+              redisCli.publish(StreamingChannel.gameCreate(userId), channelEvent),
+              redisCli.publish(StreamingChannel.gameCreate(opponentUserId), channelEvent)
+            ).map { case _ =>
+              println(s"removed $count challenges on $challengeKey, $opponentChallengeKey and accept")
+            }
           }
       }
     }
@@ -52,19 +58,23 @@ class ChallengeAcceptProcessor(implicit
   def create(userIds: Seq[Long]): Future[Long] = {
     for {
       users <- queryCli.all(dal.User.query.filter(_.id inSet userIds))
-      gameNode <- createGame(users)
-    } yield {
-      gameNode.value.id
-      // val gameLive = gg.GameBuilder(
-      //   seed = gg.seed,
-      //   players = gg.players.map { player =>
-      //     gg.Player(
-      //       playerId = gg.PlayerId(player.id),
-      //       formation = DefaultFormation
-      //     )
-      //   }
-      // )
-    }
+      game <- createGame(users)
+      liveGame <- createLiveGame(game)
+    } yield game.data.id
+  }
+
+  def createLiveGame(game: GameNode): Future[Boolean] = {
+    val liveGame = GameBuilder(
+      seed = game.data.seed,
+      players = game.players.map { player =>
+        Player(
+          id = PlayerId(player.id),
+          formation = DefaultFormation
+        )
+      }
+    )
+    val liveGameRep = Json.stringifyWith(GameJsonObjectMapper, liveGame)
+    redisCli.set(StreamingKey.Game(game.data.id), liveGameRep)
   }
 
   def createGame(users: Seq[dal.User]): Future[GameNode] = {
@@ -82,28 +92,18 @@ class ChallengeAcceptProcessor(implicit
           )
         }
       )
-    } yield {
-      GameNode(
-        value = gameWr,
-        players = playersWr
-      )
-    }
+    } yield GameNode(data = gameWr, players = playersWr)
     queryCli.write(query)
   }
 }
 
 object ChallengeAcceptProcessor {
-  val DefaultFormation: gg.Player.Formation = {
+  val DefaultFormation: Player.Formation = {
     Seq(
-      gg.Vec(5, 4) -> gg.Knight,
-      gg.Vec(4, 3) -> gg.Pyromancer,
-      gg.Vec(6, 3) -> gg.Scout,
-      gg.Vec(5, 2) -> gg.Cleric
+      Vec(5, 4) -> Knight,
+      Vec(4, 3) -> Pyromancer,
+      Vec(6, 3) -> Scout,
+      Vec(5, 2) -> Cleric
     )
   }
 }
-
-case class GameNode(
-  value: dal.Game,
-  players: Seq[dal.Player]
-)

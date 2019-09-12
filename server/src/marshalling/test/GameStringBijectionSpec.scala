@@ -12,7 +12,8 @@ class GameStringBijectionSpec extends WordSpec with Matchers {
     seed = 5,
     players = Seq(
       Player(PlayerId(2L), Seq(
-        Vec(4, 4) -> Knight
+        Vec(4, 4) -> Knight,
+        Vec(3, 4) -> Witch
       )),
       Player(PlayerId(3L), Seq(
         Vec(4, 5) -> Scout
