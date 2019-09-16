@@ -1,8 +1,7 @@
 package monarchy.streaming
 
 import akka.util.ByteString
-import monarchy.marshalling.GameJsonObjectMapper
-import monarchy.util.Json
+import monarchy.marshalling.GameJson
 import redis.ByteStringDeserializer
 import scala.reflect.runtime.universe.TypeTag
 
@@ -11,7 +10,7 @@ package object process {
   implicit def redisValueMarshaller[T: TypeTag]: ByteStringDeserializer[T] = {
     new ByteStringDeserializer[T] {
       override def deserialize(bs: ByteString): T = {
-        Json.parseWith[T](GameJsonObjectMapper, bs.utf8String)
+        GameJson.parse[T](bs.utf8String)
       }
     }
   }

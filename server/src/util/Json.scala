@@ -33,8 +33,9 @@ object JsonTypeReference {
   }
 }
 
-object Json {
-  def parse[T: TypeTag](json: String): T = parseWith(JsonObjectMapper, json)
+object Json extends Json(JsonObjectMapper)
+class Json(mapper: JsonObjectMapper) {
+  def parse[T: TypeTag](json: String): T = parseWith(mapper, json)
 
   def parseAttempt[T: TypeTag](json: String): Try[T] = Try(parse[T](json))
 
@@ -44,7 +45,7 @@ object Json {
     m.readValue(json, new JsonTypeReference[T]).asInstanceOf[T]
   }
 
-  def stringify[T: TypeTag](ref: T): String = stringifyWith(JsonObjectMapper, ref)
+  def stringify[T: TypeTag](ref: T): String = stringifyWith(mapper, ref)
 
   def stringifyWith[T: TypeTag](m: ObjectMapper, ref: T): String = {
     val wr = new StringWriter

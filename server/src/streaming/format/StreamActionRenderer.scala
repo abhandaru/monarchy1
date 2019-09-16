@@ -5,17 +5,6 @@ import monarchy.util.{Json, Async}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-case class StreamActionRenderer(receive: PartialFunction[StreamAction, Future[String]])(
-  implicit ec: ExecutionContext) {
-
-  def apply(action: StreamAction): Future[Option[String]] = {
-    receive.isDefinedAt(action) match {
-      case true => receive(action).map(Some(_))
-      case false => Async.None
-    }
-  }
-}
-
 abstract class ActionRenderer[T <: StreamAction: ClassTag] extends (T => Future[String]) {
   implicit def ec: ExecutionContext
   def render(axn: T): Future[_]
@@ -23,6 +12,18 @@ abstract class ActionRenderer[T <: StreamAction: ClassTag] extends (T => Future[
   override def apply(axn: T): Future[String] = {
     render(axn).map { data =>
       Json.stringify(Map("name" -> name, "data" -> data))
+    }
+  }
+}
+
+// TODO: Move this to the proxy pattern (see monarchy.streaming.process)
+case class StreamActionRenderer(receive: PartialFunction[StreamAction, Future[String]])(
+  implicit ec: ExecutionContext) {
+
+  def apply(action: StreamAction): Future[Option[String]] = {
+    receive.isDefinedAt(action) match {
+      case true => receive(action).map(Some(_))
+      case false => Async.None
     }
   }
 }

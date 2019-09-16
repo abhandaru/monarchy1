@@ -1,3 +1,27 @@
 .root {
   padding: 16px;
 }
+
+.boardRow {
+  display: flex;
+  justify-content: center;
+}
+
+.boardTile {
+  background: #EEE;
+  cursor: pointer;
+  margin: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.boardTile:hover {
+  background: #AAA;
+}
+
+.boardTile.boardTilePyromancer {
+  background-image: url('./images/Pyromancer.png');
+  background-size: cover;
+}
