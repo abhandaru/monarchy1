@@ -87,7 +87,7 @@ class ChallengeAcceptProcessor(implicit
           dal.Player(
             gameId = gameWr.id,
             userId = user.id,
-            status = dal.PlayerStatus.Absent,
+            status = dal.PlayerStatus.Pending,
             rating = user.rating
           )
         }

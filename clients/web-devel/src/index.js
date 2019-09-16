@@ -8,10 +8,10 @@ import { AppContainer } from 'react-hot-loader';
 import { applyMiddleware, createStore, compose } from 'redux'
 import { Provider } from 'react-redux'
 
-const devTools = window.__REDUX_DEVTOOLS_EXTENSION__;
-const store = compose(devTools ? devTools() : _ => _, applyMiddleware(thunk))(createStore)(Reducer);
+const enhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(Reducer, {}, enhancers(applyMiddleware(thunk)));
 
-const render = Component =>
+const render = Component => (
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
@@ -19,7 +19,8 @@ const render = Component =>
       </Provider>
     </AppContainer>,
     document.getElementById('root')
-  );
+  )
+);
 
 render(App);
 if (module.hot) module.hot.accept('./App', () => render(App));

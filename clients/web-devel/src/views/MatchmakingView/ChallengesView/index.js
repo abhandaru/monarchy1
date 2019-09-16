@@ -1,9 +1,9 @@
 import * as React from 'react';
 import Button from 'react-bootstrap/Button';
 import streamProxy from '~/api/streamProxy';
+import styles from './index.css';
 import Table from 'react-bootstrap/Table';
 import { useSelector } from 'react-redux'
-import styles from './index.css';
 
 const ChallengeView = (props) => {
   const { challenge } = props;
@@ -20,8 +20,8 @@ const ChallengeView = (props) => {
   // Render the row.
   return (
     <tr>
-      <td>
-        <div className={styles.nameCell}>
+      <td className={styles.nameCell}>
+        <div className={styles.name}>
           <div>{challenge.username}</div>
           {action}
         </div>

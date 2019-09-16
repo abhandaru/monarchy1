@@ -21,12 +21,15 @@ object AuthQuery extends GraphqlArg[AuthQuery]
 case class LoginQuery(phoneNumber: String, otp: String)
 object LoginQuery extends GraphqlArg[LoginQuery]
 
+case class GamesQuery(userId: String)
+object GamesQuery extends GraphqlArg[GamesQuery]
+
 object Args {
   // Argument types
   val Id = Argument("id", StringType, description = "ID of this entity.")
   val Auth = Argument("q", deriveInput[AuthQuery](), description = "Query to initiate auth request.")
   val Login = Argument("q", deriveInput[LoginQuery](), description = "Query to verify login credentials.")
-  val UserId = Argument("userId", StringType, description = "[[User]] ID query scope.")
+  val Games = Argument("q", deriveInput[GamesQuery](), description = "Query for games matching the criteria.")
 }
 
 

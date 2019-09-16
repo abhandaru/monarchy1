@@ -1,8 +1,9 @@
-.nameCell {
+.opponentCell {
   width: 60%;
 }
 
-.name {
+.opponent {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
