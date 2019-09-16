@@ -1,3 +1,4 @@
+import GameView from '~/views/GameView';
 import importedComponent from 'react-imported-component';
 import LandingView from '~/views/LandingView';
 import Loading from '~/components/Loading';
@@ -5,12 +6,12 @@ import React from 'react';
 import StreamConnection from './StreamConnection';
 import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 
-const AysncPerformanceView = importedComponent(
+const PerformanceView = importedComponent(
   () => import(/* webpackChunkName:'PerformanceView' */ '../views/PerformanceView'),
   { LoadingComponent: Loading }
 );
 
-const AsyncNotFound = importedComponent(
+const NotFound = importedComponent(
   () => import(/* webpackChunkName:'NotFound' */ '../components/NotFound'),
   { LoadingComponent: Loading }
 );
@@ -22,8 +23,9 @@ const App = () => {
         <StreamConnection />
         <Switch>
           <Route exact path="/" component={LandingView} />
-          <Route exact path="/performance" component={AysncPerformanceView} />
-          <Route component={AsyncNotFound} />
+          <Route exact path="/performance" component={PerformanceView} />
+          <Route path="/games/:gameId" component={GameView} />
+          <Route component={NotFound} />
         </Switch>
       </>
     </Router>

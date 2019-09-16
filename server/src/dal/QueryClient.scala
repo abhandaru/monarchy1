@@ -8,6 +8,7 @@ trait QueryClient {
   import PostgresProfile.api._
   def all[E](query: Query[Table[E], E, Seq]): Future[Seq[E]]
   def first[E](query: Query[Table[E], E, Seq]): Future[Option[E]]
+  def read[E](dbio: DBIO[E]): Future[E]
   def write[E](dbio: DBIO[E]): Future[E]
 }
 
@@ -25,6 +26,10 @@ case class QueryClientImpl(
 
   override def first[E](query: Query[Table[E], E, Seq]): Future[Option[E]] = {
     all(query.take(1)).map(_.headOption)
+  }
+
+  override def read[E](dbio: DBIO[E]): Future[E] = {
+    connection.run(dbio)
   }
 
   // Methods for writing.

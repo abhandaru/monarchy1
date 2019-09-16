@@ -26,6 +26,19 @@ object QuerySchema {
           val query = dal.Game.query.filter(_.id === id)
           node.ctx.queryCli.first(query)
         }
+      ),
+      Field("games", ListType(GameType),
+        arguments = List(Args.Games),
+        resolve = { node =>
+          import dal.PostgresProfile.Implicits._
+          val userId = node.arg(Args.Games).userId.toLong
+          val query = dal.Player.query
+            .filter(_.userId === userId)
+            .join(dal.Game.query).on(_.gameId === _.id)
+            .map(_._2)
+            .sortBy(_.id.desc)
+          node.ctx.queryCli.all(query)
+        }
       )
     )
   )

@@ -14,6 +14,11 @@ const INITIAL_MATCHMAKING = {
   challenges: []
 };
 
+const INITIAL_GAMES = {
+  recent: [],
+  game: null
+};
+
 const auth = (state = INITIAL_AUTH, action) => {
   switch (action.type) {
     case Types.AUTH_SET:
@@ -61,8 +66,26 @@ const matchmaking = (state = INITIAL_MATCHMAKING, action) => {
   }
 };
 
+const games = (state = INITIAL_GAMES, action) => {
+  switch (action.type) {
+    case Types.GAMES_SET_RECENT:
+      return {
+        ...state,
+        recent: action.payload
+      };
+    case Types.GAME_FETCHED:
+      return {
+        ...state,
+        game: action.payload
+      };
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   auth,
   connection,
-  matchmaking
+  matchmaking,
+  games
 });

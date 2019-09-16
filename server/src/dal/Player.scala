@@ -4,8 +4,9 @@ import java.time.Instant
 
 sealed class PlayerStatus(val id: Int) extends EnumColumn
 object PlayerStatus extends EnumColumnDef[PlayerStatus] {
-  case object Absent extends PlayerStatus(0)
-  case object Present extends PlayerStatus(1)
+  case object Pending extends PlayerStatus(0)
+  case object Won extends PlayerStatus(1)
+  case object Lost extends PlayerStatus(2)
 }
 
 case class Player(
