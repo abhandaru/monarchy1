@@ -92,7 +92,7 @@ case object Witch extends PieceConf {
 
 case object Pyromancer extends PieceConf {
   import Deltas._
-  val name = "Avatar of Rage"
+  val name = "Red Priestess"
   val maxHealth = 30
   val maxWait = 3
   val power = 16
@@ -161,7 +161,7 @@ case object Cleric extends PieceConf {
 
 case object FrostGolem extends PieceConf {
   import Deltas._
-  val name = "Ice Sentinel"
+  val name = "Frost Sentinel"
   val maxHealth = 60
   val maxWait = 2
   val power = 0

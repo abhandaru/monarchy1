@@ -13,9 +13,30 @@ const query = gql`
       players {
         status
         user {
-          id
           username
           rating
+        }
+      },
+      state {
+        currentPlayerId
+        tiles {
+          point {
+            i
+            j
+          }
+          piece {
+            id
+            playerId
+            currentWait
+            currentHealth
+            currentDirection {
+              i
+              j
+            }
+            currentFocus
+            currentEffects
+            blockingAjustment
+          }
         }
       }
     }
