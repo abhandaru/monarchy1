@@ -2,6 +2,7 @@ package monarchy.streaming.core
 
 import akka.actor.ActorRef
 import monarchy.auth.Authenticated
+import monarchy.game.Vec
 
 sealed trait StreamAction
 
@@ -21,6 +22,11 @@ object ChallengeAccept {
 
 case class ChallengeSeek(auth: Authenticated) extends StreamAction
 case class ChallengeSeekCancel(auth: Authenticated) extends StreamAction
+
+case class GameSelectTile(auth: Authenticated, body: GameSelectTile.Body) extends StreamAction
+object GameSelectTile {
+  case class Body(gameId: Long, point: Vec)
+}
 
 /**
  * Intermediate actions

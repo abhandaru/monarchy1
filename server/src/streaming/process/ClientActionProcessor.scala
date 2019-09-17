@@ -17,12 +17,14 @@ class ClientActionProxy(implicit
   val challengeSeek = new ChallengeSeekProcessor
   val challengeSeekCancel = new ChallengeSeekCancelProcessor
   val challengeAccept = new ChallengeAcceptProcessor
+  val gameSelectTile = new GameSelectTileProcessor
 
   override def apply(action: StreamAction): Future[_] = {
     action match {
       case axn: ChallengeSeek => challengeSeek(axn)
       case axn: ChallengeSeekCancel => challengeSeekCancel(axn)
       case axn: ChallengeAccept => challengeAccept(axn)
+      case axn: GameSelectTile => gameSelectTile(axn)
       case _ => Async.Unit
     }
   }

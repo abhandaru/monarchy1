@@ -117,7 +117,9 @@ object QuerySchema {
   lazy val PieceType = ObjectType(
     "Piece",
     fields[GraphqlContext, game.Piece](
-      Field("id", StringType, resolve = _.value.conf.toString),
+      Field("id", StringType, resolve = _.value.id.id.toString),
+      Field("order", StringType, resolve = _.value.conf.toString),
+      Field("name", StringType, resolve = _.value.conf.name),
       Field("playerId", StringType, resolve = _.value.playerId.id.toString),
       Field("currentHealth", IntType, resolve = _.value.currentHealth),
       Field("currentWait", IntType, resolve = _.value.currentWait),
@@ -128,7 +130,9 @@ object QuerySchema {
         }
       }),
       Field("currentFocus", BooleanType, resolve = _.value.currentFocus),
-      Field("blockingAjustment", FloatType, resolve = _.value.blockingAjustment)
+      Field("currentBlocking", FloatType, resolve = { node =>
+        node.value.conf.blocking + node.value.blockingAjustment
+      })
     )
   )
 }

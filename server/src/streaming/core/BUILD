@@ -6,5 +6,6 @@ scala_library(
   deps=[
     '//3rdparty/jvm/com/typesafe/akka:akka_actor',
     '//server/src/auth',
+    '//server/src/game',
   ]
 )

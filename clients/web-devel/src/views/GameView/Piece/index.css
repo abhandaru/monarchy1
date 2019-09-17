@@ -1,0 +1,18 @@
+.root {
+  background-color: #777;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.statusItemLabel {
+  margin-right: 8px;
+}
