@@ -20,28 +20,35 @@ object GameBuilder {
    * `2pi/n_players * i`. This probably will not make any sense for more than
    * 4 players given the taxicab geometry
    */
-  val Directions = Array(Vec(1, 0), Vec(-1, 0))
+  val Rotation = Matrix.Rotate180
+
+  /** For now we always use the standard 11 x 11 [[Board]]. */
+  val BoardSelection = Board.Standard
 
   def apply(seed: Int, players: Seq[Player]): Game = {
     val rand = new Random(seed)
+    val (_, maxPt) = BoardSelection.boundingBox
     val playersOrdered = rand.shuffle(players.sorted)
     val piecesAdditions = for {
       (player, i) <- playersOrdered.zipWithIndex
-      playerDir = Directions(i)
-      (p, pieceConf) <- player.formation
+      rotation = Rotation ^ i
+      (pt, pieceConf) <- player.formation
     } yield {
-      val pieceId = PieceId(p.hashCode)
-      val pl = PieceAdd(p, PieceBuilder(pieceId, pieceConf, player.id, playerDir))
-      pl.copy(
-        piece = pl.piece.copy(
-          currentWait = initialWait(pl.piece.conf, i)
+      val ptRotated = (rotation * (pt - (maxPt / 2))) + (maxPt / 2);
+      val dirRotated = rotation * Vec.I
+      val pieceId = PieceId(ptRotated.hashCode)
+      val piece = PieceBuilder(pieceId, pieceConf, player.id, dirRotated);
+      val pAdd = PieceAdd(ptRotated, piece)
+      pAdd.copy(
+        piece = pAdd.piece.copy(
+          currentWait = initialWait(pAdd.piece.conf, i)
         )
       )
     }
     Game(
       rand = rand,
       players = playersOrdered,
-      board = Board.Standard.commitAggregation(piecesAdditions),
+      board = BoardSelection.commitAggregation(piecesAdditions),
       turns = Seq(Turn())
     )
   }
