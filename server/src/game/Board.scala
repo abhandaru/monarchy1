@@ -52,6 +52,14 @@ case class Board(private val tileIndex: Map[Vec, Tile]) {
       case true => this.copy(tileIndex = tileIndex + (t.point -> t))
     }
   }
+
+  // The bounding rectangle
+  def boundingBox: (Vec, Vec) = {
+    val points = tileIndex.keys.toSeq
+    val is = points.map(_.i)
+    val js = points.map(_.j)
+    (Vec(is.min, js.min), Vec(is.max, js.max))
+  }
 }
 
 object Board {
