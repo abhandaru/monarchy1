@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Tile from './Tile';
 
 const Board = (props) => {
-  const { tiles } = props;
+  const { currentPlayerId, tiles } = props;
   const maxRow = tiles.reduce((z, t) => Math.max(t.point.i, z), 0);
   const size = 'calc(' + (100 / (maxRow + 1)) + 'vmin - 16px)';
   const grid = [...Array(maxRow + 1).keys()]
@@ -19,6 +19,7 @@ const Board = (props) => {
       <div key={i} className={styles.boardRow}>{row.map((tile, j) =>
         <Tile
           key={j}
+          currentPlayerId={currentPlayerId}
           tile={tile}
           size={size}
         />
@@ -41,7 +42,12 @@ const GameView = (props) => {
     <>
       <NavigationView />
       <div className={styles.root}>
-        {game ? <Board tiles={game.state.tiles} /> : null}
+        {game ?
+          <Board
+            tiles={game.state.tiles}
+            currentPlayerId={game.state.currentPlayerId}
+          /> : null
+        }
       </div>
     </>
   );

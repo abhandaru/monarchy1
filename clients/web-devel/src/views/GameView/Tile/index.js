@@ -8,23 +8,25 @@ const vecCompare = (a, b) =>
   a.i === b.i && a.j === b.j;
 
 const Tile = (props) => {
-  const { tile, size } = props;
-  const { piece, point } = tile;
-
+  const { currentPlayerId, tile, size } = props;
+  const { piece: pieceOccupying, point } = tile;
   const selections = useSelector(_ => _.games.gameSelections);
-  const { turnState, movements } = selections;
 
-  const moveOption = turnState === 'Initial' && movements.some(_ => vecCompare(point, _));
+  // Determine how this tile should be painted.
+  const { turnState, piece: pieceSelected, movements } = selections;
+  const pieceSelectedOwned = pieceSelected && (pieceSelected.playerId == currentPlayerId);
+  const paintAsMovement = turnState === 'Initial' && movements.some(_ => vecCompare(point, _));
 
   const styleOverride = {width: size, height: size};
   const className = classnames(
     styles.root,
-    moveOption && styles.movement
+    pieceSelectedOwned && paintAsMovement && styles.movement,
+    !pieceSelectedOwned && paintAsMovement && styles.movementNonOwner
   );
 
   return (
     <div style={styleOverride} className={className}>
-      {piece ? <Piece piece={piece} point={point} /> : null}
+      {pieceOccupying ? <Piece piece={pieceOccupying} point={point} /> : null}
     </div>
   );
 }

@@ -9,13 +9,17 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 object GameChangeSelectionRenderer {
+  // TODO (adu): Move to marshalling package and share with GraphQL
+  case class Piece(playerId: String)
   case class Data(
-    selection: Option[Vec],
-    movements: Set[Vec],
-    directions: Set[Vec],
-    attacks: Set[Set[Vec]]
+    selection: Option[Vec] = None,
+    piece: Option[Piece] = None,
+    movements: Set[Vec] = Set.empty,
+    directions: Set[Vec] = Set.empty,
+    attacks: Set[Set[Vec]] = Set.empty
   )
-  val EmptyData = Data(None, Set.empty, Set.empty, Set.empty)
+
+  val EmptyData = Data()
 }
 
 class GameChangeSelectionRenderer(implicit val ec: ExecutionContext, redisCli: RedisClient)
@@ -32,7 +36,10 @@ class GameChangeSelectionRenderer(implicit val ec: ExecutionContext, redisCli: R
           selection = game.currentSelection,
           movements = game.movements,
           directions = game.directions,
-          attacks = game.attacks
+          attacks = game.attacks,
+          piece = game.currentPiece.map { piece =>
+            Piece(playerId = piece.playerId.id.toString)
+          }
         )
     }
   }

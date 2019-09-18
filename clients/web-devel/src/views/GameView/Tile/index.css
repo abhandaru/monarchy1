@@ -8,6 +8,22 @@
   overflow: hidden;
 }
 
+.root:hover {
+  background: rgba(238, 238, 283, 0.5);
+}
+
 .movement {
-  background-color: cornflowerblue;
+  background-color: rgb(100, 149, 237);
+}
+
+.movement:hover {
+  background-color: rgba(100, 149, 237, 0.5);
+}
+
+.movementNonOwner {
+  background-color: rgba(100, 149, 237);
+}
+
+.movementNonOwner:hover {
+  background-color: rgba(100, 149, 237, 0.5);
 }

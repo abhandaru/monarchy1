@@ -20,6 +20,7 @@ const INITIAL_GAMES = {
   gameSelections: {
     turnState: 'Initial',
     selection: null,
+    piece: null,
     movements: [],
     directions: [],
     attacks: []

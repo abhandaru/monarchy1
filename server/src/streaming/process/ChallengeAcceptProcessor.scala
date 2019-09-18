@@ -25,7 +25,7 @@ class ChallengeAcceptProcessor(implicit
   import ChallengeAcceptProcessor._
   import dal.PostgresProfile.Implicits._
 
-  override def apply(axn: ChallengeAccept): Future[_] = {
+  override def apply(axn: ChallengeAccept): Future[Unit] = {
     val ChallengeAccept(auth, body) = axn
     val userId = auth.userId
     val opponentUserId = body.opponentId.toLong
