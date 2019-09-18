@@ -1,8 +1,9 @@
-package monarchy.marshalling
+package monarchy.marshalling.game
 
 import java.io
 import java.util.Base64
 import scala.util.Random
+import monarchy.util.StringBijection
 
 object RandomStringBijection extends StringBijection[Random] {
   override def apply(rand: Random): String = {

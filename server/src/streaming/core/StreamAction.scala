@@ -25,7 +25,7 @@ case class ChallengeSeekCancel(auth: Authenticated) extends StreamAction
 
 case class GameSelectTile(auth: Authenticated, body: GameSelectTile.Body) extends StreamAction
 object GameSelectTile {
-  case class Body(gameId: Long, point: Vec)
+  case class Body(gameId: String, point: Vec)
 }
 
 /**
@@ -40,5 +40,6 @@ case class RedisPub(channel: String, text: String, pattern: Option[String] = Non
 /** Outbound actions */
 case class Matchmaking(check: Boolean) extends StreamAction
 case class GameCreate(gameId: Long) extends StreamAction
+case class GameChangeSelection(gameId: Long)  extends StreamAction
 case class Pong(at: Long) extends StreamAction
 case class RedisRaw(text: String) extends StreamAction

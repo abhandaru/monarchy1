@@ -11,7 +11,7 @@ object MatchmakingRenderer {
 }
 
 class MatchmakingRenderer(implicit val ec: ExecutionContext, queryCli: dal.QueryClient, redisCli: RedisClient)
-  extends ActionRenderer[Matchmaking] {
+  extends BasicActionRenderer[Matchmaking] {
   import dal.PostgresProfile.Implicits._
   import MatchmakingRenderer._
 

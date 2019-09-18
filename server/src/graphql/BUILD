@@ -10,7 +10,7 @@ scala_library(
     '//server/src/auth',
     '//server/src/dal',
     '//server/src/game',
-    '//server/src/marshalling',
+    '//server/src/marshalling/game-redis',
     '//server/src/util',
   ],
   exports=[

@@ -3,7 +3,7 @@ package monarchy.streaming.process
 import monarchy.dal
 import monarchy.dalwrite.{GameNode, WriteQueryBuilder}
 import monarchy.game._
-import monarchy.marshalling.GameJson
+import monarchy.marshalling.game.GameJson
 import monarchy.streaming.core._
 import monarchy.util.{Async, Json}
 import redis.RedisClient

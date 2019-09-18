@@ -1,4 +1,4 @@
-package monarchy.marshalling
+package monarchy.util
 
 trait Bijection[A, B] extends (A => B) { self =>
   def invert(b: B): A

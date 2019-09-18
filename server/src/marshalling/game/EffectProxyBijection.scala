@@ -1,6 +1,7 @@
-package monarchy.marshalling
+package monarchy.marshalling.game
 
 import monarchy.game._
+import monarchy.util.Bijection
 
 case class EffectProxy(
   name: String,

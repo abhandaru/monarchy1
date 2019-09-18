@@ -9,9 +9,12 @@ class RedisProxyActor(auth: Auth) extends Actor {
   import StreamingChannel._
 
   var next: Option[ActorRef] = None
-  val gameCreate = auth match {
+  val Seq(gameCreate, gameSelectTile) = auth match {
     case NullAuth => "???"
-    case Authenticated(u) => StreamingChannel.gameCreate(u.id)
+    case Authenticated(u) => Seq(
+      StreamingChannel.gameCreate(u.id),
+      StreamingChannel.gameSelectTile(u.id)
+    )
   }
 
   def receive = {
@@ -20,6 +23,8 @@ class RedisProxyActor(auth: Auth) extends Actor {
       channel match {
         case `gameCreate` =>
           next.foreach(_ ! Json.parse[GameCreate](text))
+        case `gameSelectTile` =>
+          next.foreach(_ ! Json.parse[GameChangeSelection](text))
         case StreamingChannel.Matchmaking =>
           next.foreach(_ ! Json.parse[Matchmaking](text))
         case _ =>

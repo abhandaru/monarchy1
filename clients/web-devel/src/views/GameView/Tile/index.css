@@ -1,0 +1,13 @@
+.root {
+  background: #EEE;
+  cursor: pointer;
+  margin: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.movement {
+  background-color: cornflowerblue;
+}

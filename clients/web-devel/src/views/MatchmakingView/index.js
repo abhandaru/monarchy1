@@ -6,7 +6,7 @@ import styles from './index.css';
 import { useSelector } from 'react-redux'
 
 const MatchmakingView = () => {
-  const onSeek = React.useCallback(() => streamProxy.send({name: 'ChallengeSeek'}));
+  const onSeek = React.useCallback(() => streamProxy.send('ChallengeSeek'));
   const userId = useSelector(_ => _.auth.userId);
   const challenges = useSelector(_ => _.matchmaking.challenges);
   const challengeTable = challenges.length > 0 ?

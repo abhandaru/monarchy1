@@ -4,18 +4,7 @@ import NavigationView from '~/components/layout/NavigationView';
 import styles from './index.css';
 import { gameFetch } from '~/state/actions';
 import { useSelector, useDispatch } from 'react-redux';
-import Piece from './Piece';
-
-const Tile = (props) => {
-  const { tile, size } = props;
-  const { piece, point } = tile;
-  const styleOverride = {width: size, height: size};
-  return (
-    <div style={styleOverride} className={styles.boardTile}>
-      {piece ? <Piece piece={piece} point={point} /> : null}
-    </div>
-  );
-}
+import Tile from './Tile';
 
 const Board = (props) => {
   const { tiles } = props;

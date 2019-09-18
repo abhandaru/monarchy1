@@ -38,10 +38,9 @@ const Piece = (props) => {
   const gameId = useSelector(_ => _.games.game && _.games.game.id);
   const onClick = React.useCallback(() => {
     if (gameId != null) {
-      const body = { gameId, point };
-      streamProxy.send({name: 'GameSelectTile', body });
+      streamProxy.send('GameSelectTile', { gameId, point });
     }
-  }, [point]);
+  }, [gameId, point]);
 
   // Overlay structure (evolving).
   const overlayEl = (

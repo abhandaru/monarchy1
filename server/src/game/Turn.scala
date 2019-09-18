@@ -7,9 +7,7 @@ case class MoveSelect(p: Vec) extends TurnAction
 case class AttackSelect(pat: Deltas) extends TurnAction
 case class DirSelect(dir: Vec) extends TurnAction
 
-case class Turn(
-  actions: Seq[TurnAction] = Nil
-) {
+case class Turn(actionStack: Seq[TurnAction] = Nil) {
   import Reject._
 
   def act(action: TurnAction): Change[Turn] = {
@@ -21,23 +19,25 @@ case class Turn(
       case DirSelect(dir) if !canDir => CannotChangeDirection
     }
     error match {
-      case None => Accept(this.copy(actions = actions :+ action))
+      case None => Accept(this.copy(actionStack = action +: actionStack))
       case Some(reject) => reject
     }
   }
 
+  def actions: Seq[TurnAction] = actionStack.reverse
+
   // Action extractors
   def select: Option[Vec] =
-    actions.collectFirst { case TileSelect(p) => p }
+    actionStack.collectFirst { case TileSelect(p) => p }
 
   def move: Option[Vec] =
-    actions.collectFirst { case MoveSelect(p) => p }
+    actionStack.collectFirst { case MoveSelect(p) => p }
 
   def attack: Option[Deltas] =
-    actions.collectFirst { case AttackSelect(pat) => pat }
+    actionStack.collectFirst { case AttackSelect(pat) => pat }
 
   def dir: Option[Vec] =
-    actions.collectFirst { case DirSelect(dir) => dir }
+    actionStack.collectFirst { case DirSelect(dir) => dir }
 
   // State transition checks
   def canSelect: Boolean =

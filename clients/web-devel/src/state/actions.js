@@ -17,7 +17,7 @@ export const matchmakingSet = (challenges) =>
   createAction(Types.MATCHMAKING_SET, challenges);
 
 export const ping = () => {
-  streamProxy.send({ name: 'Ping' });
+  streamProxy.send('Ping');
   return createAction(Types.PING, { at: clockAt() });
 };
 
@@ -34,3 +34,6 @@ export const gameFetch = (id) => (dispatch) => {
     return r.data.game;
   });
 };
+
+export const gameSetSelections = (selections) =>
+  createAction(Types.GAME_SET_SELECTIONS, selections);

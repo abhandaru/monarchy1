@@ -5,13 +5,13 @@ scala_library(
   visibility=['//visibility:public'],
   deps=[
     '//3rdparty/jvm/com/github/etaty:rediscala',
-    '//3rdparty/jvm/com/typesafe/akka:akka_actor',
     '//server/src/auth',
     '//server/src/dal',
     '//server/src/dal-write',
     '//server/src/game',
     '//server/src/streaming/core',
-    '//server/src/marshalling',
+    '//server/src/marshalling/game',
+    '//server/src/marshalling/game-redis',
     '//server/src/util',
   ]
 )

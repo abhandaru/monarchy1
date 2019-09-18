@@ -10,8 +10,10 @@ const createWebSocket = () => (
 
 let webSocket = null;
 
-const send = (data) => {
-  webSocket && webSocket.send(JSON.stringify(data));
+const send = (name, body) => {
+  const bodyRaw = body != null ? JSON.stringify(body) : null;
+  const payload = JSON.stringify({ name, body: bodyRaw });
+  webSocket && webSocket.send(payload);
 };
 
 const connect = () => {

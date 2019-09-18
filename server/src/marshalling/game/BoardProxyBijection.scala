@@ -1,7 +1,7 @@
-package monarchy.marshalling
+package monarchy.marshalling.game
 
 import monarchy.game.{Board, Tile}
-import monarchy.util.Json
+import monarchy.util.Bijection
 
 case class BoardProxy(tiles: Seq[Tile])
 
