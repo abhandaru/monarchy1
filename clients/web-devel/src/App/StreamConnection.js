@@ -3,7 +3,7 @@ import * as React from 'react';
 import streamProxy from '~/api/streamProxy';
 import { useDispatch, useSelector } from 'react-redux'
 
-const PingPeriod = 5000;
+const PingPeriod = 15000;
 
 const messageConverter = (message) => {
   switch (message.name) {

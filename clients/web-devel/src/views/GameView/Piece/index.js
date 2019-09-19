@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Badge from 'react-bootstrap/Badge';
 import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import streamProxy from '~/api/streamProxy';
 
 const StatusItem = (props) => {
   const { label, children } = props;
@@ -20,7 +19,7 @@ const StatusItem = (props) => {
 };
 
 const Piece = (props) => {
-  const { piece, point } = props;
+  const { piece } = props;
   const {
     id,
     order,
@@ -33,14 +32,6 @@ const Piece = (props) => {
     currentEffects,
     blockingAjustment
   } = piece;
-
-  // Connection with global state.
-  const gameId = useSelector(_ => _.games.game && _.games.game.id);
-  const onClick = React.useCallback(() => {
-    if (gameId != null) {
-      streamProxy.send('GameSelectTile', { gameId, point });
-    }
-  }, [gameId, point]);
 
   // Overlay structure (evolving).
   const overlayEl = (
@@ -62,7 +53,7 @@ const Piece = (props) => {
 
   return (
     <OverlayTrigger trigger='hover' placement='top' overlay={overlayEl}>
-      <div className={styles.root} onClick={onClick}>
+      <div className={styles.root}>
         {order}
       </div>
     </OverlayTrigger>

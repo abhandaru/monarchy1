@@ -28,6 +28,11 @@ object GameSelectTile {
   case class Body(gameId: String, point: Vec)
 }
 
+case class GameDeselectTile(auth: Authenticated, body: GameDeselectTile.Body) extends StreamAction
+object GameDeselectTile {
+  case class Body(gameId: String)
+}
+
 /**
  * Intermediate actions
  *
