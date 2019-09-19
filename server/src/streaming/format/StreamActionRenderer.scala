@@ -5,37 +5,27 @@ import monarchy.util.{Json, Async}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-abstract class ActionRenderer[T <: StreamAction: ClassTag] extends (T => Future[String]) {
+trait ActionRenderer[T <: StreamAction] extends (T => Future[Option[String]])
+
+abstract class BasicActionRenderer[T <: StreamAction: ClassTag] extends ActionRenderer[T] {
   implicit def ec: ExecutionContext
   def render(axn: T): Future[_]
   def name: String = implicitly[ClassTag[T]].runtimeClass.getSimpleName
-  override def apply(axn: T): Future[String] = {
+  override def apply(axn: T): Future[Option[String]] = {
     render(axn).map { data =>
-      Json.stringify(Map("name" -> name, "data" -> data))
+      Some(Json.stringify(Map("name" -> name, "data" -> data)))
     }
   }
 }
 
-// TODO: Move this to the proxy pattern (see monarchy.streaming.process)
-case class StreamActionRenderer(receive: PartialFunction[StreamAction, Future[String]])(
-  implicit ec: ExecutionContext) {
-
-  def apply(action: StreamAction): Future[Option[String]] = {
-    receive.isDefinedAt(action) match {
-      case true => receive(action).map(Some(_))
-      case false => Async.None
-    }
-  }
-}
-
-class PongRenderer(implicit val ec: ExecutionContext) extends ActionRenderer[Pong] {
+class PongRenderer(implicit val ec: ExecutionContext) extends BasicActionRenderer[Pong] {
   override def render(axn: Pong) = Future.successful(axn.at)
 }
 
-class RedisRawRenderer(implicit val ec: ExecutionContext) extends ActionRenderer[RedisRaw] {
+class RedisRawRenderer(implicit val ec: ExecutionContext) extends BasicActionRenderer[RedisRaw] {
   override def render(axn: RedisRaw) = Future.successful(axn.text)
 }
 
-class GameCreateRenderer(implicit val ec: ExecutionContext) extends ActionRenderer[GameCreate] {
+class GameCreateRenderer(implicit val ec: ExecutionContext) extends BasicActionRenderer[GameCreate] {
   override def render(axn: GameCreate) = Future.successful(Map("gameId" -> axn.gameId))
 }

@@ -2,7 +2,7 @@ package monarchy.graphql
 
 import monarchy.dal
 import monarchy.game
-import monarchy.marshalling.GameJson
+import monarchy.marshalling.game.GameStringDeserializer
 import monarchy.util.Json
 import sangria.schema._
 import scala.concurrent.ExecutionContext
@@ -80,12 +80,9 @@ object QuerySchema {
       }),
       Field("state", OptionType(GameStateType), resolve = { node =>
         import node.ctx.executionContext
+        import GameStringDeserializer._
         val gameId = node.value.id
-        val stateReq = node.ctx.redisCli.get[String](s"monarchy/streaming/game/$gameId")
-        stateReq.map {
-          case Some(json) => Some(GameJson.parse[game.Game](json))
-          case None => None
-        }
+        node.ctx.redisCli.get[game.Game](s"monarchy/streaming/game/$gameId")
       })
     )
   )
@@ -117,7 +114,9 @@ object QuerySchema {
   lazy val PieceType = ObjectType(
     "Piece",
     fields[GraphqlContext, game.Piece](
-      Field("id", StringType, resolve = _.value.conf.toString),
+      Field("id", StringType, resolve = _.value.id.id.toString),
+      Field("order", StringType, resolve = _.value.conf.toString),
+      Field("name", StringType, resolve = _.value.conf.name),
       Field("playerId", StringType, resolve = _.value.playerId.id.toString),
       Field("currentHealth", IntType, resolve = _.value.currentHealth),
       Field("currentWait", IntType, resolve = _.value.currentWait),
@@ -128,7 +127,9 @@ object QuerySchema {
         }
       }),
       Field("currentFocus", BooleanType, resolve = _.value.currentFocus),
-      Field("blockingAjustment", FloatType, resolve = _.value.blockingAjustment)
+      Field("currentBlocking", FloatType, resolve = { node =>
+        node.value.conf.blocking + node.value.blockingAjustment
+      })
     )
   )
 }

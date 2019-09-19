@@ -16,7 +16,15 @@ const INITIAL_MATCHMAKING = {
 
 const INITIAL_GAMES = {
   recent: [],
-  game: null
+  game: null,
+  gameSelections: {
+    turnState: 'Initial',
+    selection: null,
+    piece: null,
+    movements: [],
+    directions: [],
+    attacks: []
+  }
 };
 
 const auth = (state = INITIAL_AUTH, action) => {
@@ -77,6 +85,14 @@ const games = (state = INITIAL_GAMES, action) => {
       return {
         ...state,
         game: action.payload
+      };
+    case Types.GAME_SET_SELECTIONS:
+      return {
+        ...state,
+        gameSelections: {
+          ...state.gameSelections,
+          ...action.payload
+        }
       };
     default:
       return state;

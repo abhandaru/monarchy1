@@ -9,7 +9,7 @@ import akka.stream.scaladsl._
 import java.net.InetSocketAddress
 import monarchy.auth.Auth
 import monarchy.streaming.core._
-import monarchy.streaming.format.StreamActionRenderer
+import monarchy.streaming.format.ActionRendererProxy
 import monarchy.streaming.process.ClientActionProxy
 import redis.RedisClient
 import scala.concurrent.duration._
@@ -21,7 +21,7 @@ case class MessageTopologyBuilder(
 )(implicit
   ec: ExecutionContext,
   actorSys: ActorSystem,
-  actionRenderer: StreamActionRenderer,
+  actionRendererProxy: ActionRendererProxy,
   clientActionProxy: ClientActionProxy,
   materializer: ActorMaterializer,
   redisClient: RedisClient
@@ -36,6 +36,7 @@ case class MessageTopologyBuilder(
         .mapConcat(drainNonText)
         .mapAsync(1)(resolveText)
         .mapConcat(ActionExtractor(auth, _))
+        .log("message-topology-builder.sink")
         .to(Sink.actorRef[StreamAction](clientRef, PoisonPill))
     }
 
@@ -46,7 +47,8 @@ case class MessageTopologyBuilder(
           redisProxyRef ! Connect(ref)
           NotUsed
         }
-        .mapAsync(1)(actionRenderer.apply)
+        .mapAsync(1)(actionRendererProxy)
+        .log("message-topology-builder.source")
         .collect(liftAsMessage)
     }
 
@@ -64,6 +66,7 @@ case class MessageTopologyBuilder(
 
   def resolveText(tm: TextMessage): Future[String] = {
     tm.toStrict(5.seconds).map(_.text)
+      .map { t => println(s"[message-topology-builder] message=$t"); t }
   }
 
   def liftAsMessage: PartialFunction[Option[String], TextMessage] = {

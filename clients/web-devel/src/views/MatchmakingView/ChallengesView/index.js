@@ -8,10 +8,10 @@ import { useSelector } from 'react-redux'
 const ChallengeView = (props) => {
   const { challenge } = props;
   const userId = useSelector(_ => _.auth.userId);
-  const onCancel = React.useCallback(() => streamProxy.send({name: 'ChallengeSeekCancel'}));
+  const onCancel = React.useCallback(() => streamProxy.send('ChallengeSeekCancel'));
   const onAccept = React.useCallback(() => {
-    const body = JSON.stringify({ opponentId: challenge.userId });
-    streamProxy.send({name: 'ChallengeAccept', body });
+    const body = { opponentId: challenge.userId };
+    streamProxy.send('ChallengeAccept', body);
   });
   // Allow user to cancel their own seek, or accept another.
   const action = userId == challenge.userId ?

@@ -4,22 +4,10 @@ import NavigationView from '~/components/layout/NavigationView';
 import styles from './index.css';
 import { gameFetch } from '~/state/actions';
 import { useSelector, useDispatch } from 'react-redux';
-
-const Tile = (props) => {
-  const { tile, size } = props;
-  const { piece } = tile;
-  const styleOverride = {width: size, height: size};
-  // const classOverride = classnames(styles.boardTile, tile.piece && styles.boardTilePyromancer);
-  const classOverride = styles.boardTile;
-  return (
-    <div style={styleOverride} className={classOverride}>
-      {piece ? piece.id : null}
-    </div>
-  );
-}
+import Tile from './Tile';
 
 const Board = (props) => {
-  const { tiles } = props;
+  const { currentPlayerId, tiles } = props;
   const maxRow = tiles.reduce((z, t) => Math.max(t.point.i, z), 0);
   const size = 'calc(' + (100 / (maxRow + 1)) + 'vmin - 16px)';
   const grid = [...Array(maxRow + 1).keys()]
@@ -31,6 +19,7 @@ const Board = (props) => {
       <div key={i} className={styles.boardRow}>{row.map((tile, j) =>
         <Tile
           key={j}
+          currentPlayerId={currentPlayerId}
           tile={tile}
           size={size}
         />
@@ -53,7 +42,12 @@ const GameView = (props) => {
     <>
       <NavigationView />
       <div className={styles.root}>
-        {game ? <Board tiles={game.state.tiles} /> : null}
+        {game ?
+          <Board
+            tiles={game.state.tiles}
+            currentPlayerId={game.state.currentPlayerId}
+          /> : null
+        }
       </div>
     </>
   );

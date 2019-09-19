@@ -1,4 +1,4 @@
-package monarchy.marshalling
+package monarchy.marshalling.game
 
 import org.scalatest.{Matchers, WordSpec}
 import scala.util.Random

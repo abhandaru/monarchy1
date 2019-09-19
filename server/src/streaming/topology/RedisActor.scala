@@ -12,7 +12,7 @@ object RedisActor {
   val DefualtChannels = Seq(Public, Matchmaking)
   val DefaultPatterns = Nil
   val ConnectionCallback: Boolean => Unit = {
-    ok => println(s"connected: $ok")
+    ok => println(s"[redis-actor] connected: $ok")
   }
 
   def channels(auth: Auth): Seq[String] = DefualtChannels

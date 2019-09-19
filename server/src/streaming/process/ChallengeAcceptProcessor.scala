@@ -3,7 +3,7 @@ package monarchy.streaming.process
 import monarchy.dal
 import monarchy.dalwrite.{GameNode, WriteQueryBuilder}
 import monarchy.game._
-import monarchy.marshalling.GameJsonObjectMapper
+import monarchy.marshalling.game.GameJson
 import monarchy.streaming.core._
 import monarchy.util.{Async, Json}
 import redis.RedisClient
@@ -25,7 +25,7 @@ class ChallengeAcceptProcessor(implicit
   import ChallengeAcceptProcessor._
   import dal.PostgresProfile.Implicits._
 
-  override def apply(axn: ChallengeAccept): Future[_] = {
+  override def apply(axn: ChallengeAccept): Future[Unit] = {
     val ChallengeAccept(auth, body) = axn
     val userId = auth.userId
     val opponentUserId = body.opponentId.toLong
@@ -68,12 +68,12 @@ class ChallengeAcceptProcessor(implicit
       seed = game.data.seed,
       players = game.players.map { player =>
         Player(
-          id = PlayerId(player.id),
+          id = PlayerId(player.userId),
           formation = DefaultFormation
         )
       }
     )
-    val liveGameRep = Json.stringifyWith(GameJsonObjectMapper, liveGame)
+    val liveGameRep = GameJson.stringify(liveGame)
     redisCli.set(StreamingKey.Game(game.data.id), liveGameRep)
   }
 

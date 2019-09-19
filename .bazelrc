@@ -1,4 +1,5 @@
 build --strategy=Scalac=worker
 build --worker_sandboxing
+build --incompatible_disable_deprecated_attr_params=false
 
 test --test_output=all

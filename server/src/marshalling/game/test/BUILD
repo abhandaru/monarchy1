@@ -4,7 +4,7 @@ scala_test(
   srcs=glob(['*.scala']),
   deps=[
     '//server/src/game',
-    '//server/src/marshalling',
+    '//server/src/marshalling/game',
     '//server/src/util',
   ]
 )

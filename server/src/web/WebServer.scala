@@ -41,5 +41,5 @@ object WebServer extends App {
   val routeLogged = DebuggingDirectives.logRequestResult("LOG:", Logging.InfoLevel)(route)
   val routeBindings = Http().bindAndHandle(routeLogged, HerokuModule.Host, port)
 
-  println(s"web-server online at port=$port")
+  println(s"[monarchy-web] online at port=$port")
 }

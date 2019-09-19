@@ -26,16 +26,18 @@ const query = gql`
           }
           piece {
             id
+            order
+            name
             playerId
             currentWait
             currentHealth
+            currentBlocking
             currentDirection {
               i
               j
             }
             currentFocus
             currentEffects
-            blockingAjustment
           }
         }
       }

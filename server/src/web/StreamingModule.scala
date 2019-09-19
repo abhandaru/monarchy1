@@ -18,19 +18,5 @@ object StreamingModule {
     ec: ExecutionContext,
     queryCli: QueryClient,
     redisCli: RedisClient
-  ): StreamActionRenderer = {
-    // Just cache these.
-    val gameCreate = new GameCreateRenderer
-    val matchmaking = new MatchmakingRenderer
-    val pong = new PongRenderer
-    val redisRaw = new RedisRawRenderer
-
-    // Give parent renderer a mapping spec.
-    StreamActionRenderer({
-      case axn: Matchmaking => matchmaking(axn)
-      case axn: GameCreate => gameCreate(axn)
-      case axn: Pong => pong(axn)
-      case axn: RedisRaw => redisRaw(axn)
-    })
-  }
+  ): ActionRendererProxy = new ActionRendererProxy
 }

@@ -1,6 +1,7 @@
-package monarchy.marshalling
+package monarchy.marshalling.game
 
 import monarchy.game._
+import monarchy.util.StringBijection
 
 object PieceConfStringBijection extends StringBijection[PieceConf] {
   override def apply(conf: PieceConf): String = conf.toString

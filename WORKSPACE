@@ -1,5 +1,5 @@
 # update this as needed
-RULES_SCALA_VERSION='f3113fb6e9e35cb8f441d2305542026d98afc0a2'
+RULES_SCALA_VERSION='177e2eeb665899a0f116d20876c8c77b4ef27b98'
 load('@bazel_tools//tools/build_defs/repo:http.bzl', 'http_archive')
 
 http_archive(

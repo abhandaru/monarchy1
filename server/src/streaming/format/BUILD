@@ -6,6 +6,8 @@ scala_library(
   deps=[
     '//3rdparty/jvm/com/github/etaty:rediscala',
     '//server/src/dal',
+    '//server/src/game',
+    '//server/src/marshalling/game-redis',
     '//server/src/streaming/core',
     '//server/src/util',
   ]
