@@ -53,5 +53,5 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
     select.nonEmpty && attack.isEmpty && dir.isEmpty
 
   def canDir: Boolean =
-    dir.isEmpty
+    select.nonEmpty && dir.isEmpty
 }
