@@ -18,6 +18,7 @@ class ClientActionProxy(implicit
   val challengeSeekCancel = new ChallengeSeekCancelProcessor
   val challengeAccept = new ChallengeAcceptProcessor
   val gameSelectTile = new GameSelectTileProcessor
+  val gameDeselectTile = new GameDeselectTileProcessor
 
   override def apply(action: StreamAction): Future[Unit] = {
     action match {
@@ -25,7 +26,10 @@ class ClientActionProxy(implicit
       case axn: ChallengeSeekCancel => challengeSeekCancel(axn)
       case axn: ChallengeAccept => challengeAccept(axn)
       case axn: GameSelectTile => gameSelectTile(axn)
-      case _ => Async.Unit
+      case axn: GameDeselectTile => gameDeselectTile(axn)
+      case axn =>
+        println(s"[client-action-proxy] unrecognized [[StreamAction]] of $axn")
+        Async.Unit
     }
   }
 }

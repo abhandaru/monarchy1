@@ -21,6 +21,8 @@ object ActionExtractor {
         Iterable(ChallengeSeekCancel(a))
       case ("GameSelectTile", a: Authenticated, Some(s)) =>
         Iterable(GameSelectTile(a, Json.parse[GameSelectTile.Body](s)))
+      case ("GameDeselectTile", a: Authenticated, Some(s)) =>
+        Iterable(GameDeselectTile(a, Json.parse[GameDeselectTile.Body](s)))
       case _ =>
         Iterable.empty
     }

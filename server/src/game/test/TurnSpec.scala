@@ -44,6 +44,15 @@ class TurnSpec extends WordSpec with Matchers {
       val Accept(next) = turnWithSelection
       assert(next.select.get == Vec(0, 0))
     }
+
+    "remove selection on deselect action" in {
+      val Accept(next) = turnWithSelection
+        .flatMap(_.act(TileDeselect))
+      assert(next.select == None)
+      assert(!turn.canMove)
+      assert(!turn.canAttack)
+      assert(!turn.canDir)
+    }
   }
 
 }

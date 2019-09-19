@@ -1,5 +1,4 @@
-.root {
-  background: #EEE;
+.tile {
   cursor: pointer;
   margin: 0.5px;
   display: flex;
@@ -8,12 +7,16 @@
   overflow: hidden;
 }
 
-.root:hover {
+.inactive {
+  background: #EEE;
+}
+
+.inactive:hover {
   background: rgba(238, 238, 283, 0.5);
 }
 
 .movement {
-  background-color: rgb(100, 149, 237);
+  background-color: rgba(100, 149, 237, 1);
 }
 
 .movement:hover {
@@ -21,9 +24,25 @@
 }
 
 .movementNonOwner {
-  background-color: rgba(100, 149, 237);
+  background-color: rgba(100, 149, 237, 0.5);
 }
 
 .movementNonOwner:hover {
   background-color: rgba(100, 149, 237, 0.5);
+}
+
+.attack {
+  background-color: rgba(255, 172, 77, 1);
+}
+
+.attack:hover {
+  background-color: rgba(255, 172, 77, 0.5);
+}
+
+.attackNonOwner {
+  background-color: rgba(255, 172, 77, 0.5);
+}
+
+.attackNonOwner:hover {
+  background-color: rgba(255, 172, 77, 0.25);
 }

@@ -9,6 +9,7 @@ case class DirSelect(dir: Vec) extends TurnAction
 
 case class Turn(actionStack: Seq[TurnAction] = Nil) {
   import Reject._
+  import Turn._
 
   def act(action: TurnAction): Change[Turn] = {
     val error = Option(action).collect {
@@ -19,8 +20,10 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
       case DirSelect(dir) if !canDir => CannotChangeDirection
     }
     error match {
-      case None => Accept(this.copy(actionStack = action +: actionStack))
       case Some(reject) => reject
+      case None =>
+        val nextStack = incrementallyConsolidate(actionStack, action)
+        Accept(this.copy(actionStack = nextStack))
     }
   }
 
@@ -54,4 +57,19 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
 
   def canDir: Boolean =
     select.nonEmpty && dir.isEmpty
+}
+
+object Turn {
+  val TileSelectMatcher: TurnAction => Boolean = {
+    case _: TileSelect => true
+    case _ => false
+  }
+
+  def incrementallyConsolidate(stack: Seq[TurnAction], action: TurnAction): Seq[TurnAction] = {
+    action match {
+      case TileDeselect => stack.filterNot(TileSelectMatcher)
+      case axn @ TileSelect(_) => axn +: stack.filterNot(TileSelectMatcher)
+      case axn => axn +: stack
+    }
+  }
 }
