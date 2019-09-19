@@ -18,7 +18,7 @@ const INITIAL_GAMES = {
   recent: [],
   game: null,
   gameSelections: {
-    turnState: 'Initial',
+    phase: 'Move',
     selection: null,
     piece: null,
     movements: [],
@@ -92,6 +92,14 @@ const games = (state = INITIAL_GAMES, action) => {
         gameSelections: {
           ...state.gameSelections,
           ...action.payload
+        }
+      };
+    case Types.GAME_SET_PHASE:
+      return {
+        ...state,
+        gameSelections: {
+          ...state.gameSelections,
+          phase: action.payload
         }
       };
     default:

@@ -1,0 +1,4 @@
+.boardRow {
+  display: flex;
+  justify-content: center;
+}

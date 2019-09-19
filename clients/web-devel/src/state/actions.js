@@ -37,3 +37,6 @@ export const gameFetch = (id) => (dispatch) => {
 
 export const gameSetSelections = (selections) =>
   createAction(Types.GAME_SET_SELECTIONS, selections);
+
+export const gameSetPhase = (phase) =>
+  createAction(Types.GAME_SET_PHASE, phase);

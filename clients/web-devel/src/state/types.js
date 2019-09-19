@@ -5,4 +5,5 @@ export const PONG = 'APP/PONG';
 export const GAMES_SET_RECENT = 'APP/GAMES_SET_RECENT';
 export const GAME_FETCH = 'APP/GAME_FETCH';
 export const GAME_FETCHED = 'APP/GAME_FETCHED';
+export const GAME_SET_PHASE = 'APP/GAME_SET_PHASE';
 export const GAME_SET_SELECTIONS = 'APP/GAME_SET_SELECTIONS';
