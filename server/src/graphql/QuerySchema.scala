@@ -91,6 +91,7 @@ object QuerySchema {
     "GameState",
     fields[GraphqlContext, game.Game](
       Field("currentPlayerId", StringType, resolve = _.value.currentPlayer.id.id.toString),
+      Field("currentSelection", OptionType(VecType), resolve = _.value.currentSelection),
       Field("tiles", ListType(TileType), resolve = _.value.board.tiles)
     )
   )

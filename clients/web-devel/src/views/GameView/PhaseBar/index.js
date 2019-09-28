@@ -19,7 +19,6 @@ const PhaseBar = (props) => {
   const dispatch = useDispatch();
   const onSelect = React.useCallback(p => dispatch(gameSetPhase(p)));
   const phase = useSelector(_ => _.games.gameSelections.phase);
-
   const phaseEls = Object.keys(Phases).map(k => {
     const label = Phases[k];
     const disabled = phase === k;

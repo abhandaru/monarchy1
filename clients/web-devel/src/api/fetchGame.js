@@ -19,6 +19,10 @@ const query = gql`
       },
       state {
         currentPlayerId
+        currentSelection {
+          i
+          j
+        }
         tiles {
           point {
             i
