@@ -1,32 +1,12 @@
 import * as React from 'react';
+import Board from './Board';
 import classnames from 'classnames';
 import NavigationView from '~/components/layout/NavigationView';
+import PhaseBar from './PhaseBar';
 import styles from './index.css';
+import Tile from './Tile';
 import { gameFetch } from '~/state/actions';
 import { useSelector, useDispatch } from 'react-redux';
-import Tile from './Tile';
-
-const Board = (props) => {
-  const { currentPlayerId, tiles } = props;
-  const maxRow = tiles.reduce((z, t) => Math.max(t.point.i, z), 0);
-  const size = 'calc(' + (100 / (maxRow + 1)) + 'vmin - 16px)';
-  const grid = [...Array(maxRow + 1).keys()]
-    .map(i => tiles.filter(_ => _.point.i === i))
-    .map(_ => _.sort((a, b) => a.point.j - b.point.j));
-
-  return (
-    <div>{grid.map((row, i) =>
-      <div key={i} className={styles.boardRow}>{row.map((tile, j) =>
-        <Tile
-          key={j}
-          currentPlayerId={currentPlayerId}
-          tile={tile}
-          size={size}
-        />
-      )}</div>
-    )}</div>
-  );
-}
 
 const GameView = (props) => {
   const { gameId } = props.match.params;
@@ -43,10 +23,15 @@ const GameView = (props) => {
       <NavigationView />
       <div className={styles.root}>
         {game ?
-          <Board
-            tiles={game.state.tiles}
-            currentPlayerId={game.state.currentPlayerId}
-          /> : null
+          <>
+            <PhaseBar className={styles.phase} />
+            <Board
+              gameId={game.id}
+              currentSelection={game.state.currentSelection}
+              currentPlayerId={game.state.currentPlayerId}
+              tiles={game.state.tiles}
+            />
+          </> : null
         }
       </div>
     </>

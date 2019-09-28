@@ -21,7 +21,7 @@ trait PieceConf {
 
 case object Assassin extends PieceConf {
   import Deltas._
-  val name = "Divine Shadow"
+  val name = "Shadow Servant"
   val maxHealth = 35
   val maxWait = 1
   val power = 18
@@ -38,7 +38,7 @@ case object Assassin extends PieceConf {
 
 case object Knight extends PieceConf {
   import Deltas._
-  val name = "Divine Blade"
+  val name = "Broad Sword"
   val maxHealth = 50
   val maxWait = 1
   val power = 22
@@ -51,7 +51,7 @@ case object Knight extends PieceConf {
 
 case object Scout extends PieceConf {
   import Deltas._
-  val name = "Divine Arrow"
+  val name = "Noble Archer"
   val maxHealth = 40
   val maxWait = 2
   val power = 18

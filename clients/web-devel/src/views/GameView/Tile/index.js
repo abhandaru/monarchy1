@@ -1,9 +1,9 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import Piece from '~/views/GameView/Piece';
+import streamProxy from '~/api/streamProxy';
 import styles from './index.css';
 import { useSelector, useDispatch } from 'react-redux';
-import streamProxy from '~/api/streamProxy';
 
 const vecCompare = (a, b) =>
   a.i === b.i && a.j === b.j;
@@ -57,10 +57,10 @@ const Tile = (props) => {
   const selections = useSelector(_ => _.games.gameSelections);
 
   // Determine how this tile should be painted.
-  const { turnState, piece: pieceSelected, movements, attacks } = selections;
+  const { phase, piece: pieceSelected, movements, attacks } = selections;
   const currentControl = pieceSelected && (pieceSelected.playerId == currentPlayerId);
-  const paintAsMovement = turnState === 'Initial' && movements.some(_ => vecCompare(point, _));
-  const paintAsAttack = turnState === 'Attack' && attacks.some(_ => _.some(_ => vecCompare(point, _)));
+  const paintAsMovement = phase === 'Move' && movements.some(_ => vecCompare(point, _));
+  const paintAsAttack = phase === 'Attack' && attacks.some(_ => _.some(_ => vecCompare(point, _)));
 
   // Pick tile implementation.
   let Component = InactiveTile;

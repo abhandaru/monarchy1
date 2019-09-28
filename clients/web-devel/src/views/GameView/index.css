@@ -1,5 +1,12 @@
 .root {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.phase {
+  margin-bottom: 8px;
 }
 
 .boardRow {

@@ -33,6 +33,9 @@ const Piece = (props) => {
     blockingAjustment
   } = piece;
 
+  // Determine whether or not an avatar has been defined.
+  const avatarImage = styles[order];
+
   // Overlay structure (evolving).
   const overlayEl = (
     <Popover id={`popover-piece-${id}`}>
@@ -54,7 +57,9 @@ const Piece = (props) => {
   return (
     <OverlayTrigger trigger='hover' placement='top' overlay={overlayEl}>
       <div className={styles.root}>
-        {order}
+        <div className={classnames(styles.avatar, avatarImage)}>
+          {avatarImage == null ? order : null}
+        </div>
       </div>
     </OverlayTrigger>
   );
