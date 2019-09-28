@@ -1,10 +1,13 @@
+.root,
+.avatar {
+  align-self: stretch;
+  flex-grow: 1;
+}
+
 .root {
-  background-color: rgba(119, 119, 119, 0.5);
-  height: 100%;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .statusItem {
@@ -15,4 +18,28 @@
 
 .statusItemLabel {
   margin-right: 8px;
+}
+
+.avatar {
+  border-radius: 50%;
+  background-color: rgba(119, 119, 119, 0.5);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.avatar.Cleric {
+  background-image: url(./images/cleric.png);
+}
+
+.avatar.Knight {
+  background-image: url(./images/knight.png);
+}
+
+.avatar.Scout {
+  background-image: url(./images/scout.png);
+}
+
+.avatar.Pyromancer {
+  background-image: url(./images/pyromancer.png);
 }
