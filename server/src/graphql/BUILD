@@ -4,9 +4,9 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '//3rdparty/jvm/com/github/etaty:rediscala',
-    '//3rdparty/jvm/org/sangria_graphql:sangria',
-    '//3rdparty/jvm/org/sangria_graphql:sangria_marshalling_api',
+    '@maven//:com/github/etaty:rediscala',
+    '@maven//:org/sangria_graphql:sangria',
+    '@maven//:org/sangria_graphql:sangria_marshalling_api',
     '//server/src/auth',
     '//server/src/dal',
     '//server/src/game',
@@ -14,7 +14,7 @@ scala_library(
     '//server/src/util',
   ],
   exports=[
-    '//3rdparty/jvm/org/parboiled',
+    '@maven//:org/parboiled',
   ],
   scalacopts=['-deprecation']
 )

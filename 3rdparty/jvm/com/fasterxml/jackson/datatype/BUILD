@@ -5,9 +5,9 @@ java_library(
         "//external:jar/com/fasterxml/jackson/datatype/jackson_datatype_jsr310"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/com/fasterxml/jackson/core:jackson_annotations",
-        "//3rdparty/jvm/com/fasterxml/jackson/core:jackson_core",
-        "//3rdparty/jvm/com/fasterxml/jackson/core:jackson_databind"
+        "@maven//:com/fasterxml/jackson/core:jackson_annotations",
+        "@maven//:com/fasterxml/jackson/core:jackson_core",
+        "@maven//:com/fasterxml/jackson/core:jackson_databind"
     ],
     visibility = [
         "//visibility:public"

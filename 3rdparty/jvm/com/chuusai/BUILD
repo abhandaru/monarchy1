@@ -5,8 +5,8 @@ java_library(
         "//external:jar/com/chuusai/shapeless_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/org/scala_lang:scala_library",
-        "//3rdparty/jvm/org/typelevel:macro_compat_2_12"
+        "@maven//:org/scala_lang:scala_library",
+        "@maven//:org/typelevel:macro_compat_2_12"
     ],
     visibility = [
         "//3rdparty/jvm:__subpackages__"

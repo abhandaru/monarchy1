@@ -5,7 +5,7 @@ java_library(
         "//external:jar/io/jsonwebtoken/jjwt"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/com/fasterxml/jackson/core:jackson_databind"
+        "@maven//:com/fasterxml/jackson/core:jackson_databind"
     ],
     visibility = [
         "//visibility:public"

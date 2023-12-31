@@ -5,8 +5,8 @@ java_library(
         "//external:jar/org/sangria_graphql/macro_visit_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/org/scala_lang:scala_library",
-        "//3rdparty/jvm/org/scala_lang:scala_reflect"
+        "@maven//:org/scala_lang:scala_library",
+        "@maven//:org/scala_lang:scala_reflect"
     ],
     visibility = [
         "//3rdparty/jvm:__subpackages__"
@@ -21,9 +21,9 @@ scala_import(
         "//external:jar/org/sangria_graphql/sangria_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/org/parboiled:parboiled",
-        "//3rdparty/jvm/org/scala_lang:scala_library",
-        "//3rdparty/jvm/org/scala_lang:scala_reflect",
+        "@maven//:org/parboiled:parboiled",
+        "@maven//:org/scala_lang:scala_library",
+        "@maven//:org/scala_lang:scala_reflect",
         ":macro_visit_2_12",
         ":sangria_marshalling_api",
         ":sangria_streaming_api_2_12"
@@ -41,7 +41,7 @@ scala_import(
         "//external:jar/org/sangria_graphql/sangria_marshalling_api_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/org/scala_lang:scala_library"
+        "@maven//:org/scala_lang:scala_library"
     ],
     visibility = [
         "//visibility:public"
@@ -56,7 +56,7 @@ java_library(
         "//external:jar/org/sangria_graphql/sangria_streaming_api_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/org/scala_lang:scala_library"
+        "@maven//:org/scala_lang:scala_library"
     ],
     visibility = [
         "//3rdparty/jvm:__subpackages__"

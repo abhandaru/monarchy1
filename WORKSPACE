@@ -48,13 +48,22 @@ load("@io_bazel_rules_scala//testing:scalatest.bzl", "scalatest_repositories", "
 scalatest_repositories()
 scalatest_toolchain()
 
+# External dependencies
+RULES_JVM_EXTERNAL_TAG = "4.5"
+RULES_JVM_EXTERNAL_SHA = "b17d7388feb9bfa7f2fa09031b32707df529f26c91ab9e5d909eb1676badd9a6"
+
 http_archive(
-  name = "io_bazel_rules_jvm_external",
-  urls = ["https://github.com/bazelbuild/rules_jvm_external/archive/3.2.zip"],
-  strip_prefix = "rules_jvm_external-3.2",
+  name = "rules_jvm_external",
+  strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
+  sha256 = RULES_JVM_EXTERNAL_SHA,
+  url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
 )
 
-load("@io_bazel_rules_jvm_external//:defs.bzl", "maven_install")
+load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
+rules_jvm_external_deps()
+
+load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
+rules_jvm_external_setup()
 
 maven_install(
   artifacts = [

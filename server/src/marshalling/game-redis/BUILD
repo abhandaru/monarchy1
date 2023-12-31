@@ -4,8 +4,8 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '//3rdparty/jvm/com/typesafe/akka:akka_actor',
-    '//3rdparty/jvm/com/github/etaty:rediscala',
+    '@maven//:com/typesafe/akka:akka_actor',
+    '@maven//:com/github/etaty:rediscala',
     '//server/src/marshalling/game',
     '//server/src/util',
   ]

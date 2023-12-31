@@ -5,7 +5,7 @@ java_library(
         "//external:jar/org/scala_stm/scala_stm_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/org/scala_lang:scala_library"
+        "@maven//:org/scala_lang:scala_library"
     ],
     visibility = [
         "//3rdparty/jvm:__subpackages__"

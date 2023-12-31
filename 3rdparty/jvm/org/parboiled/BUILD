@@ -5,8 +5,8 @@ scala_import(
         "//external:jar/org/parboiled/parboiled_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/com/chuusai:shapeless_2_12",
-        "//3rdparty/jvm/org/scala_lang:scala_library"
+        "@maven//:com/chuusai:shapeless_2_12",
+        "@maven//:org/scala_lang:scala_library"
     ],
     visibility = [
         "//visibility:public"

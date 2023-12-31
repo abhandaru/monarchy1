@@ -4,7 +4,7 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '//3rdparty/jvm/io/jsonwebtoken:jjwt',
+    '@maven//:io/jsonwebtoken:jjwt',
     '//server/src/dal',
   ]
 )

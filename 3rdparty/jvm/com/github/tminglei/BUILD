@@ -5,9 +5,9 @@ scala_import(
         "//external:jar/com/github/tminglei/slick_pg_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/com/typesafe/slick:slick",
-        "//3rdparty/jvm/org/postgresql:postgresql",
-        "//3rdparty/jvm/org/scala_lang:scala_reflect",
+        "@maven//:com/typesafe/slick:slick",
+        "@maven//:org/postgresql:postgresql",
+        "@maven//:org/scala_lang:scala_reflect",
         ":slick_pg_core"
     ],
     visibility = [
@@ -23,9 +23,9 @@ scala_import(
         "//external:jar/com/github/tminglei/slick_pg_core_2_12"
     ],
     runtime_deps = [
-        "//3rdparty/jvm/com/typesafe/slick:slick",
-        "//3rdparty/jvm/org/postgresql:postgresql",
-        "//3rdparty/jvm/org/scala_lang:scala_reflect"
+        "@maven//:com/typesafe/slick:slick",
+        "@maven//:org/postgresql:postgresql",
+        "@maven//:org/scala_lang:scala_reflect"
     ],
     visibility = [
         "//visibility:public"
