@@ -1,10 +1,11 @@
 package monarchy.marshalling.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import monarchy.game._
 import monarchy.util.Json
 
-class GameJsonBijectionSpec extends WordSpec with Matchers {
+class GameJsonBijectionSpec extends AnyWordSpec with Matchers {
 
   object StubRandom extends scala.util.Random(5)
 

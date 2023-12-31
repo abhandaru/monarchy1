@@ -1,8 +1,9 @@
 package monarchy.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class DeltasSpec extends WordSpec with Matchers {
+class DeltasSpec extends AnyWordSpec with Matchers {
   import PlanarTooling.PlanarStringOps
 
   "Deltas" should {

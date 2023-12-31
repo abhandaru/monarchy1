@@ -4,7 +4,7 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '@maven//:com/github/etaty:rediscala',
+    '@maven//:com_github_etaty_rediscala_2_12',
     '//server/src/auth',
     '//server/src/dal',
     '//server/src/dal-write',

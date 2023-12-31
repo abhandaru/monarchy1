@@ -5,15 +5,15 @@ scala_library(
   visibility=['//visibility:public'],
   # Anything that depends on this package always needs these ones.
   exports=[
-    '@maven//:com/typesafe:config',
-    '@maven//:com/typesafe/slick',
-    '@maven//:com/github/tminglei:slick_pg',
-    '@maven//:com/github/tminglei:slick_pg_core',
+    '@maven//:com_typesafe_config',
+    '@maven//:com_typesafe_slick_slick_2_12',
+    '@maven//:com_github_tminglei_slick_pg_2_12',
+    '@maven//:com_github_tminglei_slick_pg_core_2_12',
   ],
   deps=[
-    '@maven//:com/typesafe:config',
-    '@maven//:com/typesafe/slick',
-    '@maven//:com/github/tminglei:slick_pg',
-    '@maven//:com/github/tminglei:slick_pg_core',
+    '@maven//:com_typesafe_config',
+    '@maven//:com_typesafe_slick_slick_2_12',
+    '@maven//:com_github_tminglei_slick_pg_2_12',
+    '@maven//:com_github_tminglei_slick_pg_core_2_12',
   ]
 )

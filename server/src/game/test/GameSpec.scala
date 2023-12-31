@@ -1,9 +1,10 @@
 package monarchy.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalactic.TolerantNumerics
 
-class GameSpec extends WordSpec with Matchers {
+class GameSpec extends AnyWordSpec with Matchers {
   import PlanarTooling.PlanarStringOps
   implicit val DoubleEq = TolerantNumerics.tolerantDoubleEquality(1e-3)
 

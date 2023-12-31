@@ -1,8 +1,9 @@
 package monarchy.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class KnightSpec extends WordSpec with Matchers {
+class KnightSpec extends AnyWordSpec with Matchers {
   import PlanarTooling.PlanarStringOps
 
   "Knight" should {

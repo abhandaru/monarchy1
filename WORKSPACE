@@ -27,18 +27,18 @@ load("@io_bazel_rules_scala//:scala_config.bzl", "scala_config")
 #   https://github.com/bazelbuild/rules_jvm_external
 scala_config()
 
-load("@io_bazel_rules_scala//scala:scala.bzl", "rules_scala_setup", "rules_scala_toolchain_deps_repositories")
-
 # loads other rules Rules Scala depends on
+load("@io_bazel_rules_scala//scala:scala.bzl", "rules_scala_setup")
 rules_scala_setup()
 
 # Loads Maven deps like Scala compiler and standard libs. On production projects you should consider
 # defining a custom deps toolchains to use your project libs instead
+load("@io_bazel_rules_scala//scala:scala.bzl", "rules_scala_toolchain_deps_repositories")
 rules_scala_toolchain_deps_repositories(fetch_sources = True)
 
-# load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
-# rules_proto_dependencies()
-# rules_proto_toolchains()
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+rules_proto_dependencies()
+rules_proto_toolchains()
 
 load("@io_bazel_rules_scala//scala:toolchains.bzl", "scala_register_toolchains")
 scala_register_toolchains()
@@ -65,6 +65,7 @@ rules_jvm_external_deps()
 load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
 rules_jvm_external_setup()
 
+load("@rules_jvm_external//:defs.bzl", "maven_install")
 maven_install(
   artifacts = [
     "com.fasterxml.jackson.core:jackson-annotations:2.14.2",
@@ -89,6 +90,9 @@ maven_install(
     "org.reactivestreams:reactive-streams:1.0.4",
     "org.sangria-graphql:sangria-marshalling-api_2.12:1.0.3",
     "org.sangria-graphql:sangria_2.12:1.4.2",
+    "org.scala-lang.modules:scala-collection-compat_2.12:2.4.3",
+    "org.scalactic:scalactic_2.12:3.1.0",
+    "org.scalatest:scalatest_2.12:3.1.0",
   ],
   repositories = [
     "https://repo.maven.apache.org/maven2",

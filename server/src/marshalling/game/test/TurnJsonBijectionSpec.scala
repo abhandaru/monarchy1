@@ -1,10 +1,11 @@
 package monarchy.marshalling.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import monarchy.game._
 import monarchy.util.Json
 
-class TurnJsonBijectionSpec extends WordSpec with Matchers {
+class TurnJsonBijectionSpec extends AnyWordSpec with Matchers {
 
   val emptyTurn = Turn()
 
