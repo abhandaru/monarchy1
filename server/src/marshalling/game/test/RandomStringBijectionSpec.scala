@@ -1,9 +1,10 @@
 package monarchy.marshalling.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import scala.util.Random
 
-class RandomStringBijectionSpec extends WordSpec with Matchers {
+class RandomStringBijectionSpec extends AnyWordSpec with Matchers {
 
   "RandomStringBijection" should {
     "correctly serialize random with internal state" in {

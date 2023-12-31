@@ -1,8 +1,9 @@
 package monarchy.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ChangeSpec extends WordSpec with Matchers {
+class ChangeSpec extends AnyWordSpec with Matchers {
 
   "Change" should {
     "correctly apply `map` for [[Accept]]" in {

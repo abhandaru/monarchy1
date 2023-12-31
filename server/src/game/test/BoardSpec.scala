@@ -1,8 +1,9 @@
 package monarchy.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class BoardSpec extends WordSpec with Matchers {
+class BoardSpec extends AnyWordSpec with Matchers {
 
   "Board$" should {
     "have correct Standard [[Board]]" in {

@@ -54,8 +54,8 @@ case class AuthRoute[T](filter: AuthFilter, controller: AuthController)(implicit
 }
 
 object AuthRoute {
-  val UserBearerKey = "X-Monarchy-Bearer-Token"
-  val UserIdKey = "X-Monarchy-User-Id"
+  val AuthorizationKey = "Authorization"
+  val IdKey = "X-M1-User-Id"
   val Reject = HttpResponse(StatusCodes.Unauthorized)
 
   def headers(hs: Seq[HttpHeader]): Option[(Long, String)] =
@@ -66,9 +66,9 @@ object AuthRoute {
 
   def extract(props: Map[String, String]): Option[(Long, String)] = {
     for {
-      rawUserId <- props.get(UserIdKey)
+      rawUserId <- props.get(IdKey)
       userId <- Try(rawUserId.toLong).toOption
-      userToken <- props.get(UserBearerKey)
-    } yield (userId, userToken)
+      bearerToken <- props.get(AuthorizationKey)
+    } yield (userId, bearerToken.stripPrefix("Bearer "))
   }
 }

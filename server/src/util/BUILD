@@ -4,17 +4,17 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_annotations',
-    '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_core',
-    '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_databind',
-    '//3rdparty/jvm/com/fasterxml/jackson/datatype:jackson_datatype_jsr310',
-    '//3rdparty/jvm/com/fasterxml/jackson/module:jackson_module_scala',
+    '@maven//:com_fasterxml_jackson_core_jackson_annotations',
+    '@maven//:com_fasterxml_jackson_core_jackson_core',
+    '@maven//:com_fasterxml_jackson_core_jackson_databind',
+    '@maven//:com_fasterxml_jackson_datatype_jackson_datatype_jsr310',
+    '@maven//:com_fasterxml_jackson_module_jackson_module_scala_2_12',
   ],
   exports=[
-    '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_annotations',
-    '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_core',
-    '//3rdparty/jvm/com/fasterxml/jackson/core:jackson_databind',
-    '//3rdparty/jvm/com/fasterxml/jackson/datatype:jackson_datatype_jsr310',
-    '//3rdparty/jvm/com/fasterxml/jackson/module:jackson_module_scala',
+    '@maven//:com_fasterxml_jackson_core_jackson_annotations',
+    '@maven//:com_fasterxml_jackson_core_jackson_core',
+    '@maven//:com_fasterxml_jackson_core_jackson_databind',
+    '@maven//:com_fasterxml_jackson_datatype_jackson_datatype_jsr310',
+    '@maven//:com_fasterxml_jackson_module_jackson_module_scala_2_12',
   ]
 )

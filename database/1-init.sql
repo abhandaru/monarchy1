@@ -19,7 +19,7 @@ CREATE TABLE users (
   UNIQUE(phone_number)
 );
 
-CREATE TRIGGER users_updated_at
+CREATE TRIGGER updated_at
 BEFORE UPDATE ON users
 FOR EACH ROW
 EXECUTE PROCEDURE update_timestamps();

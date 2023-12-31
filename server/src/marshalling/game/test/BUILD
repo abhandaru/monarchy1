@@ -3,6 +3,7 @@ scala_test(
   name='test',
   srcs=glob(['*.scala']),
   deps=[
+    '@maven//:org_scalatest_scalatest_2_12',
     '//server/src/game',
     '//server/src/marshalling/game',
     '//server/src/util',

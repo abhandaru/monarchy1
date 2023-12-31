@@ -1,8 +1,9 @@
 package monarchy.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class MatrixSpec extends WordSpec with Matchers {
+class MatrixSpec extends AnyWordSpec with Matchers {
 
   "Matrix" should {
     "correctly return original [[Matrix]] for `Identity` mult" in {

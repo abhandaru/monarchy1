@@ -1,8 +1,9 @@
 package monarchy.game
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class EffectGeometrySpec extends WordSpec with Matchers {
+class EffectGeometrySpec extends AnyWordSpec with Matchers {
   import EffectGeometry._
 
   "EffectGeometry.directionSnap" should {

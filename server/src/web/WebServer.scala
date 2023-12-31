@@ -23,6 +23,7 @@ object WebServer extends App {
 
   // Request handlers
   import AuthFilter._
+  // val statusController = new StatusController
   val rootController = AuthRoute(All, new RootController)
   val adminController = AuthRoute(Admin, new AdminController)
   val graphqlController = CorsModule.corsHandler(AuthRoute(All, new GraphqlController))

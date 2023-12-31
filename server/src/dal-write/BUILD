@@ -4,6 +4,7 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
+    '@maven//:org_scala_lang_modules_scala_collection_compat_2_12',
     '//server/src/dal'
   ]
 )
