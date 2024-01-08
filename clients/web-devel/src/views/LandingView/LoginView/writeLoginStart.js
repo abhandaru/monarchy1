@@ -7,6 +7,6 @@ export default function writeLoginStart(q) {
 
 const query = gql`
   mutation LoginStart($q: LoginStartQuery!) {
-    auth(q: $q)
+    loginStart(q: $q)
   }
 `;

@@ -11,8 +11,6 @@ const messageConverter = (message) => {
       return Actions.pong(message.data);
     case 'Matchmaking':
       return Actions.matchmakingSet(message.data);
-    case 'GameChangeSelection':
-      return Actions.gameSetSelections(message.data);
     default:
       return null;
   }
@@ -24,7 +22,6 @@ const StreamConnection = () => {
 
   // Equivalent of componentDidMount
   React.useEffect(() => {
-    console.log('componentDidMount')
     setInterval(() => dispatch(Actions.ping()), PingPeriod);
   }, []);
 

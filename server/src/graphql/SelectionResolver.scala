@@ -37,7 +37,7 @@ trait SelectionResolver extends Resolver[Unit, SelectionResolver.Data] with Stri
                 val channel = StreamingChannel.gameSelectTile(userId)
                 logger.info(s"selection updated on key=$gameKey")
                 redisCli.publish(channel, Json.stringify(event))
-                  .map(_ => format(game))
+                  .map(_ => format(nextGame))
             }
         }
     }
@@ -45,7 +45,7 @@ trait SelectionResolver extends Resolver[Unit, SelectionResolver.Data] with Stri
 
   private def format(game: Game): Data = {
     Data(
-      tile = game.currentTile,
+      game = game,
       movements = game.movements,
       directions = game.directions,
       attacks = game.attacks,
@@ -55,7 +55,7 @@ trait SelectionResolver extends Resolver[Unit, SelectionResolver.Data] with Stri
 
 object SelectionResolver {
   case class Data(
-    tile: Option[Tile],
+    game: Game,
     movements: Set[Vec] = Set.empty,
     directions: Set[Vec] = Set.empty,
     attacks: Set[Set[Vec]] = Set.empty

@@ -4,6 +4,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.HttpCookiePair
 import akka.http.scaladsl.server._
 import io.jsonwebtoken.{Jwts, MalformedJwtException, SignatureException}
+import java.net.URLDecoder
 import java.util.UUID
 import monarchy.auth._
 import monarchy.dal.{QueryClient, PostgresProfile, User}
@@ -27,6 +28,7 @@ case class AuthRoute[T](filter: AuthFilter, controller: AuthController)(implicit
 
   def fetchAuth(ctx: RequestContext): Future[Auth] = {
     val authLookup = headers(ctx.request.headers).orElse(cookies(ctx.request.cookies))
+    println(s"AUTH LOOKUP = $authLookup")
     authLookup match {
       case Some((userId, bearerToken)) => fetch(userId).map {
         // Missing authentication information
@@ -59,17 +61,20 @@ object AuthRoute {
   val IdKey = "X-M1-User-Id"
   val Reject = HttpResponse(StatusCodes.Unauthorized)
 
-  def headers(hs: Seq[HttpHeader]): Option[(UUID, String)] =
-    extract(hs.map { h => h.name -> h.value }.toMap)
+  private def headers(hs: Seq[HttpHeader]): Option[(UUID, String)] =
+    extract(hs.map { h => h.name -> normalize(h.value) }.toMap)
 
-  def cookies(cs: Seq[HttpCookiePair]): Option[(UUID, String)] =
-    extract(cs.map { c => c.name -> c.value }.toMap)
+  private def cookies(cs: Seq[HttpCookiePair]): Option[(UUID, String)] =
+    extract(cs.map { c => c.name -> normalize(c.value) }.toMap)
 
-  def extract(props: Map[String, String]): Option[(UUID, String)] = {
+  private def extract(props: Map[String, String]): Option[(UUID, String)] = {
     for {
       rawUserId <- props.get(IdKey)
       userId <- Try(UUID.fromString(rawUserId)).toOption
       bearerToken <- props.get(AuthorizationKey)
     } yield (userId, bearerToken.stripPrefix("Bearer "))
   }
+
+  private def normalize(raw: String): String =
+    URLDecoder.decode(raw, "UTF-8")
 }

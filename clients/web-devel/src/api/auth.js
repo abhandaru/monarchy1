@@ -6,13 +6,13 @@ const UserDataKey = 'X-M1-User-Data';
 
 const poll = () => {
   const userId = Cookies.get(UserKey);
-  const bearerTokey = Cookies.get(BearerKey);
+  const bearerToken = Cookies.get(BearerKey);
   const user = JSON.parse(Cookies.get(UserDataKey) || 'null');
   return {
     loggedIn: Boolean(userId),
     userId,
     user,
-    bearerTokey
+    bearerToken
   }
 };
 
@@ -28,7 +28,7 @@ const apply = (auth) => {
   const { userId, user, bearerToken } = auth;
   userId && Cookies.set(UserKey, userId);
   user && Cookies.set(UserDataKey, JSON.stringify(user));
-  bearerToken && Cookies.set(BearerKey, bearerToken);
+  bearerToken && Cookies.set(BearerKey, `Bearer ${bearerToken}`);
 };
 
 export default {

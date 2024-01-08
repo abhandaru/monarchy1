@@ -1,5 +1,5 @@
 import * as React from 'react';
-import streamProxy from '~/api/streamProxy';
+import writeSelect from '~/api/writeSelect';
 import styles from './index.css';
 import Tile from '~/views/GameView/Tile';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,8 +10,8 @@ const Board = (props) => {
   // Fetch selection for current selection, if any.
   React.useEffect(() => {
     if (currentSelection != null) {
-      const body = { gameId, point: currentSelection };
-      streamProxy.send('GameSelectTile', body);
+      const query = { gameId, point: currentSelection };
+      writeSelect(query);
     }
   }, []);
 

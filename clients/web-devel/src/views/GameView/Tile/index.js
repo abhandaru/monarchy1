@@ -1,8 +1,9 @@
+import * as Actions from '~/state/actions';
 import * as React from 'react';
 import classnames from 'classnames';
 import Piece from '~/views/GameView/Piece';
-import streamProxy from '~/api/streamProxy';
 import styles from './index.css';
+import writeSelect from '~/api/writeSelect';
 import { useSelector, useDispatch } from 'react-redux';
 
 const vecCompare = (a, b) =>
@@ -11,11 +12,16 @@ const vecCompare = (a, b) =>
 const InactiveTile = (props) => {
   const { children, style, gameId, point } = props;
   const className = classnames(styles.tile, styles.inactive);
+  const dispatch = useDispatch();
+
   const onClick = React.useCallback(() => {
     if (gameId) {
-      streamProxy.send('GameSelectTile', { gameId, point });
+      console.log('select', gameId, point);
+      writeSelect({ gameId, point }).then(r => {
+        dispatch(Actions.gameSetSelections(r.data.select));
+      });
     }
-  }, [gameId]);
+  }, [gameId, point]);
 
   return (
     <div style={style} className={className} onClick={onClick}>

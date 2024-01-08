@@ -1,7 +1,7 @@
 import fetch from '~/api/fetch';
 import gql from 'graphql-tag';
 
-export default function writeAuth(q) {
+export default function writeLogin(q) {
   return fetch(query)({ q });
 }
 

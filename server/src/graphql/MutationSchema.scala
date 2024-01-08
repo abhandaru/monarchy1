@@ -38,7 +38,7 @@ object MutationSchema {
         }
       ),
       Field("select", SelectionType, arguments = List(Args.Select), resolve = SelectResolver),
-      Field("select", SelectionType, arguments = List(Args.Deselect), resolve = DeselectResolver),
+      Field("deselect", SelectionType, arguments = List(Args.Deselect), resolve = DeselectResolver),
     )
   )
 
@@ -55,7 +55,11 @@ object MutationSchema {
   private val SelectionType = ObjectType(
     "Selection",
     fields[GraphqlContext, SelectionResolver.Data](
-      Field("tile", OptionType(QuerySchema.TileType), resolve = _.value.tile)
+      Field("selection", OptionType(QuerySchema.VecType), resolve = _.value.game.currentSelection),
+      Field("piece", OptionType(QuerySchema.PieceType), resolve = _.value.game.currentPiece),
+      Field("movements", ListType(QuerySchema.VecType), resolve = _.value.movements.toSeq),
+      Field("directions", ListType(QuerySchema.VecType), resolve = _.value.directions.toSeq),
+      Field("attacks", ListType(ListType(QuerySchema.VecType)), resolve = _.value.attacks.map(_.toSeq).toSeq),
     )
   )
 }

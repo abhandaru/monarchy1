@@ -16,29 +16,14 @@ import scala.concurrent.{Future, ExecutionContext}
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
 
-case class GraphqlBody(
-  query: String,
-  operationName: Option[String],
-  variables: Option[Map[String, Any]]
-)
-
-case class GraphqlErrors(errors: Seq[GraphqlError] = Nil)
-
-case class GraphqlError(
-  message: String,
-  locations: Seq[GraphqlLocation] = Nil
-)
-
-case class GraphqlLocation(
-  line: Int,
-  column: Int
-)
-
-class GraphqlController(implicit
-  ec: ExecutionContext,
-  sys: ActorSystem,
-  gqlContext: GraphqlContext
+class GraphqlController(
+    implicit
+    ec: ExecutionContext,
+    sys: ActorSystem,
+    gqlContext: GraphqlContext
 ) extends PostController[String] {
+  import GraphqlController._
+
   override def action(ctx: AuthContext, gqlRaw: String) = {
     val gql = Json.parse[GraphqlBody](gqlRaw)
     val execReq = QueryParser.parse(gql.query) match {
@@ -88,4 +73,20 @@ class GraphqlController(implicit
     case NonFatal(e) => GraphqlErrors(Seq(GraphqlError(message = e.getMessage)))
     case e => throw e
   }
+}
+
+object GraphqlController {
+  case class GraphqlBody(
+      query: String,
+      operationName: Option[String],
+      variables: Option[Map[String, Any]]
+  )
+
+  case class GraphqlErrors(errors: Seq[GraphqlError] = Nil)
+  case class GraphqlLocation(line: Int, column: Int)
+
+  case class GraphqlError(
+      message: String,
+      locations: Seq[GraphqlLocation] = Nil
+  )
 }
