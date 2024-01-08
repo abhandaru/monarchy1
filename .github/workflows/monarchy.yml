@@ -5,8 +5,10 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
+      - name: Cloning source
         uses: actions/checkout@v4
+      - name: Installing bazel
+        uses: bazelbuild/setup-bazelisk@v2
       - name: Running tests
         run: |
-          ls ${{ github.workspace }}
+          bazel test //...
