@@ -2,6 +2,7 @@ package monarchy.game
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import monarchy.testutil.Ids
 
 class BoardSpec extends AnyWordSpec with Matchers {
 
@@ -27,8 +28,8 @@ class BoardSpec extends AnyWordSpec with Matchers {
   }
 
   "Board" should {
-    val knight = PieceBuilder(PieceId(1), Knight, PlayerId(1), Vec(1, 0))
-    val shrub = PieceBuilder(PieceId(2), Shrub, PlayerId(1), Vec(1, 0))
+    val knight = PieceBuilder(PieceId(1), Knight, PlayerId(Ids.A), Vec(1, 0))
+    val shrub = PieceBuilder(PieceId(2), Shrub, PlayerId(Ids.A), Vec(1, 0))
     val board = BoardTooling.from(
       """
       |██░░░░░░░██
@@ -53,8 +54,8 @@ class BoardSpec extends AnyWordSpec with Matchers {
     }
 
     "return pieces for correct player" in {
-      assert(board.pieces(PlayerId(1)).nonEmpty)
-      assert(board.pieces(PlayerId(2)).isEmpty)
+      assert(board.pieces(PlayerId(Ids.A)).nonEmpty)
+      assert(board.pieces(PlayerId(Ids.B)).isEmpty)
     }
 
     "return correctly moved piece" in {

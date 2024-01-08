@@ -1,4 +1,4 @@
-[![Build Status](https://semaphoreci.com/api/v1/abhandaru/monarchy1/branches/master/badge.svg)](https://semaphoreci.com/abhandaru/monarchy1)
+[![Build Status](https://github.com/abhandaru/monarchy1/actions/workflows/monarchy.yml/badge.svg)](https://github.com/abhandaru/monarchy1/actions?query=branch%3Amaster)
 
 # Monarchy project
 
@@ -26,7 +26,16 @@ psql
 bazel run //server/src/web
 ```
 
-4. Route your browser to http://localhost:8080/admin
+4. Set up database schema and seed with some data.
+
+```bash
+cat ./database/1-init.sql | psql -d monarchy_local
+cat ./database/2-game-schema.sql | psql -d monarchy_local
+# and so on, will script this soon
+./database/seed.sh
+```
+
+5. Route your browser to http://localhost:8080/admin
 
 
 ### Client

@@ -3,6 +3,7 @@ package monarchy.game
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalactic.TolerantNumerics
+import monarchy.testutil.Ids
 
 class GameSpec extends AnyWordSpec with Matchers {
   import PlanarTooling.PlanarStringOps
@@ -11,16 +12,16 @@ class GameSpec extends AnyWordSpec with Matchers {
   val game = GameBuilder(
     seed = 77,
     players = Seq(
-      // This player gets rotated
-      Player(PlayerId(2L), Seq((Vec(4, 6), Knight), (Vec(5, 4), FrostGolem))),
       // This player stays in the same place
-      Player(PlayerId(1L), Seq((Vec(7, 7), Assassin), (Vec(8, 6), Scout)))
+      Player(PlayerId(Ids.A), Seq((Vec(7, 7), Assassin), (Vec(8, 6), Scout))),
+      // This player gets rotated
+      Player(PlayerId(Ids.B), Seq((Vec(4, 6), Knight), (Vec(5, 4), FrostGolem))),
     )
   )
 
   "Game" should {
     "correctly order players with seeded randoms" in {
-      assert(game.currentPlayer.id == PlayerId(1L))
+      assert(game.currentPlayer.id == PlayerId(Ids.A))
     }
 
     "have no current selection" in {
@@ -50,13 +51,13 @@ class GameSpec extends AnyWordSpec with Matchers {
     }
 
     "reject selection from player ID=2" in {
-      assert(game.tileSelect(PlayerId(2L), Vec(7, 7)) == Reject.ChangeOutOfTurn)
+      assert(game.tileSelect(PlayerId(Ids.B), Vec(7, 7)) == Reject.ChangeOutOfTurn)
     }
 
     //
     // Tests below will inspect state for a single valid tile selection by player 1.
     //
-    val selectionChange = game.tileSelect(PlayerId(1L), Vec(7, 7))
+    val selectionChange = game.tileSelect(PlayerId(Ids.A), Vec(7, 7))
 
     "accept selection from player ID=1" in {
       assert(selectionChange.accepted)
@@ -99,24 +100,24 @@ class GameSpec extends AnyWordSpec with Matchers {
 
     "reject move selection from player ID=2" in {
       val change = for {
-        g1 <- game.tileSelect(PlayerId(1L), Vec(7, 7))
-        g2 <- g1.moveSelect(PlayerId(2L), Vec(7, 8))
+        g1 <- game.tileSelect(PlayerId(Ids.A), Vec(7, 7))
+        g2 <- g1.moveSelect(PlayerId(Ids.B), Vec(7, 8))
       } yield g2
       assert(change == Reject.ChangeOutOfTurn)
     }
 
     "reject move selection from player ID=1 on opponent piece" in {
       val change = for {
-        g1 <- game.tileSelect(PlayerId(1L), Vec(6, 4))
-        g2 <- g1.moveSelect(PlayerId(1L), Vec(4, 5))
+        g1 <- game.tileSelect(PlayerId(Ids.A), Vec(6, 4))
+        g2 <- g1.moveSelect(PlayerId(Ids.A), Vec(4, 5))
       } yield g2
       assert(change == Reject.PieceActionWithoutOwnership)
     }
 
     "reject move selection from player ID=1 with bad coordinates" in {
       val change = for {
-        g1 <- game.tileSelect(PlayerId(1L), Vec(7, 7))
-        g2 <- g1.moveSelect(PlayerId(1L), Vec(6, 4))
+        g1 <- game.tileSelect(PlayerId(Ids.A), Vec(7, 7))
+        g2 <- g1.moveSelect(PlayerId(Ids.A), Vec(6, 4))
       } yield g2
       assert(change == Reject.IllegalMoveSelection)
     }
@@ -126,7 +127,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     //
     val moveChange = for {
       g1 <- selectionChange
-      g2 <- g1.moveSelect(PlayerId(1L), Vec(6, 5))
+      g2 <- g1.moveSelect(PlayerId(Ids.A), Vec(6, 5))
     } yield g2
 
     "accept move selection from player ID=1 with good coordinates" in {
@@ -217,7 +218,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     "reject attack selection from player ID=2" in {
       val change = for {
         g1 <- moveChange
-        g2 <- g1.attackSelect(PlayerId(2L), Set(Vec(5, 5)))
+        g2 <- g1.attackSelect(PlayerId(Ids.B), Set(Vec(5, 5)))
       } yield g2
       assert(change == Reject.ChangeOutOfTurn)
     }
@@ -225,7 +226,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     "reject attack selection from player ID=1 with bad coordinates" in {
       val change = for {
         g1 <- moveChange
-        g2 <- g1.attackSelect(PlayerId(1L), Set(Vec(5, 4)))
+        g2 <- g1.attackSelect(PlayerId(Ids.A), Set(Vec(5, 4)))
       } yield g2
       assert(change == Reject.IllegalAttackSelection)
     }
@@ -235,7 +236,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     //
     val attackChange = for {
       g1 <- moveChange
-      g2 <- g1.attackSelect(PlayerId(1L), Set(Vec(6, 4)))
+      g2 <- g1.attackSelect(PlayerId(Ids.A), Set(Vec(6, 4)))
     } yield g2
 
     "accept attack selection from player ID=1 with good coordinates" in {
@@ -284,7 +285,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     "reject direction selection from player ID=2" in {
       val change = for {
         g1 <- attackChange
-        g2 <- g1.directionSelect(PlayerId(2L), -Vec.J)
+        g2 <- g1.directionSelect(PlayerId(Ids.B), -Vec.J)
       } yield g2
       assert(change == Reject.ChangeOutOfTurn)
     }
@@ -292,7 +293,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     "reject direction selection from player ID=1 with bad coordinates" in {
       val change = for {
         g1 <- attackChange
-        g2 <- g1.directionSelect(PlayerId(1L), Vec(1, 1))
+        g2 <- g1.directionSelect(PlayerId(Ids.A), Vec(1, 1))
       } yield g2
       assert(change == Reject.IllegalDirSelection)
     }
@@ -302,7 +303,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     //
     val directionChange = for {
       g1 <- attackChange
-      g2 <- g1.directionSelect(PlayerId(1L), -Vec.J)
+      g2 <- g1.directionSelect(PlayerId(Ids.A), -Vec.J)
     } yield g2
 
 
@@ -324,7 +325,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     "reject commit turn from player ID=2 off turn" in {
       val change = for {
         g1 <- directionChange
-        g2 <- g1.commitTurn(PlayerId(2L))
+        g2 <- g1.commitTurn(PlayerId(Ids.B))
       } yield g2
       assert(change == Reject.ChangeOutOfTurn)
     }
@@ -334,7 +335,7 @@ class GameSpec extends AnyWordSpec with Matchers {
     //
     val commitTurnChange = for {
       g1 <- directionChange
-      g2 <- g1.commitTurn(PlayerId(1L))
+      g2 <- g1.commitTurn(PlayerId(Ids.A))
     } yield g2
 
     "have applied wait decrement on frost golem" in {
