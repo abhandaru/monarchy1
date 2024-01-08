@@ -46,3 +46,19 @@
 .attackNonOwner:hover {
   background-color: rgba(255, 172, 77, 0.25);
 }
+
+.direction {
+  background-color: rgba(173, 126, 207, 1);
+}
+
+.direction:hover {
+  background-color: rgba(173, 126, 207, 0.5);
+}
+
+.directionNonOwner {
+  background-color: rgba(173, 126, 207, 0.5);
+}
+
+.directionNonOwner:hover {
+  background-color: rgba(173, 126, 207, 0.25);
+}
