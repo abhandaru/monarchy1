@@ -10,6 +10,8 @@ scala_library(
     '//server/src/auth',
     '//server/src/dal',
     '//server/src/game',
+    '//server/src/streaming/core',
+    '//server/src/marshalling/game',
     '//server/src/marshalling/game-redis',
     '//server/src/util',
   ],

@@ -2,7 +2,7 @@ import * as React from 'react';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Form from 'react-bootstrap/Form';
 import styles from './index.css';
-import writeAuth from './writeAuth';
+import writeLoginStart from './writeLoginStart';
 import writeLogin from './writeLogin';
 
 const LoginView = (props) => {
@@ -17,7 +17,7 @@ const LoginView = (props) => {
     setPhoneNumber(phoneNumber);
     if (mode == 'phone' && phoneNumberValid.length >= 10) {
       setMode('otp-issued');
-      writeAuth({ phoneNumber });
+      writeLoginStart({ phoneNumber });
     }
   });
 

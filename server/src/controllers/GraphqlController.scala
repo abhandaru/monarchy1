@@ -45,7 +45,7 @@ class GraphqlController(implicit
       case Failure(e) => Future.successful(BadRequest -> formatError(e))
       case Success(ast) =>
         val variables = gql.variables.getOrElse(Map.empty)
-        executeGraphQL(ast, gql.operationName, variables)
+        executeGraphql(ctx, ast, gql.operationName, variables)
     }
     execReq.map {
       case (status, r) =>
@@ -54,11 +54,16 @@ class GraphqlController(implicit
     }
   }
 
-  def executeGraphQL(query: Document, opName: Option[String], vars: Map[String, Any]) = {
+  def executeGraphql(
+      ctx: AuthContext,
+      query: Document,
+      opName: Option[String],
+      vars: Map[String, Any]
+  ) = {
     Executor.execute(
       schema = GraphqlSchema,
       queryAst = query,
-      userContext = gqlContext,
+      userContext = gqlContext.withAuth(ctx.auth),
       variables = InputUnmarshaller.mapVars(vars),
       operationName = opName
     )

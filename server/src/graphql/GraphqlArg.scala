@@ -15,21 +15,34 @@ abstract class GraphqlArg[T: TypeTag] {
   }
 }
 
-case class AuthQuery(phoneNumber: String)
-object AuthQuery extends GraphqlArg[AuthQuery]
+case class LoginStartQuery(phoneNumber: String)
+object LoginStartQuery extends GraphqlArg[LoginStartQuery]
 
 case class LoginQuery(phoneNumber: String, otp: String)
 object LoginQuery extends GraphqlArg[LoginQuery]
 
+case class GameQuery(gameId: String)
+object GameQuery extends GraphqlArg[GameQuery]
+
 case class GamesQuery(userId: String)
 object GamesQuery extends GraphqlArg[GamesQuery]
 
+case class VecQuery(i: Int, j: Int)
+object VecQuery extends GraphqlArg[VecQuery]
+
+case class SelectQuery(gameId: String, point: VecQuery)
+object SelectQuery extends GraphqlArg[SelectQuery]
+
 object Args {
+  implicit val VecQueryMacro = deriveInput[VecQuery]()
+
   // Argument types
   val Id = Argument("id", StringType, description = "ID of this entity.")
-  val Auth = Argument("q", deriveInput[AuthQuery](), description = "Query to initiate auth request.")
+  val LoginStart = Argument("q", deriveInput[LoginStartQuery](), description = "Query to initiate auth request.")
   val Login = Argument("q", deriveInput[LoginQuery](), description = "Query to verify login credentials.")
   val Games = Argument("q", deriveInput[GamesQuery](), description = "Query for games matching the criteria.")
+  val Select = Argument("q", deriveInput[SelectQuery](), description = "Select a tile")
+  val Deselect = Argument("q", deriveInput[GameQuery](), description = "Deselect all tiles")
 }
 
 

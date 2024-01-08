@@ -2,6 +2,7 @@ package monarchy.graphql
 
 import monarchy.auth.AuthTooling
 import monarchy.dal
+import monarchy.util.Format
 import sangria.schema._
 import scala.concurrent.ExecutionContext
 
@@ -15,9 +16,9 @@ object MutationSchema {
     "Mutation",
     fields[GraphqlContext, Unit](
       Field("loginStart", BooleanType,
-        arguments = List(Args.Auth),
+        arguments = List(Args.LoginStart),
         resolve = { node =>
-          val query = node.arg(Args.Auth)
+          val query = node.arg(Args.LoginStart)
           println(s"web-server >> initiating auth: $query")
           true
         }
@@ -28,35 +29,33 @@ object MutationSchema {
           import dal.PostgresProfile.Implicits._
           import node.ctx.executionContext
           val args = node.arg(Args.Login)
-          val phoneNumber = "+1" + args.phoneNumber.stripPrefix("+1")
+          val phoneNumber = Format.normalizePhoneNumber(args.phoneNumber)
           val query = dal.User.query.filter(_.phoneNumber === phoneNumber)
           node.ctx.queryCli.first(query).map { user =>
             val bearerToken = user.map { u => AuthTooling.generateSignature(u.id, u.secret) }
             AuthResult(user, bearerToken)
           }
         }
-      )
+      ),
+      Field("select", SelectionType, arguments = List(Args.Select), resolve = SelectResolver),
+      Field("select", SelectionType, arguments = List(Args.Deselect), resolve = DeselectResolver),
     )
   )
-
-  // TODO (adu): Implement following field to support account creation.
-  // def loginNew = ???
 
   private val AuthType = ObjectType(
     "Auth",
     fields[GraphqlContext, AuthResult](
-      Field("user", OptionType(QuerySchema.UserType),
-        resolve = _.value.user
-      ),
-      Field("userId", OptionType(StringType),
-        resolve = _.value.user.map(_.id.toString)
-      ),
-      Field("bearerToken", OptionType(StringType),
-        resolve = _.value.bearerToken
-      ),
-      Field("loggedIn", BooleanType,
-        resolve = _.value.bearerToken.nonEmpty
-      )
+      Field("user", OptionType(QuerySchema.UserType), resolve = _.value.user),
+      Field("userId", OptionType(StringType), resolve = _.value.user.map(_.id.toString)),
+      Field("bearerToken", OptionType(StringType), resolve = _.value.bearerToken),
+      Field("loggedIn", BooleanType, resolve = _.value.bearerToken.nonEmpty),
+    )
+  )
+
+  private val SelectionType = ObjectType(
+    "Selection",
+    fields[GraphqlContext, SelectionResolver.Data](
+      Field("tile", OptionType(QuerySchema.TileType), resolve = _.value.tile)
     )
   )
 }
