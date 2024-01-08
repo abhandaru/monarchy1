@@ -1,5 +1,6 @@
 package monarchy.streaming.format
 
+import java.util.UUID
 import monarchy.dal
 import monarchy.game.{Game, Vec}
 import monarchy.marshalling.game.GameStringDeserializer

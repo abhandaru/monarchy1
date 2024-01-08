@@ -1,5 +1,6 @@
 package monarchy.graphql
 
+import java.util.UUID
 import monarchy.dal
 import monarchy.game
 import monarchy.marshalling.game.GameStringDeserializer
@@ -15,7 +16,7 @@ object QuerySchema {
         arguments = List(Args.Id),
         resolve = { node =>
           import dal.PostgresProfile.Implicits._
-          val id = node.arg(Args.Id).toLong
+          val id = UUID.fromString(node.arg(Args.Id))
           val query = dal.User.query.filter(_.id === id)
           node.ctx.queryCli.first(query)
         }
@@ -24,7 +25,7 @@ object QuerySchema {
         arguments = List(Args.Id),
         resolve = { node =>
           import dal.PostgresProfile.Implicits._
-          val id = node.arg(Args.Id).toLong
+          val id = UUID.fromString(node.arg(Args.Id))
           val query = dal.Game.query.filter(_.id === id)
           node.ctx.queryCli.first(query)
         }
@@ -33,7 +34,7 @@ object QuerySchema {
         arguments = List(Args.Games),
         resolve = { node =>
           import dal.PostgresProfile.Implicits._
-          val userId = node.arg(Args.Games).userId.toLong
+          val userId = UUID.fromString(node.arg(Args.Games).userId)
           val query = dal.Player.query
             .filter(_.userId === userId)
             .join(dal.Game.query).on(_.gameId === _.id)

@@ -1,6 +1,7 @@
 package monarchy.dal
 
 import java.time.Instant
+import java.util.UUID
 
 sealed class GameStatus(val id: Int) extends EnumColumn
 object GameStatus extends EnumColumnDef[GameStatus] {
@@ -9,7 +10,7 @@ object GameStatus extends EnumColumnDef[GameStatus] {
 }
 
 case class Game(
-  id: Long = NewId,
+  id: UUID = NewId,
   seed: Int,
   status: GameStatus,
   createdAt: Instant = Instant.now,

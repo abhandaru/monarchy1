@@ -4,6 +4,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.HttpCookiePair
 import akka.http.scaladsl.server._
 import io.jsonwebtoken.{Jwts, MalformedJwtException, SignatureException}
+import java.util.UUID
 import monarchy.auth._
 import monarchy.dal.{QueryClient, PostgresProfile, User}
 import scala.concurrent.{Future, ExecutionContext}
@@ -47,7 +48,7 @@ case class AuthRoute[T](filter: AuthFilter, controller: AuthController)(implicit
     }
   }
 
-  def fetch(userId: Long): Future[Option[User]] = {
+  def fetch(userId: UUID): Future[Option[User]] = {
     import PostgresProfile.Implicits._
     queryCli.first(User.query.filter(_.id === userId))
   }
@@ -58,16 +59,16 @@ object AuthRoute {
   val IdKey = "X-M1-User-Id"
   val Reject = HttpResponse(StatusCodes.Unauthorized)
 
-  def headers(hs: Seq[HttpHeader]): Option[(Long, String)] =
+  def headers(hs: Seq[HttpHeader]): Option[(UUID, String)] =
     extract(hs.map { h => h.name -> h.value }.toMap)
 
-  def cookies(cs: Seq[HttpCookiePair]): Option[(Long, String)] =
+  def cookies(cs: Seq[HttpCookiePair]): Option[(UUID, String)] =
     extract(cs.map { c => c.name -> c.value }.toMap)
 
-  def extract(props: Map[String, String]): Option[(Long, String)] = {
+  def extract(props: Map[String, String]): Option[(UUID, String)] = {
     for {
       rawUserId <- props.get(IdKey)
-      userId <- Try(rawUserId.toLong).toOption
+      userId <- Try(UUID.fromString(rawUserId)).toOption
       bearerToken <- props.get(AuthorizationKey)
     } yield (userId, bearerToken.stripPrefix("Bearer "))
   }

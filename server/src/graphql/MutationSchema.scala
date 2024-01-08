@@ -14,7 +14,7 @@ object MutationSchema {
   lazy val Def = ObjectType(
     "Mutation",
     fields[GraphqlContext, Unit](
-      Field("auth", BooleanType,
+      Field("loginStart", BooleanType,
         arguments = List(Args.Auth),
         resolve = { node =>
           val query = node.arg(Args.Auth)
@@ -22,7 +22,7 @@ object MutationSchema {
           true
         }
       ),
-      Field("login", authType,
+      Field("login", AuthType,
         arguments = List(Args.Login),
         resolve = { node =>
           import dal.PostgresProfile.Implicits._
@@ -42,7 +42,7 @@ object MutationSchema {
   // TODO (adu): Implement following field to support account creation.
   // def loginNew = ???
 
-  def authType = ObjectType(
+  private val AuthType = ObjectType(
     "Auth",
     fields[GraphqlContext, AuthResult](
       Field("user", OptionType(QuerySchema.UserType),

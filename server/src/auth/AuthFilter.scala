@@ -13,6 +13,6 @@ object AuthFilter {
   /** Intended for access to management and debugging tools */
   val Admin: AuthFilter = {
     case NullAuth => false
-    case Authenticated(u) => AdminIds(u.id)
+    case auth: Authenticated => auth.admin
   }
 }

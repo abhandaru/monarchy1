@@ -79,6 +79,7 @@ maven_install(
     "com.typesafe.akka:akka-actor_2.12:2.7.0",
     "com.typesafe.akka:akka-http-core_2.12:10.4.0",
     "com.typesafe.akka:akka-http_2.12:10.4.0",
+    "com.typesafe.akka:akka-slf4j_2.12:2.7.0",
     "com.typesafe.akka:akka-stream_2.12:2.7.0",
     "com.typesafe.scala-logging:scala-logging_2.12:3.9.2",
     "com.typesafe.slick:slick-hikaricp_2.12:3.3.3",
@@ -94,6 +95,7 @@ maven_install(
     "org.scala-lang.modules:scala-collection-compat_2.12:2.4.3",
     "org.scalactic:scalactic_2.12:3.1.0",
     "org.scalatest:scalatest_2.12:3.1.0",
+    "org.slf4j:slf4j-api:1.7.26",
   ],
   repositories = [
     "https://repo.maven.apache.org/maven2",

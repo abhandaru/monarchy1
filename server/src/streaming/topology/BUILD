@@ -4,16 +4,16 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '@maven//:com_typesafe_akka_akka_actor_2_12',
-    '@maven//:com_typesafe_akka_akka_stream_2_12',
-    '@maven//:com_typesafe_akka_akka_http_core_2_12',
-    '@maven//:com_github_etaty_rediscala_2_12',
-    '@maven//:org_reactivestreams_reactive_streams',
     '//server/src/auth',
     '//server/src/dal',
     '//server/src/streaming/core',
     '//server/src/streaming/format',
     '//server/src/streaming/process',
     '//server/src/util',
+    '@maven//:com_github_etaty_rediscala_2_12',
+    '@maven//:com_typesafe_akka_akka_actor_2_12',
+    '@maven//:com_typesafe_akka_akka_http_core_2_12',
+    '@maven//:com_typesafe_akka_akka_stream_2_12',
+    '@maven//:org_reactivestreams_reactive_streams',
   ]
 )

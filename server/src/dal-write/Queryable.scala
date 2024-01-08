@@ -1,5 +1,6 @@
 package monarchy.dalwrite
 
+import java.util.UUID
 import monarchy.dal
 import monarchy.dal.PostgresProfile.Implicits._
 import scala.annotation.implicitNotFound
@@ -8,14 +9,14 @@ import scala.annotation.implicitNotFound
 trait Queryable[E] {
   type TableType <: Table[E]
   def query: TableQuery[TableType]
-  def id: E => Long
-  def repId: TableType => Rep[Long]
+  def id: E => UUID
+  def repId: TableType => Rep[UUID]
 }
 
 object Queryable {
   class Simple[E, T <: dal.TableDef[E]](
     override val query: TableQuery[T],
-    override val id: E => Long
+    override val id: E => UUID
   ) extends Queryable[E] {
     override type TableType = T
     override val repId = _.id

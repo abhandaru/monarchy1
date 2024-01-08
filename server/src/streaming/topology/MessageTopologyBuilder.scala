@@ -6,6 +6,7 @@ import akka.NotUsed
 import akka.stream.ActorMaterializer
 import akka.stream.OverflowStrategy
 import akka.stream.scaladsl._
+import com.typesafe.scalalogging.StrictLogging
 import java.net.InetSocketAddress
 import monarchy.auth.Auth
 import monarchy.streaming.core._
@@ -25,7 +26,7 @@ case class MessageTopologyBuilder(
   clientActionProxy: ClientActionProxy,
   materializer: ActorMaterializer,
   redisClient: RedisClient
-) {
+) extends StrictLogging {
   def build: Flow[Message, Message, _] = {
     val clientRef = actorSys.actorOf(Props(new ClientActor))
     val redisProxyRef = actorSys.actorOf(Props(new RedisProxyActor(auth)))
@@ -66,7 +67,7 @@ case class MessageTopologyBuilder(
 
   def resolveText(tm: TextMessage): Future[String] = {
     tm.toStrict(5.seconds).map(_.text)
-      .map { t => println(s"[message-topology-builder] message=$t"); t }
+      .map { t => logger.info(s"[message-topology-builder] message=$t"); t }
   }
 
   def liftAsMessage: PartialFunction[Option[String], TextMessage] = {

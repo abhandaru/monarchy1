@@ -28,7 +28,7 @@ object GameBuilder {
   def apply(seed: Int, players: Seq[Player]): Game = {
     val rand = new Random(seed)
     val (_, maxPt) = BoardSelection.boundingBox
-    val playersOrdered = rand.shuffle(players.sorted)
+    val playersOrdered = rand.shuffle(players)
     val piecesAdditions = for {
       (player, i) <- playersOrdered.zipWithIndex
       rotation = Rotation ^ i

@@ -9,7 +9,7 @@ class RootController(implicit ec: ExecutionContext, queryCli: dal.QueryClient) e
   import dal.PostgresProfile.Implicits._
 
   override def action(ctx: AuthContext) = {
-    val q = dal.User.query.filter(_.id === 1L)
+    val q = dal.User.query.filter(_.membership === dal.Membership.Admin)
     queryCli.first(q).map { userMaybe =>
       val userText = userMaybe.map { u => s"User(id=${u.id}, username=${u.username})" }
       HttpResponse(StatusCodes.OK, entity = userText.toString)

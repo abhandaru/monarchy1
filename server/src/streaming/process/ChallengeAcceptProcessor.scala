@@ -1,5 +1,6 @@
 package monarchy.streaming.process
 
+import java.util.UUID
 import monarchy.dal
 import monarchy.dalwrite.{GameNode, WriteQueryBuilder}
 import monarchy.game._
@@ -7,8 +8,8 @@ import monarchy.marshalling.game.GameJson
 import monarchy.streaming.core._
 import monarchy.util.{Async, Json}
 import redis.RedisClient
-import scala.util.Random
 import scala.concurrent.{Future, ExecutionContext}
+import scala.util.Random
 
 /**
  * TODO (adu): Actually solve this with some sort of mutex implementation
@@ -28,7 +29,7 @@ class ChallengeAcceptProcessor(implicit
   override def apply(axn: ChallengeAccept): Future[Unit] = {
     val ChallengeAccept(auth, body) = axn
     val userId = auth.userId
-    val opponentUserId = body.opponentId.toLong
+    val opponentUserId = UUID.fromString(body.opponentId)
     if (userId == opponentUserId) {
       Async.Unit
     } else {
@@ -55,7 +56,7 @@ class ChallengeAcceptProcessor(implicit
     }
   }
 
-  def create(userIds: Seq[Long]): Future[Long] = {
+  def create(userIds: Seq[UUID]): Future[UUID] = {
     for {
       users <- queryCli.all(dal.User.query.filter(_.id inSet userIds))
       game <- createGame(users)

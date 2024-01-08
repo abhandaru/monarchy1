@@ -1,6 +1,7 @@
 package monarchy.dal
 
 import java.time.Instant
+import java.util.UUID
 
 sealed class PlayerStatus(val id: Int) extends EnumColumn
 object PlayerStatus extends EnumColumnDef[PlayerStatus] {
@@ -10,9 +11,9 @@ object PlayerStatus extends EnumColumnDef[PlayerStatus] {
 }
 
 case class Player(
-  id: Long = NewId,
-  userId: Long,
-  gameId: Long,
+  id: UUID = NewId,
+  userId: UUID,
+  gameId: UUID,
   status: PlayerStatus,
   rating: Int,
   ratingDelta: Option[Int] = None,
@@ -24,8 +25,8 @@ import PostgresProfile.Implicits._
 object Player extends TableSchema(TableQuery[PlayerTable])
 
 class PlayerTable(tag: Tag) extends TableDef[Player](tag, "players") {
-  def userId = column[Long]("user_id")
-  def gameId = column[Long]("game_id")
+  def userId = column[UUID]("user_id")
+  def gameId = column[UUID]("game_id")
   def status = column[PlayerStatus]("status")
   def rating = column[Int]("rating")
   def ratingDelta = column[Option[Int]]("rating_delta")

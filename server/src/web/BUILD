@@ -18,5 +18,6 @@ scala_binary(
     '//server/src/streaming/format',
     '//server/src/streaming/process',
     '//server/src/streaming/topology',
+    '//server/src/util',
   ]
 )
