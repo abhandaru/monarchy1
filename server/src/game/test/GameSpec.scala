@@ -12,10 +12,10 @@ class GameSpec extends AnyWordSpec with Matchers {
   val game = GameBuilder(
     seed = 77,
     players = Seq(
+      // This player stays in the same place
+      Player(PlayerId(Ids.A), Seq((Vec(7, 7), Assassin), (Vec(8, 6), Scout))),
       // This player gets rotated
       Player(PlayerId(Ids.B), Seq((Vec(4, 6), Knight), (Vec(5, 4), FrostGolem))),
-      // This player stays in the same place
-      Player(PlayerId(Ids.A), Seq((Vec(7, 7), Assassin), (Vec(8, 6), Scout)))
     )
   )
 
