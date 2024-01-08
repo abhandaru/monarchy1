@@ -28,7 +28,8 @@ object MutationSchema {
           import dal.PostgresProfile.Implicits._
           import node.ctx.executionContext
           val args = node.arg(Args.Login)
-          val query = dal.User.query.filter(_.phoneNumber === args.phoneNumber)
+          val phoneNumber = "+1" + args.phoneNumber.stripPrefix("+1")
+          val query = dal.User.query.filter(_.phoneNumber === phoneNumber)
           node.ctx.queryCli.first(query).map { user =>
             val bearerToken = user.map { u => AuthTooling.generateSignature(u.id, u.secret) }
             AuthResult(user, bearerToken)

@@ -6,6 +6,7 @@ scala_library(
   deps=[
     '@maven//:io_jsonwebtoken_jjwt_api',
     '@maven//:io_jsonwebtoken_jjwt_impl',
+    '@maven//:io_jsonwebtoken_jjwt_jackson',
     '//server/src/dal',
   ]
 )

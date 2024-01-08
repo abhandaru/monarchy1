@@ -13,8 +13,9 @@ const LoginView = (props) => {
 
   const onChangePhoneNumber = React.useCallback((e) => {
     const phoneNumber = e.target.value;
+    const phoneNumberValid = phoneNumber.replace('+1', '');
     setPhoneNumber(phoneNumber);
-    if (mode == 'phone' && phoneNumber.length >= 10) {
+    if (mode == 'phone' && phoneNumberValid.length >= 10) {
       setMode('otp-issued');
       writeAuth({ phoneNumber });
     }

@@ -86,6 +86,7 @@ maven_install(
     "com.typesafe:config:1.4.2",
     "io.jsonwebtoken:jjwt-api:0.11.5",
     "io.jsonwebtoken:jjwt-impl:0.11.5",
+    "io.jsonwebtoken:jjwt-jackson:0.11.5",
     "org.parboiled:parboiled_2.12:2.1.4",
     "org.reactivestreams:reactive-streams:1.0.4",
     "org.sangria-graphql:sangria-marshalling-api_2.12:1.0.3",

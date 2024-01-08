@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie';
 
-const BearerKey = 'X-Monarchy-Bearer-Token';
-const UserKey = 'X-Monarchy-User-Id';
-const UserDataKey = 'X-Monarchy-User-Data';
+const BearerKey = 'Authorization';
+const UserKey = 'X-M1-User-Id';
+const UserDataKey = 'X-M1-User-Data';
 
 const poll = () => {
   const userId = Cookies.get(UserKey);
@@ -20,7 +20,7 @@ const headers = () => {
   const { userId, bearerToken } = poll();
   return {
     [UserKey]: userId,
-    [BearerKey]: bearerToken
+    [BearerKey]: `Bearer ${bearerToken}`
   };
 };
 
