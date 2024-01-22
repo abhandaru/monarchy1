@@ -12,7 +12,6 @@ class ActionRendererProxy(implicit
   redisCli: RedisClient
 ) extends ActionRenderer[StreamAction] {
   // Cache the renderers
-  val gameChangeSelection = new GameChangeSelectionRenderer
   val gameCreate = new GameCreateRenderer
   val matchmaking = new MatchmakingRenderer
   val pong = new PongRenderer
@@ -20,7 +19,6 @@ class ActionRendererProxy(implicit
 
   override def apply(action: StreamAction): Future[Option[String]] = {
     action match {
-      case axn: GameChangeSelection => gameChangeSelection(axn)
       case axn: GameCreate => gameCreate(axn)
       case axn: Matchmaking => matchmaking(axn)
       case axn: Pong => pong(axn)

@@ -39,6 +39,7 @@ object MutationSchema {
       ),
       Field("select", SelectionType, arguments = List(Args.Select), resolve = SelectResolver),
       Field("deselect", SelectionType, arguments = List(Args.Deselect), resolve = DeselectResolver),
+      Field("challengeSeek", ChallengeType, resolve = ChallengeSeekResolver),
     )
   )
 
@@ -60,6 +61,14 @@ object MutationSchema {
       Field("movements", ListType(QuerySchema.VecType), resolve = _.value.movements.toSeq),
       Field("directions", ListType(QuerySchema.VecType), resolve = _.value.directions.toSeq),
       Field("attacks", ListType(ListType(QuerySchema.VecType)), resolve = _.value.attacks.map(_.toSeq).toSeq),
+    )
+  )
+
+  private val ChallengeType = ObjectType(
+    "Challenge",
+    fields[GraphqlContext, Challenge.Data](
+      Field("host", QuerySchema.UserType, resolve = _.value.host),
+      Field("expireAt", StringType, resolve = _.value.expireAt.toString),
     )
   )
 }

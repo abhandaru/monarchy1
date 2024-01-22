@@ -21,18 +21,7 @@ object ChallengeAccept {
   case class Body(opponentId: String)
 }
 
-case class ChallengeSeek(auth: Authenticated) extends StreamAction
 case class ChallengeSeekCancel(auth: Authenticated) extends StreamAction
-
-case class GameSelectTile(auth: Authenticated, body: GameSelectTile.Body) extends StreamAction
-object GameSelectTile {
-  case class Body(gameId: String, point: Vec)
-}
-
-case class GameDeselectTile(auth: Authenticated, body: GameDeselectTile.Body) extends StreamAction
-object GameDeselectTile {
-  case class Body(gameId: String)
-}
 
 /**
  * Intermediate actions
