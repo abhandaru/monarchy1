@@ -10,11 +10,11 @@ const ChallengeView = (props) => {
   const userId = useSelector(_ => _.auth.userId);
   const onCancel = React.useCallback(() => streamProxy.send('ChallengeSeekCancel'));
   const onAccept = React.useCallback(() => {
-    const body = { opponentId: challenge.userId };
+    const body = { opponentId: challenge.host.id };
     streamProxy.send('ChallengeAccept', body);
   });
   // Allow user to cancel their own seek, or accept another.
-  const action = userId == challenge.userId ?
+  const action = userId == challenge.host.id ?
     <Button variant='outline-secondary' size='sm' onClick={onCancel}>Cancel</Button> :
     <Button variant='outline-primary' size='sm' onClick={onAccept}>Accept</Button>;
   // Render the row.
@@ -22,11 +22,11 @@ const ChallengeView = (props) => {
     <tr>
       <td className={styles.nameCell}>
         <div className={styles.name}>
-          <div>{challenge.username}</div>
+          <div>{challenge.host.username}</div>
           {action}
         </div>
       </td>
-      <td>{challenge.rating}</td>
+      <td>{challenge.host.rating}</td>
     </tr>
   );
 };
@@ -42,7 +42,7 @@ const ChallengesView = (props) => {
         </tr>
       </thead>
       <tbody>
-        {challenges.map(c => <ChallengeView key={c.userId} challenge={c} />)}
+        {challenges.map(c => <ChallengeView key={c.host.id} challenge={c} />)}
       </tbody>
     </Table>
   );

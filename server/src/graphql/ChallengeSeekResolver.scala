@@ -10,7 +10,7 @@ import scala.concurrent.duration._
 object Challenge {
   case class Data(
       host: dal.User,
-      expireAt: Instant,
+      expireAt: Option[Instant],
   )
 }
 
@@ -29,7 +29,7 @@ object ChallengeSeekResolver extends Resolver[Unit, Challenge.Data] {
       redisCli.publish(StreamingChannel.Matchmaking, Json.stringify(Matchmaking(true))),
     ).map {
       case (None, _, _) => throw NotFound(s"user $userId")
-      case (Some(host), _, _) => Challenge.Data(host, expireAt)
+      case (Some(host), _, _) => Challenge.Data(host, Some(expireAt))
     }
   }
 }

@@ -13,7 +13,9 @@ sealed class StreamingScanKey(suffix: String) extends StreamingKey(s"$suffix/*")
 
 object StreamingKey {
   implicit def render(k: StreamingKey): String = k.toString
+
   case object ChallengeScan extends StreamingScanKey("challenge")
   case class Challenge(userId: UUID) extends StreamingKey(s"challenge/$userId")
   case class Game(gameId: UUID) extends StreamingKey(s"game/$gameId")
+  case object Online extends StreamingKey("online")
 }

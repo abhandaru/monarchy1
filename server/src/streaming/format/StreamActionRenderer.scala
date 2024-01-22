@@ -19,7 +19,7 @@ abstract class BasicActionRenderer[T <: StreamAction: ClassTag] extends ActionRe
 }
 
 class PongRenderer(implicit val ec: ExecutionContext) extends BasicActionRenderer[Pong] {
-  override def render(axn: Pong) = Future.successful(axn.at)
+  override def render(axn: Pong) = Future.successful(axn.t.toEpochMilli)
 }
 
 class RedisRawRenderer(implicit val ec: ExecutionContext) extends BasicActionRenderer[RedisRaw] {

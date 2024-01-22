@@ -26,18 +26,18 @@ class ChallengeAcceptProcessor(implicit
   import ChallengeAcceptProcessor._
   import dal.PostgresProfile.Implicits._
 
-  override def apply(axn: ChallengeAccept): Future[Unit] = {
+  override def apply(axn: ChallengeAccept): Future[StreamAction] = {
     val ChallengeAccept(auth, body) = axn
     val userId = auth.userId
     val opponentUserId = UUID.fromString(body.opponentId)
     if (userId == opponentUserId) {
-      Async.Unit
+      AsyncNullAction
     } else {
       val challengeKey = StreamingKey.Challenge(userId).toString
       val opponentChallengeKey = StreamingKey.Challenge(opponentUserId).toString
       redisCli.get[Boolean](opponentChallengeKey).flatMap {
-        case None => Async.Unit
-        case Some(false) => Async.Unit
+        case None => AsyncNullAction
+        case Some(false) => AsyncNullAction
         case Some(true) =>
           Async.join(
             redisCli.del(challengeKey, opponentChallengeKey),
@@ -50,6 +50,7 @@ class ChallengeAcceptProcessor(implicit
               redisCli.publish(StreamingChannel.gameCreate(opponentUserId), channelEvent)
             ).map { case _ =>
               println(s"removed $count challenges on $challengeKey, $opponentChallengeKey and accept")
+              StreamAction.Null
             }
           }
       }

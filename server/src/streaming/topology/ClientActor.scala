@@ -9,13 +9,17 @@ import redis.RedisClient
 import scala.concurrent.{ExecutionContext, Future}
 
 class ClientActor(implicit
-  ec: ExecutionContext,
-  clientActionProxy: ClientActionProxy,
-  redisCli: RedisClient) extends Actor {
+    ec: ExecutionContext,
+    clientActionProxy: ClientActionProxy,
+    redisCli: RedisClient
+) extends Actor {
   var next: Option[ActorRef] = None
   def receive = {
     case Connect(ref) => next = Some(ref)
-    case Ping => next.foreach(_ ! Pong(System.currentTimeMillis))
-    case axn: StreamAction => clientActionProxy(axn)
+    case axn: StreamAction =>
+      clientActionProxy(axn).map {
+        case StreamAction.Null => () // do nothing
+        case axn: StreamAction => next.foreach(_ ! axn)
+      }
   }
 }

@@ -8,7 +8,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 object MatchmakingRenderer {
-  case class Data(userId: String, username: String, rating: Int)
+  case class User(id: String, username: String, rating: Int)
+  case class Data(host: User)
 }
 
 class MatchmakingRenderer(implicit val ec: ExecutionContext, queryCli: dal.QueryClient, redisCli: RedisClient)
@@ -28,11 +29,11 @@ class MatchmakingRenderer(implicit val ec: ExecutionContext, queryCli: dal.Query
     } yield users
     fetchUsers.map { users =>
       users.map { user =>
-        Data(
-          userId = user.id.toString,
+        Data(User(
+          id = user.id.toString,
           username = user.username,
           rating = user.rating
-        )
+        ))
       }
     }
   }

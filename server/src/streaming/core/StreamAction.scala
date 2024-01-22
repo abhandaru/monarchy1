@@ -1,11 +1,16 @@
 package monarchy.streaming.core
 
 import akka.actor.ActorRef
+import java.time.Instant
 import java.util.UUID
 import monarchy.auth.Authenticated
 import monarchy.game.Vec
 
 sealed trait StreamAction
+
+object StreamAction {
+  case object Null extends StreamAction
+}
 
 /**
  * Inbound actions
@@ -14,8 +19,7 @@ sealed trait StreamAction
  * should have an associated [[Authenticated]] context to inform user access
  * and identity.
  */
-case object Ping extends StreamAction
-
+case class Ping(auth: Authenticated) extends StreamAction
 case class ChallengeAccept(auth: Authenticated, body: ChallengeAccept.Body) extends StreamAction
 object ChallengeAccept {
   case class Body(opponentId: String)
@@ -36,5 +40,5 @@ case class RedisPub(channel: String, text: String, pattern: Option[String] = Non
 case class Matchmaking(check: Boolean) extends StreamAction
 case class GameCreate(gameId: UUID) extends StreamAction
 case class GameChangeSelection(gameId: UUID)  extends StreamAction
-case class Pong(at: Long) extends StreamAction
+case class Pong(t: Instant) extends StreamAction
 case class RedisRaw(text: String) extends StreamAction

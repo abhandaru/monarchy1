@@ -42,7 +42,8 @@ object QuerySchema {
             .sortBy(_.id.desc)
           node.ctx.queryCli.all(query)
         }
-      )
+      ),
+      Field("lobby", LobbyType, resolve = LobbyResolver),
     )
   )
 
@@ -132,6 +133,22 @@ object QuerySchema {
       Field("currentBlocking", FloatType, resolve = { node =>
         node.value.conf.blocking + node.value.blockingAjustment
       })
+    )
+  )
+
+  lazy val ChallengeType = ObjectType(
+    "Challenge",
+    fields[GraphqlContext, Challenge.Data](
+      Field("host", QuerySchema.UserType, resolve = _.value.host),
+      Field("expireAt", OptionType(StringType), resolve = _.value.expireAt.toString),
+    )
+  )
+
+  lazy val LobbyType = ObjectType(
+    "Lobby",
+    fields[GraphqlContext, Lobby.Data](
+      Field("usersOnline", ListType(UserType), resolve = _.value.online),
+      Field("challenges", ListType(ChallengeType), resolve = _.value.challenges),
     )
   )
 }
