@@ -19,7 +19,6 @@ const InactiveTile = (props) => {
 
   const onClick = React.useCallback(() => {
     if (gameId) {
-      console.log('select', gameId, point);
       writeSelect({ gameId, point }).then(r => {
         dispatch(Actions.gameSetSelections(r.data.select));
       });

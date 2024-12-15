@@ -28,7 +28,6 @@ case class AuthRoute[T](filter: AuthFilter, controller: AuthController)(implicit
 
   def fetchAuth(ctx: RequestContext): Future[Auth] = {
     val authLookup = headers(ctx.request.headers).orElse(cookies(ctx.request.cookies))
-    println(s"AUTH LOOKUP = $authLookup")
     authLookup match {
       case Some((userId, bearerToken)) => fetch(userId).map {
         // Missing authentication information
