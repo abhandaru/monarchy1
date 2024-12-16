@@ -89,11 +89,14 @@ object QuerySchema {
     )
   )
 
+  lazy val PhaseType = EnumUtil.mkEnum[game.Phase]("Phase", game.Phase.values)
   lazy val GameStateType = ObjectType(
     "GameState",
     fields[GraphqlContext, game.Game](
       Field("currentPlayerId", StringType, resolve = _.value.currentPlayer.id.id.toString),
       Field("currentSelection", OptionType(VecType), resolve = _.value.currentSelection),
+      Field("currentPhases", ListType(PhaseType), resolve = _.value.currentPhases),
+      Field("currentPiece", OptionType(PieceType), resolve = _.value.currentPiece),
       Field("tiles", ListType(TileType), resolve = _.value.board.tiles)
     )
   )

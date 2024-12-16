@@ -23,6 +23,7 @@ const query = gql`
           i
           j
         }
+        currentPhases
         tiles {
           point {
             i

@@ -1,13 +1,14 @@
 package monarchy.web
 
+import com.typesafe.scalalogging.StrictLogging
 import akka.http.scaladsl.server.{Directives, RequestContext, Route}
 import monarchy.util.Timer
 import scala.concurrent.ExecutionContext
 
-class LoggingDirective(implicit ec: ExecutionContext) {
+object LoggingModule extends StrictLogging {
   import Directives._
 
-  def apply(r: Route): Route = extractClientIP { ip =>
+  def log(r: Route)(implicit ec: ExecutionContext): Route = extractClientIP { ip =>
     (ctx: RequestContext) =>
       val method = ctx.request.method.name
       val uri = ctx.request.uri
@@ -15,7 +16,7 @@ class LoggingDirective(implicit ec: ExecutionContext) {
         case (st, end) =>
           val timing = end - st
           val addr = ip.toOption.map(_.getHostAddress).getOrElse("0.0.0.0")
-          println(s"$method $uri from <$addr> took ${timing}ms")
+          logger.info(s"$method $uri from <$addr> took ${timing}ms")
       }
   }
 }

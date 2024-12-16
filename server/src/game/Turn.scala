@@ -27,8 +27,6 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
     }
   }
 
-  def actions: Seq[TurnAction] = actionStack.reverse
-
   // Action extractors
   def select: Option[Vec] =
     actionStack.collectFirst { case TileSelect(p) => p }
@@ -57,6 +55,19 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
 
   def canDir: Boolean =
     select.nonEmpty && dir.isEmpty
+
+  def actions: Seq[TurnAction] =
+    actionStack.reverse
+
+  // Ordered by suggested next phase
+  def phases: Seq[Phase] = {
+    Seq(
+      if (canMove) Some(Phase.Move) else None,
+      if (canAttack) Some(Phase.Attack) else None,
+      if (canDir) Some(Phase.Dir) else None,
+      Some(Phase.End),
+    ).flatten
+  }
 }
 
 object Turn {

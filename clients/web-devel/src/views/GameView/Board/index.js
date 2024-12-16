@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 const Board = (props) => {
   const { gameId, currentPlayerId, currentSelection, tiles } = props;
 
-  // Fetch selection for current selection, if any.
+  // Fetch selection for current selection, if any. Only do this once on mount.
   React.useEffect(() => {
     if (currentSelection != null) {
       const query = { gameId, point: currentSelection };

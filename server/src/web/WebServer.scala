@@ -31,7 +31,6 @@ object WebServer extends App {
     handleWebSocketMessages(messageFlow)(c.request)
   })
 
-  val logger = new LoggingDirective
   val port = HerokuModule.Port
   val route = logRequestResult("monarchy-web") {
     pathSingleSlash(rootController) ~
@@ -39,7 +38,7 @@ object WebServer extends App {
       path("graphql")(graphqlController) ~
       path("connect")(connectController)
   }
-  val routeLogged = logger(route)
+  val routeLogged = LoggingModule.log(route)
   val routeBindings = Http().bindAndHandle(routeLogged, HerokuModule.Host, port)
 
   println(s"[monarchy-web] online at port=$port")

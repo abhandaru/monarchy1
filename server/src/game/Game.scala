@@ -22,6 +22,9 @@ case class Game(
   def currentPiece: Option[Piece] =
     currentTile.flatMap(_.piece)
 
+  def currentPhases: Seq[Phase] =
+    currentTurn.phases
+
   def selections: Deltas = {
     currentTurn.canSelect match {
       case false => Set.empty

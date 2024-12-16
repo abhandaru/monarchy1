@@ -11,6 +11,7 @@ object StreamingChannel {
   def gameBase(userId: UUID, suffix: String) = personalBase(userId, s"game/$suffix")
   def gameCreate(userId: UUID) = gameBase(userId, "create")
   def gameSelectTile(userId: UUID) = gameBase(userId, "selectTile")
+  def gameMove(userId: UUID) = gameBase(userId, "move")
 
   def gamePattern(userId: UUID) = gameBase(userId, "*")
 }
