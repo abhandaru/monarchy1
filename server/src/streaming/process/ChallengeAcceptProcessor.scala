@@ -90,6 +90,7 @@ class ChallengeAcceptProcessor(implicit
             gameId = gameWr.id,
             userId = user.id,
             status = dal.PlayerStatus.Pending,
+            role = dal.PlayerRole.Competitor,
             rating = user.rating
           )
         }

@@ -1,10 +1,11 @@
 import * as Actions from '~/state/actions';
 import * as React from 'react';
 import classnames from 'classnames';
+import InactiveTile from './InactiveTile';
+import MovementTile from './MovementTile';
 import Piece from '~/views/GameView/Piece';
 import styles from './index.css';
-import writeSelect from '~/api/writeSelect';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const vecCompare = (a, b) =>
   a.i === b.i && a.j === b.j;
@@ -12,32 +13,11 @@ const vecCompare = (a, b) =>
 const vecAdd = (a, b) =>
   ({i: a.i + b.i, j: a.j + b.j});
 
-const InactiveTile = (props) => {
-  const { children, style, gameId, point } = props;
-  const className = classnames(styles.tile, styles.inactive);
-  const dispatch = useDispatch();
-
-  const onClick = React.useCallback(() => {
-    if (gameId) {
-      console.log('select', gameId, point);
-      writeSelect({ gameId, point }).then(r => {
-        dispatch(Actions.gameSetSelections(r.data.select));
-      });
-    }
-  }, [gameId, point]);
-
-  return (
-    <div style={style} className={className} onClick={onClick}>
-      {children}
-    </div>
-  );
-};
-
-const MovementTile = (props) => {
-  const { style, children, controlled, gameId } = props;
+const AttackTile = (props) => {
+  const { style, children, controlled, gameId, point } = props;
   const className = classnames(
     styles.tile,
-    controlled ? styles.movement : styles.movementNonOwner
+    controlled ? styles.attack : styles.attackNonOwner
   );
   return (
     <div style={style} className={className}>
@@ -46,27 +26,14 @@ const MovementTile = (props) => {
   );
 };
 
-const AttackTile = (props) => {
-  const { style, children, controlled, gameId } = props;
-  const className = classnames(
-    styles.tile,
-    controlled ? styles.attack : styles.attackNonOwner
-  );
-  return (
-    <div style={style}  className={className}>
-      {children}
-    </div>
-  );
-};
-
 const DirectionTile = (props) => {
-  const { style, children, controlled, gameId } = props;
+  const { style, children, controlled, gameId, point } = props;
   const className = classnames(
     styles.tile,
     controlled ? styles.direction : styles.directionNonOwner
   );
   return (
-    <div style={style}  className={className}>
+    <div style={style} className={className}>
       {children}
     </div>
   );

@@ -33,6 +33,9 @@ object VecQuery extends GraphqlArg[VecQuery]
 case class SelectQuery(gameId: String, point: VecQuery)
 object SelectQuery extends GraphqlArg[SelectQuery]
 
+case class MoveQuery(gameId: String, point: VecQuery)
+object MoveQuery extends GraphqlArg[MoveQuery]
+
 object Args {
   implicit val VecQueryMacro = deriveInput[VecQuery]()
 
@@ -43,6 +46,7 @@ object Args {
   val Games = Argument("q", deriveInput[GamesQuery](), description = "Query for games matching the criteria.")
   val Select = Argument("q", deriveInput[SelectQuery](), description = "Select a tile")
   val Deselect = Argument("q", deriveInput[GameQuery](), description = "Deselect all tiles")
+  val Move = Argument("q", deriveInput[MoveQuery](), description = "Move to tile")
 }
 
 

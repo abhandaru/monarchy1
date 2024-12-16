@@ -8,10 +8,10 @@ import { gameSetPhase } from '~/state/actions';
 import { useSelector, useDispatch } from 'react-redux';
 
 const Phases = {
-  Move: 'Move',
-  Attack: 'Attack',
-  Turn: 'Turn',
-  End: 'End'
+  MOVE: 'Move',
+  ATTACK: 'Attack',
+  DIR: 'Turn',
+  END: 'End'
 };
 
 const PhaseBar = (props) => {
@@ -19,9 +19,10 @@ const PhaseBar = (props) => {
   const dispatch = useDispatch();
   const onSelect = React.useCallback(p => dispatch(gameSetPhase(p)));
   const phase = useSelector(_ => _.games.gameSelections.phase);
+  const phasesAllowed = useSelector(_ =>_.games.game?.state.currentPhases);
   const phaseEls = Object.keys(Phases).map(k => {
     const label = Phases[k];
-    const disabled = phase === k;
+    const disabled = phase === k || !phasesAllowed.includes(k);
     return (
       <Button
         key={k}

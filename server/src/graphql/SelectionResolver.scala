@@ -8,9 +8,8 @@ import monarchy.streaming.core._
 import monarchy.util.{Async, Json}
 import scala.concurrent.Future
 
-trait SelectionResolver extends Resolver[Unit, SelectionResolver.Data] with StrictLogging {
+trait SelectionResolver extends Resolver[Unit, Selection] with StrictLogging {
   import GameStringDeserializer._
-  import SelectionResolver._
 
   // Define the selection mutation
   def extractGameId(in: In): UUID
@@ -37,29 +36,11 @@ trait SelectionResolver extends Resolver[Unit, SelectionResolver.Data] with Stri
                 val channel = StreamingChannel.gameSelectTile(userId)
                 logger.info(s"selection updated on key=$gameKey")
                 redisCli.publish(channel, Json.stringify(event))
-                  .map(_ => format(nextGame))
+                  .map(_ => Selection(nextGame))
             }
         }
     }
   }
-
-  private def format(game: Game): Data = {
-    Data(
-      game = game,
-      movements = game.movements,
-      directions = game.directions,
-      attacks = game.attacks,
-    )
-  }
-}
-
-object SelectionResolver {
-  case class Data(
-    game: Game,
-    movements: Set[Vec] = Set.empty,
-    directions: Set[Vec] = Set.empty,
-    attacks: Set[Set[Vec]] = Set.empty
-  )
 }
 
 object SelectResolver extends SelectionResolver {
