@@ -2,6 +2,8 @@ import * as Types from './types'
 import Auth from '~/api/auth';
 import streamProxy from '~/api/streamProxy';
 import fetchGame from '~/api/fetchGame';
+import writeMove from '~/api/writeMove';
+import writeSelect from '~/api/writeSelect';
 
 // Utilities
 const createAction = (type, payload) => ({ type, payload });
@@ -32,6 +34,22 @@ export const gameFetch = (id) => (dispatch) => {
   return fetchGame(id).then(r => {
     dispatch(createAction(Types.GAME_FETCHED, r.data.game));
     return r.data.game;
+  });
+};
+
+export const gameSelect = (gameId, point) => (dispatch) => {
+  dispatch(createAction(Types.GAME_SELECT));
+  return writeSelect({ gameId, point }).then(r => {
+    dispatch(gameSetSelections(r.data.select));
+    return r.data.select;
+  });
+};
+
+export const gameMove = (gameId, point) => (dispatch) => {
+  dispatch(createAction(Types.GAME_MOVE));
+  return writeMove({ gameId, point }).then(r => {
+    dispatch(gameSetSelections(r.data.move));
+    return r.data.move;
   });
 };
 

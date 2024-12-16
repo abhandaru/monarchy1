@@ -26,18 +26,23 @@ trait SelectionResolver extends Resolver[Unit, Selection] with StrictLogging {
     redisCli.get[Game](gameKey).flatMap {
       case None => Future.failed(NotFound(s"game '$gameId' not found"))
       case Some(game) =>
-        change(game, userId, extractPoint(in)) match {
-          case r: Reject => Future.failed(Rejection(r))
-          case Accept(nextGame) =>
-            redisCli.set(gameKey, GameJson.stringify(nextGame)).flatMap {
-              case false => throw new RuntimeException(s"redis set failed: '$gameKey'")
-              case true =>
-                val event = GameChangeSelection(gameId)
-                val channel = StreamingChannel.gameSelectTile(userId)
-                logger.info(s"selection updated on key=$gameKey")
-                redisCli.publish(channel, Json.stringify(event))
-                  .map(_ => Selection(nextGame))
-            }
+        val point = extractPoint(in)
+        val noop = game.currentSelection.contains(point)
+        if (noop) Async(Selection(game))
+        else {
+          change(game, userId, point) match {
+            case r: Reject => Future.failed(Rejection(r))
+            case Accept(nextGame) =>
+              redisCli.set(gameKey, GameJson.stringify(nextGame)).flatMap {
+                case false => throw new RuntimeException(s"redis set failed: '$gameKey'")
+                case true =>
+                  val event = GameChangeSelection(gameId)
+                  val channel = StreamingChannel.gameSelectTile(userId)
+                  logger.info(s"selection updated on key=$gameKey")
+                  redisCli.publish(channel, Json.stringify(event))
+                    .map(_ => Selection(nextGame))
+              }
+          }
         }
     }
   }

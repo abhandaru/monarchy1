@@ -22,12 +22,13 @@ const PhaseBar = (props) => {
   const phasesAllowed = useSelector(_ =>_.games.game?.state.currentPhases);
   const phaseEls = Object.keys(Phases).map(k => {
     const label = Phases[k];
-    const disabled = phase === k || !phasesAllowed.includes(k);
+    const current = phase === k;
+    const disabled = current || !phasesAllowed.includes(k);
     return (
       <Button
         key={k}
         size='lg'
-        variant='primary'
+        variant={current ? 'primary' : 'light'}
         disabled={disabled}
         onClick={() => onSelect(k)}>
         {label}

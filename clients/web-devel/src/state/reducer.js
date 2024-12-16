@@ -18,7 +18,7 @@ const INITIAL_GAMES = {
   recent: [],
   game: null,
   gameSelections: {
-    phase: 'Move',
+    phase: null,
     selection: null,
     piece: null,
     movements: [],
@@ -82,9 +82,14 @@ const games = (state = INITIAL_GAMES, action) => {
         recent: action.payload
       };
     case Types.GAME_FETCHED:
+      const phases = action.payload.state.currentPhases ?? [];
       return {
         ...state,
-        game: action.payload
+        game: action.payload,
+        gameSelections: {
+          ...state.gameSelections,
+          phase: phases[0] ?? null
+        }
       };
     case Types.GAME_SET_SELECTIONS:
       return {

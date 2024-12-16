@@ -47,12 +47,13 @@ const Tile = (props) => {
 
   // Determine how this tile should be painted.
   const { phase, piece: pieceSelected, movements, attacks, directions, selection } = selections;
+
   const currentControl = pieceSelected && (pieceSelected.playerId == currentPlayerId);
-  const paintAsMovement = phase === 'Move' && movements.some(_ => vecCompare(point, _));
-  const paintAsAttack = phase === 'Attack' && attacks.some(_ => _.some(_ => vecCompare(point, _)));
+  const paintAsMovement = phase === 'MOVE' && movements.some(_ => vecCompare(point, _));
+  const paintAsAttack = phase === 'ATTACK' && attacks.some(_ => _.some(_ => vecCompare(point, _)));
 
   const directionsRel = (selection != null) ? directions.map(_ => vecAdd(selection,  _)) : directions;
-  const paintAsDirection = phase === 'Turn' && directionsRel.some(_ => vecCompare(point, _));
+  const paintAsDirection = phase === 'DIR' && directionsRel.some(_ => vecCompare(point, _));
 
   // Pick tile implementation.
   let Component = InactiveTile;

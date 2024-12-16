@@ -1,3 +1,4 @@
+import * as Actions from '~/state/actions';
 import * as React from 'react';
 import Board from './Board';
 import classnames from 'classnames';
@@ -5,7 +6,6 @@ import NavigationView from '~/components/layout/NavigationView';
 import PhaseBar from './PhaseBar';
 import styles from './index.css';
 import Tile from './Tile';
-import { gameFetch } from '~/state/actions';
 import { useSelector, useDispatch } from 'react-redux';
 
 const GameView = (props) => {
@@ -15,7 +15,10 @@ const GameView = (props) => {
 
   // componentDidMount
   React.useEffect(() => {
-    dispatch(gameFetch(gameId));
+    dispatch(Actions.gameFetch(gameId)).then(_ => {
+      const point = game?.state.currentSelection;
+      return point && dispatch(Actions.gameSelect(gameId, point));
+    })
   }, []);
 
   return (

@@ -2,7 +2,6 @@ import * as Actions from '~/state/actions';
 import * as React from 'react';
 import classnames from 'classnames';
 import styles from './index.css';
-import writeMove from '~/api/writeMove';
 import { useDispatch } from 'react-redux';
 
 export default function MovementTile(props) {
@@ -15,9 +14,7 @@ export default function MovementTile(props) {
   const dispatch = useDispatch();
   const onClick = React.useCallback(() => {
     if (gameId) {
-      writeMove({ gameId, point }).then(r => {
-        dispatch(Actions.gameSetSelections(r.data.select));
-      });
+      dispatch(Actions.gameMove(gameId, point));
     }
   }, [gameId, point]);
 

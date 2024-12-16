@@ -2,7 +2,6 @@ import * as Actions from '~/state/actions';
 import * as React from 'react';
 import classnames from 'classnames';
 import styles from './index.css';
-import writeSelect from '~/api/writeSelect';
 import { useDispatch } from 'react-redux';
 
 export default function InactiveTile(props) {
@@ -11,9 +10,7 @@ export default function InactiveTile(props) {
   const dispatch = useDispatch();
   const onClick = React.useCallback(() => {
     if (gameId) {
-      writeSelect({ gameId, point }).then(r => {
-        dispatch(Actions.gameSetSelections(r.data.select));
-      });
+      dispatch(Actions.gameSelect(gameId, point));
     }
   }, [gameId, point]);
   return (
