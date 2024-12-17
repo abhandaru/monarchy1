@@ -5,7 +5,7 @@ import Tile from '~/views/GameView/Tile';
 import { useSelector, useDispatch } from 'react-redux';
 
 const Board = (props) => {
-  const { gameId, currentPlayerId, currentSelection, tiles } = props;
+  const { gameId, playerId, currentPlayerId, currentSelection, tiles } = props;
 
   // Fetch selection for current selection, if any. Only do this once on mount.
   React.useEffect(() => {
@@ -27,6 +27,7 @@ const Board = (props) => {
       <div key={i} className={styles.boardRow}>{row.map((tile, j) =>
         <Tile
           key={j}
+          playerId={playerId}
           currentPlayerId={currentPlayerId}
           tile={tile}
           size={size}

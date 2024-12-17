@@ -11,7 +11,8 @@ const ConnectionView = (props) => {
   return (
     <div className={styles.root}>
       <div>
-        <Badge>Ping</Badge>
+        ping
+        {' '}
         <Badge variant={latencyVariant}>{latencyText}</Badge>
       </div>
     </div>

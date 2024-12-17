@@ -1,6 +1,7 @@
 import * as Types from './types'
 import Auth from '~/api/auth';
 import streamProxy from '~/api/streamProxy';
+import fetchEffects from '~/api/fetchEffects';
 import fetchGame from '~/api/fetchGame';
 import writeMove from '~/api/writeMove';
 import writeSelect from '~/api/writeSelect';
@@ -50,6 +51,14 @@ export const gameMove = (gameId, point) => (dispatch) => {
   return writeMove({ gameId, point }).then(r => {
     dispatch(gameSetSelections(r.data.move));
     return r.data.move;
+  });
+};
+
+export const gameEffectsFetch = (gameId, point) => (dispatch) => {
+  dispatch(createAction(Types.GAME_EFFECTS_FETCH));
+  return fetchEffects(gameId, point).then(r => {
+    dispatch(createAction(Types.GAME_EFFECTS_FETCHED, r.data.effects));
+    return r.data.effects;
   });
 };
 

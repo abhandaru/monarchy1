@@ -2,6 +2,7 @@ import * as React from 'react';
 import ConnectionView from './ConnectionView';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import ProfileView from './ProfileView';
 import { Link } from 'react-router-dom';
 
 const NavigationView = (props) => {
@@ -13,6 +14,7 @@ const NavigationView = (props) => {
           <Link to='/performance'>Match performance</Link>
         </Nav>
         <ConnectionView />
+        <ProfileView />
       </Navbar.Collapse>
     </Navbar>
   );

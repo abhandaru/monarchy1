@@ -47,6 +47,22 @@
   background-color: rgba(255, 172, 77, 0.25);
 }
 
+.effect {
+  background-color: rgba(252, 96, 76, 1);
+}
+
+.effect:hover {
+  background-color: rgba(252, 96, 76, 0.5);
+}
+
+.effectNonOwner {
+  background-color: rgba(252, 96, 76, 0.5);
+}
+
+.effectNonOwner:hover {
+  background-color: rgba(252, 96, 76, 0.25);
+}
+
 .direction {
   background-color: rgba(173, 126, 207, 1);
 }

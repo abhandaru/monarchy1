@@ -11,12 +11,14 @@ import { useSelector, useDispatch } from 'react-redux';
 const GameView = (props) => {
   const { gameId } = props.match.params;
   const dispatch = useDispatch();
+  const userId = useSelector(_ => _.auth.userId);
   const game = useSelector(_ => _.games.game);
+  const player = game?.players.find(_ => _.user.id === userId);
 
   // componentDidMount
   React.useEffect(() => {
-    dispatch(Actions.gameFetch(gameId)).then(_ => {
-      const point = game?.state.currentSelection;
+    dispatch(Actions.gameFetch(gameId)).then(r => {
+      const point = r.state.currentSelection;
       return point && dispatch(Actions.gameSelect(gameId, point));
     })
   }, []);
@@ -30,6 +32,7 @@ const GameView = (props) => {
             <PhaseBar className={styles.phase} />
             <Board
               gameId={game.id}
+              playerId={player?.user.id}
               currentSelection={game.state.currentSelection}
               currentPlayerId={game.state.currentPlayerId}
               tiles={game.state.tiles}

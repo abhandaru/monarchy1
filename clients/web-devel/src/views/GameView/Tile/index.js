@@ -1,6 +1,8 @@
 import * as Actions from '~/state/actions';
 import * as React from 'react';
 import classnames from 'classnames';
+import AttackTile from './AttackTile';
+import EffectTile from './EffectTile';
 import InactiveTile from './InactiveTile';
 import MovementTile from './MovementTile';
 import Piece from '~/views/GameView/Piece';
@@ -12,19 +14,6 @@ const vecCompare = (a, b) =>
 
 const vecAdd = (a, b) =>
   ({i: a.i + b.i, j: a.j + b.j});
-
-const AttackTile = (props) => {
-  const { style, children, controlled, gameId, point } = props;
-  const className = classnames(
-    styles.tile,
-    controlled ? styles.attack : styles.attackNonOwner
-  );
-  return (
-    <div style={style} className={className}>
-      {children}
-    </div>
-  );
-};
 
 const DirectionTile = (props) => {
   const { style, children, controlled, gameId, point } = props;
@@ -40,17 +29,18 @@ const DirectionTile = (props) => {
 };
 
 const Tile = (props) => {
-  const { currentPlayerId, tile, size } = props;
+  const { playerId, tile, size } = props;
   const { piece: pieceOccupying, point } = tile;
   const gameId = useSelector(_ => _.games.game && _.games.game.id);
   const selections = useSelector(_ => _.games.gameSelections);
 
   // Determine how this tile should be painted.
-  const { phase, piece: pieceSelected, movements, attacks, directions, selection } = selections;
+  const { phase, piece: pieceSelected, movements, attacks, directions, selection, effects } = selections;
 
-  const currentControl = pieceSelected && (pieceSelected.playerId == currentPlayerId);
+  const currentControl = pieceSelected && (pieceSelected.playerId == playerId);
   const paintAsMovement = phase === 'MOVE' && movements.some(_ => vecCompare(point, _));
   const paintAsAttack = phase === 'ATTACK' && attacks.some(_ => _.some(_ => vecCompare(point, _)));
+  const paintAsEffect = phase === 'ATTACK' && effects.some(_ => vecCompare(point, _.point));
 
   const directionsRel = (selection != null) ? directions.map(_ => vecAdd(selection,  _)) : directions;
   const paintAsDirection = phase === 'DIR' && directionsRel.some(_ => vecCompare(point, _));
@@ -58,6 +48,7 @@ const Tile = (props) => {
   // Pick tile implementation.
   let Component = InactiveTile;
   if (paintAsMovement) Component = MovementTile;
+  else if (paintAsEffect) Component = EffectTile;
   else if (paintAsAttack) Component = AttackTile;
   else if (paintAsDirection) Component = DirectionTile;
 

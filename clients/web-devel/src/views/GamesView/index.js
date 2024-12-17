@@ -16,7 +16,7 @@ const GameRow = (props) => {
   const opponent = players.filter(_ => _.user.id != viewerId)[0];
   const opponentName = opponent ? opponent.user.username : '–';
   const opponentRating = opponent ? opponent.user.rating : '–';
-  const statusVariant = status == 'Started' ? 'primary' : 'secondary';
+  const statusVariant = status == 'Started' ? 'success' : 'secondary';
   return (
     <tr>
       <td className={styles.opponentCell}>

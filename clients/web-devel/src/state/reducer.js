@@ -23,7 +23,9 @@ const INITIAL_GAMES = {
     piece: null,
     movements: [],
     directions: [],
-    attacks: []
+    attacks: [],
+    attackConfirm: null,
+    effects: [],
   }
 };
 
@@ -105,6 +107,14 @@ const games = (state = INITIAL_GAMES, action) => {
         gameSelections: {
           ...state.gameSelections,
           phase: action.payload
+        }
+      };
+    case Types.GAME_EFFECTS_FETCHED:
+      return {
+        ...state,
+        gameSelections: {
+          ...state.gameSelections,
+          effects: action.payload
         }
       };
     default:

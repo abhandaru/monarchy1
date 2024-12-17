@@ -13,6 +13,7 @@ const query = gql`
       players {
         status
         user {
+          id
           username
           rating
         }

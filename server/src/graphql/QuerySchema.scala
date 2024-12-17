@@ -44,6 +44,7 @@ object QuerySchema {
         }
       ),
       Field("lobby", LobbyType, resolve = LobbyResolver),
+      Field("effects", ListType(EffectType), arguments = List(Args.Attack), resolve = EffectsResolver),
     )
   )
 
@@ -152,6 +153,13 @@ object QuerySchema {
     fields[GraphqlContext, Lobby.Data](
       Field("usersOnline", ListType(UserType), resolve = _.value.online),
       Field("challenges", ListType(ChallengeType), resolve = _.value.challenges),
+    )
+  )
+
+  lazy val EffectType = ObjectType(
+    "Effect",
+    fields[GraphqlContext, game.EffectLocation](
+      Field("point", VecType, resolve = _.value.point),
     )
   )
 }
