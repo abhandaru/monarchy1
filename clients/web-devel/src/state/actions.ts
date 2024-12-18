@@ -8,7 +8,7 @@ import writeMove from '~/api/writeMove';
 import writeSelect from '~/api/writeSelect';
 
 // Utilities
-const createAction = (type, payload) => ({ type, payload });
+const createAction = <T>(type: string, payload?: T) => ({ type, payload });
 const clockAt = () => (new Date).getTime();
 
 // Actions below
@@ -66,8 +66,10 @@ export const gameEffectsFetch = (gameId, attack) => (dispatch) => {
 export const gameAttack = (gameId, attack) => (dispatch) => {
   dispatch(createAction(Types.GAME_ATTACK));
   return writeAttack(gameId, attack).then(r => {
-    dispatch(gameSetSelections(r.data.attack));
-    return r.data.attack;
+    dispatch(gameFetch(gameId)).then(_ => {
+      dispatch(gameSetSelections(r.data.attack));
+      return r.data.attack;
+    });
   });
 };
 

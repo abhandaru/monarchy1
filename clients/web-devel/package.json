@@ -11,6 +11,9 @@
     "build:bundleanalyzer": "yarn build -- --env.addons=bundleanalyzer"
   },
   "dependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
     "graphql": "^14.5.3",
     "graphql-tag": "^2.10.1",
     "js-cookie": "^2.2.1",
@@ -24,7 +27,8 @@
     "react-router-dom": "^5.0.1",
     "reconnecting-websocket": "^4.2.0",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
