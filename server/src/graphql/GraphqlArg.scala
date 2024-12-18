@@ -39,6 +39,9 @@ object MoveQuery extends GraphqlArg[MoveQuery]
 case class AttackQuery(gameId: String, attack: Seq[VecQuery])
 object AttackQuery extends GraphqlArg[AttackQuery]
 
+case class DirectionQuery(gameId: String, direction: VecQuery)
+object DirectionQuery extends GraphqlArg[DirectionQuery]
+
 object Args {
   implicit val VecQueryMacro = deriveInput[VecQuery]()
 
@@ -51,6 +54,7 @@ object Args {
   val Deselect = Argument("q", deriveInput[GameQuery](), description = "Deselect all tiles")
   val Move = Argument("q", deriveInput[MoveQuery](), description = "Move to tile")
   val Attack = Argument("q", deriveInput[AttackQuery](), description = "Attack a tile")
+  val Direction = Argument("q", deriveInput[DirectionQuery](), description = "Orient a piece on a tile")
 }
 
 

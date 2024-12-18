@@ -42,5 +42,7 @@ case class GameCreate(gameId: UUID) extends StreamAction
 case class GameChangeSelection(gameId: UUID)  extends StreamAction
 case class GameMove(gameId: UUID)  extends StreamAction
 case class GameAttack(gameId: UUID)  extends StreamAction
+case class GameDirection(gameId: UUID)  extends StreamAction
+
 case class Pong(t: Instant) extends StreamAction
 case class RedisRaw(text: String) extends StreamAction
