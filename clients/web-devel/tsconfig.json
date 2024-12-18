@@ -2,6 +2,14 @@
   "compilerOptions": {
     "noEmit": true,
     "baseUrl": ".",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "strict": false,
     "paths": {
       "~/*": ["./src/*"]
     }

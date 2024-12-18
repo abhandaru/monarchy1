@@ -12,7 +12,6 @@ const MatchmakingView = () => {
   const onSeek = React.useCallback(() => writeSeek());
   React.useEffect(() => {
     fetchLobby().then(_ => {
-      console.log('here', _.data.lobby.challenges);
       dispatch(Actions.matchmakingSet(_.data.lobby.challenges));
     });
   }, []);

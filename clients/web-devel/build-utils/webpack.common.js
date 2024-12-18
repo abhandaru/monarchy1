@@ -28,6 +28,17 @@ const config = {
             }
           }
         ]
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,
+            experimentalWatchApi: true
+          }
+        },
+        exclude: /node_modules/
       }
     ]
   },
@@ -58,7 +69,8 @@ const config = {
   resolve: {
     alias: {
       '~': commonPaths.appEntry
-    }
+    },
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   }
 };
 
