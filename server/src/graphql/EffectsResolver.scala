@@ -13,12 +13,13 @@ object EffectsResolver extends Resolver[Unit, Seq[EffectLocation]] {
     import in.ctx._
     val args = in.arg(Args.Attack)
     val gameId = UUID.fromString(args.gameId)
+    val attack = args.attack.map(extractVec).toSet
     redisCli.get[Game](StreamingKey.Game(gameId)).map {
       case None => throw NotFound(s"game '$gameId' not found")
-      case Some(game) => game.effects(Set(extractPoint(args))).toSeq
+      case Some(game) => game.effects(attack).toSeq
     }
   }
 
-  private def extractPoint(args: AttackQuery) =
-    Vec(args.point.i, args.point.j)
+  private def extractVec(argVec: VecQuery): Vec =
+    Vec(argVec.i, argVec.j)
 }

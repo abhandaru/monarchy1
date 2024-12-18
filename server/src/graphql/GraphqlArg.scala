@@ -36,7 +36,7 @@ object SelectQuery extends GraphqlArg[SelectQuery]
 case class MoveQuery(gameId: String, point: VecQuery)
 object MoveQuery extends GraphqlArg[MoveQuery]
 
-case class AttackQuery(gameId: String, point: VecQuery)
+case class AttackQuery(gameId: String, attack: Seq[VecQuery])
 object AttackQuery extends GraphqlArg[AttackQuery]
 
 object Args {

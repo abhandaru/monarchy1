@@ -2,23 +2,21 @@ import * as Actions from '~/state/actions';
 import * as React from 'react';
 import classnames from 'classnames';
 import styles from './index.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 export default function EffectTile(props) {
-  const { children, style, gameId, point, controlled } = props;
+  const { children, style, gameId, attack, controlled } = props;
   const dispatch = useDispatch();
-
-  console.log('hello')
   const className = classnames(
     styles.tile,
     controlled ? styles.effect : styles.effectNonOwner
   );
 
   const onClick = React.useCallback(() => {
-    if (gameId) {
-      // dispatch(Actions.gameSetSelections({ ...selections, effectConfirm: point }));
+    if (gameId && attack) {
+      dispatch(Actions.gameAttack(gameId, attack));
     }
-  }, [gameId, point]);
+  }, [gameId, attack]);
 
   return (
     <div style={style} className={className} onClick={onClick}>

@@ -40,7 +40,7 @@ object MutationSchema {
       Field("select", SelectionType, arguments = List(Args.Select), resolve = SelectResolver),
       Field("deselect", SelectionType, arguments = List(Args.Deselect), resolve = DeselectResolver),
       Field("move", SelectionType, arguments = List(Args.Move), resolve = MoveResolver),
-      // Field("attack", SelectionType, arguments = List(Args.Attack), resolve = AttackResolver),
+      Field("attack", SelectionType, arguments = List(Args.Attack), resolve = AttackResolver),
       Field("challengeSeek", QuerySchema.ChallengeType, resolve = ChallengeSeekResolver),
     )
   )

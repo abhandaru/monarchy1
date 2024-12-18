@@ -12,6 +12,7 @@ object StreamingChannel {
   def gameCreate(userId: UUID) = gameBase(userId, "create")
   def gameSelectTile(userId: UUID) = gameBase(userId, "selectTile")
   def gameMove(userId: UUID) = gameBase(userId, "move")
+  def gameAttack(userId: UUID) = gameBase(userId, "attack")
 
   def gamePattern(userId: UUID) = gameBase(userId, "*")
 }

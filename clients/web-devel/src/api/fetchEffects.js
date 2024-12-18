@@ -1,8 +1,8 @@
 import fetch from '~/api/fetch';
 import gql from 'graphql-tag';
 
-export default function fetchEffects(gameId, point) {
-  return fetch(query)({ q: { gameId, point }});
+export default function fetchEffects(gameId, attack) {
+  return fetch(query)({ q: { gameId, attack }});
 }
 
 const query = gql`

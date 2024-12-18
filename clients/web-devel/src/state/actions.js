@@ -3,6 +3,7 @@ import Auth from '~/api/auth';
 import streamProxy from '~/api/streamProxy';
 import fetchEffects from '~/api/fetchEffects';
 import fetchGame from '~/api/fetchGame';
+import writeAttack from '~/api/writeAttack';
 import writeMove from '~/api/writeMove';
 import writeSelect from '~/api/writeSelect';
 
@@ -54,11 +55,19 @@ export const gameMove = (gameId, point) => (dispatch) => {
   });
 };
 
-export const gameEffectsFetch = (gameId, point) => (dispatch) => {
+export const gameEffectsFetch = (gameId, attack) => (dispatch) => {
   dispatch(createAction(Types.GAME_EFFECTS_FETCH));
-  return fetchEffects(gameId, point).then(r => {
+  return fetchEffects(gameId, attack).then(r => {
     dispatch(createAction(Types.GAME_EFFECTS_FETCHED, r.data.effects));
     return r.data.effects;
+  });
+};
+
+export const gameAttack = (gameId, attack) => (dispatch) => {
+  dispatch(createAction(Types.GAME_ATTACK));
+  return writeAttack(gameId, attack).then(r => {
+    dispatch(gameSetSelections(r.data.attack));
+    return r.data.attack;
   });
 };
 

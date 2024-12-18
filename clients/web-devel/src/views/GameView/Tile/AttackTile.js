@@ -5,7 +5,7 @@ import styles from './index.css';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function AttackTile(props) {
-  const { children, style, gameId, point, controlled } = props;
+  const { children, style, gameId, point, controlled, attack } = props;
   const dispatch = useDispatch();
   const className = classnames(
     styles.tile,
@@ -13,10 +13,10 @@ export default function AttackTile(props) {
   );
 
   const onClick = React.useCallback(() => {
-    if (gameId) {
-      dispatch(Actions.gameEffectsFetch(gameId, point));
+    if (gameId && attack) {
+      dispatch(Actions.gameEffectsFetch(gameId, attack));
     }
-  }, [gameId, point]);
+  }, [gameId, attack]);
 
   return (
     <div style={style} className={className} onClick={onClick}>

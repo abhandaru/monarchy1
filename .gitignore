@@ -2,3 +2,5 @@ bazel-*
 .DS_Store
 .idea
 .ijwb
+.vscode
+.metals
