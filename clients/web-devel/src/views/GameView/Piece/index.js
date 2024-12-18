@@ -55,7 +55,7 @@ const Piece = (props) => {
   );
 
   return (
-    <OverlayTrigger trigger='hover' placement='top' overlay={overlayEl}>
+    <OverlayTrigger trigger={['hover', 'focus']} placement='top' overlay={overlayEl}>
       <div className={styles.root}>
         <div className={classnames(styles.avatar, avatarImage)}>
           {avatarImage == null ? order : null}

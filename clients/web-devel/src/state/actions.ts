@@ -5,6 +5,7 @@ import streamProxy from '~/api/streamProxy';
 import fetchEffects from '~/api/fetchEffects';
 import fetchGame from '~/api/fetchGame';
 import writeAttack from '~/api/writeAttack';
+import writeDirection from '~/api/writeDirection';
 import writeMove from '~/api/writeMove';
 import writeSelect from '~/api/writeSelect';
 
@@ -69,6 +70,14 @@ export const gameAttack = (gameId: string, attack: Types.Attack) => (dispatch) =
   return writeAttack(gameId, attack).then(r => {
     dispatch(gameSetSelections(r.data.attack));
     return r.data.attack;
+  });
+};
+
+export const gameDir = (gameId: string, direction: Types.Vec) => (dispatch) => {
+  dispatch(createAction(ActionTypes.GAME_DIR));
+  return writeDirection(gameId, direction).then(r => {
+    dispatch(gameSetSelections(r.data.direction));
+    return r.data.direction;
   });
 };
 

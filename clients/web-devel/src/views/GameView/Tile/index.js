@@ -1,27 +1,13 @@
-import * as Actions from '~/state/actions';
 import * as React from 'react';
 import * as vector from '~/util/vector';
-import classnames from 'classnames';
 import AttackTile from './AttackTile';
+import DirectionTile from './DirectionTile';
 import EffectTile from './EffectTile';
 import InactiveTile from './InactiveTile';
 import MovementTile from './MovementTile';
 import Piece from '~/views/GameView/Piece';
-import styles from './index.css';
 import { useSelector } from 'react-redux';
 
-const DirectionTile = (props) => {
-  const { style, children, controlled, gameId, point } = props;
-  const className = classnames(
-    styles.tile,
-    controlled ? styles.direction : styles.directionNonOwner
-  );
-  return (
-    <div style={style} className={className}>
-      {children}
-    </div>
-  );
-};
 
 const Tile = (props) => {
   const { playerId, tile, size } = props;
@@ -45,8 +31,9 @@ const Tile = (props) => {
   const paintAsAttack = phase === 'ATTACK' && attackOverlap.length;
   const paintAsEffect = phase === 'ATTACK' && effects.some(_ => vector.compare(point, _.point));
 
-  const directionsRel = (selection != null) ? directions.map(_ => vector.add(selection,  _)) : directions;
-  const paintAsDirection = phase === 'DIR' && directionsRel.some(_ => vector.compare(point, _));
+  // Determine if this tile should be painted as a direction.
+  const directionCanonical = selection && directions.find(_ => vector.compare(point, vector.add(selection,  _)));
+  const paintAsDirection = phase === 'DIR' && directionCanonical;
 
   // Pick tile implementation.
   let Component = InactiveTile;
@@ -63,7 +50,8 @@ const Tile = (props) => {
       controlled={currentControl}
       gameId={gameId}
       point={point}
-      attack={attackCanonical}>
+      attack={attackCanonical}
+      direction={directionCanonical}>
       {pieceOccupying ? <Piece piece={pieceOccupying} /> : null}
     </Component>
   );
