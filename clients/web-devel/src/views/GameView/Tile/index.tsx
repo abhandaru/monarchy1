@@ -6,14 +6,20 @@ import EffectTile from './EffectTile';
 import InactiveTile from './InactiveTile';
 import MovementTile from './MovementTile';
 import Piece from '~/views/GameView/Piece';
+import { State, GameSelections } from '~/state/state';
 import { useSelector } from 'react-redux';
 
+type TileProps = {
+  playerId: string;
+  tile: any;
+  size: number;
+};
 
-const Tile = (props) => {
+const Tile = (props: TileProps) => {
   const { playerId, tile, size } = props;
   const { piece: pieceOccupying, point } = tile;
-  const gameId = useSelector(_ => _.games.game && _.games.game.id);
-  const selections = useSelector(_ => _.games.gameSelections);
+  const gameId = useSelector<State, string | null>(_ => _.games.game && _.games.game.id);
+  const selections = useSelector<State, GameSelections>(_ => _.games.gameSelections);
 
   // Determine how this tile should be painted.
   const { phase, piece: pieceSelected, movements, attacks, directions, selection, effects } = selections;

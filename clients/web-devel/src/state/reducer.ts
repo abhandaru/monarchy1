@@ -1,35 +1,9 @@
-import * as Types from './types'
-import { combineReducers } from 'redux'
-import Auth from '~/api/auth';
+import * as Types from './types';
+import * as State from './state';
+import { combineReducers } from 'redux';
 
-const INITIAL_AUTH = Auth.poll();
 
-const INITIAL_CONNECTION = {
-  lastPingAt: null,
-  lastPongAt: null,
-  lastPongServerAt: null
-};
-
-const INITIAL_MATCHMAKING = {
-  challenges: []
-};
-
-const INITIAL_GAMES = {
-  recent: [],
-  game: null,
-  gameSelections: {
-    phase: null,
-    selection: null,
-    piece: null,
-    movements: [],
-    directions: [],
-    attacks: [],
-    attackConfirm: null,
-    effects: [],
-  }
-};
-
-const auth = (state = INITIAL_AUTH, action) => {
+const auth = (state = State.INITIAL_AUTH, action) => {
   switch (action.type) {
     case Types.AUTH_SET:
       return {
@@ -41,7 +15,7 @@ const auth = (state = INITIAL_AUTH, action) => {
   }
 };
 
-const connection = (state = INITIAL_CONNECTION, action) => {
+const connection = (state = State.INITIAL_CONNECTION, action) => {
   switch (action.type) {
     case Types.PING:
       return {
@@ -64,7 +38,7 @@ const connection = (state = INITIAL_CONNECTION, action) => {
   }
 };
 
-const matchmaking = (state = INITIAL_MATCHMAKING, action) => {
+const matchmaking = (state = State.INITIAL_MATCHMAKING, action) => {
   switch (action.type) {
     case Types.MATCHMAKING_SET:
       return {
@@ -76,7 +50,7 @@ const matchmaking = (state = INITIAL_MATCHMAKING, action) => {
   }
 };
 
-const games = (state = INITIAL_GAMES, action) => {
+const games = (state = State.INITIAL_GAMES, action) => {
   switch (action.type) {
     case Types.GAMES_SET_RECENT:
       return {

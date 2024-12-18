@@ -1,10 +1,17 @@
 import Cookies from 'js-cookie';
 
+export type Auth = {
+  loggedIn: boolean;
+  userId: string;
+  user: any;
+  bearerToken: string;
+};
+
 const AuthorizationKey = 'Authorization';
 const UserKey = 'X-M1-User-Id';
 const UserDataKey = 'X-M1-User-Data';
 
-const poll = () => {
+export const poll = (): Auth => {
   const userId = Cookies.get(UserKey);
   const bearerToken = Cookies.get(AuthorizationKey);
   const user = JSON.parse(Cookies.get(UserDataKey) || 'null');
@@ -16,7 +23,7 @@ const poll = () => {
   }
 };
 
-const headers = () => {
+export const headers = () => {
   const { userId, bearerToken } = poll();
   return {
     [UserKey]: userId,
@@ -24,7 +31,7 @@ const headers = () => {
   };
 };
 
-const apply = (auth) => {
+export const apply = (auth: Auth) => {
   const { userId, user, bearerToken } = auth;
   userId && Cookies.set(UserKey, userId);
   user && Cookies.set(UserDataKey, JSON.stringify(user));
