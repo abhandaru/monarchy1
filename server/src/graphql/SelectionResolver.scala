@@ -17,33 +17,17 @@ trait SelectionResolver extends Resolver[Unit, Selection] with StrictLogging {
   def change(game: Game, userId: UUID, point: Vec): Change[Game]
 
   override def apply(in: In): Out = {
-    // Get all the implicits
-    import in.ctx._
-    val args = in.arg(Args.Select)
-    val userId = expectUserId(in)
-    val gameId = extractGameId(in)
-    val gameKey = StreamingKey.Game(gameId)
-    redisCli.get[Game](gameKey).flatMap {
-      case None => Future.failed(NotFound(s"game '$gameId' not found"))
-      case Some(game) =>
-        val point = extractPoint(in)
-        val noop = game.currentSelection.contains(point)
-        if (noop) Async(Selection(game))
-        else {
-          change(game, userId, point) match {
-            case r: Reject => Future.failed(Rejection(r))
-            case Accept(nextGame) =>
-              redisCli.set(gameKey, GameJson.stringify(nextGame)).flatMap {
-                case false => throw new RuntimeException(s"redis set failed: '$gameKey'")
-                case true =>
-                  val event = GameChangeSelection(gameId)
-                  val channel = StreamingChannel.gameSelectTile(userId)
-                  logger.info(s"selection updated on key=$gameKey")
-                  redisCli.publish(channel, Json.stringify(event))
-                    .map(_ => Selection(nextGame))
-              }
-          }
-        }
+    val commit = PhaseCommit(
+      input = in,
+      gameId = extractGameId(in),
+      event = ctx => GameChangeSelection(ctx.gameId),
+      channel = ctx => StreamingChannel.gameSelectTile(ctx.userId)
+    )
+    commit { ctx =>
+      val point = extractPoint(in)
+      val noop = ctx.game.currentSelection.contains(point)
+      if (noop) Accept(ctx.game)
+      else change(ctx.game, ctx.userId, point)
     }
   }
 }
