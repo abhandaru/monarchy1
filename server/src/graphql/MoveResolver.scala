@@ -10,8 +10,7 @@ object MoveResolver extends Resolver[Unit, Selection] {
     val commit = PhaseCommit(
       input = in,
       gameId = UUID.fromString(args.gameId),
-      event = ctx => GameMove(ctx.gameId),
-      channel = ctx => StreamingChannel.gameMove(ctx.userId)
+      event = ctx => GameChange(ctx.gameId)
     )
     commit { ctx =>
       val point = Vec(args.point.i, args.point.j)

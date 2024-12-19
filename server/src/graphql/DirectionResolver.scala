@@ -10,8 +10,7 @@ object DirectionResolver extends Resolver[Unit, Selection] {
     val commit = PhaseCommit(
       input = in,
       gameId = UUID.fromString(args.gameId),
-      event = ctx => GameDirection(ctx.gameId),
-      channel = ctx => StreamingChannel.gameDirection(ctx.userId)
+      event = ctx => GameChange(ctx.gameId)
     )
     commit { ctx =>
       val direction = Vec(args.direction.i, args.direction.j)

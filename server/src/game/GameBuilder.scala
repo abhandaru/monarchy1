@@ -1,5 +1,6 @@
 package monarchy.game
 
+import java.util.UUID
 import scala.util.Random
 
 object GameBuilder {
@@ -36,7 +37,7 @@ object GameBuilder {
     } yield {
       val ptRotated = (rotation * (pt - (maxPt / 2))) + (maxPt / 2);
       val dirRotated = rotation * Vec.I
-      val pieceId = PieceId(ptRotated.hashCode)
+      val pieceId = mkPieceId(ptRotated)
       val piece = PieceBuilder(pieceId, pieceConf, player.id, dirRotated);
       val pAdd = PieceAdd(ptRotated, piece)
       pAdd.copy(
@@ -51,5 +52,10 @@ object GameBuilder {
       board = BoardSelection.commitAggregation(piecesAdditions),
       turns = Seq(Turn())
     )
+  }
+
+  private def mkPieceId(pt: Vec): PieceId = {
+    val uuid = UUID.nameUUIDFromBytes(pt.hashCode.toString.getBytes)
+    PieceId(uuid)
   }
 }

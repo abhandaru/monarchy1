@@ -29,3 +29,7 @@ class RedisRawRenderer(implicit val ec: ExecutionContext) extends BasicActionRen
 class GameCreateRenderer(implicit val ec: ExecutionContext) extends BasicActionRenderer[GameCreate] {
   override def render(axn: GameCreate) = Future.successful(Map("gameId" -> axn.gameId))
 }
+
+class GameChangeRenderer(implicit val ec: ExecutionContext) extends BasicActionRenderer[GameChange] {
+  override def render(axn: GameChange) = Future.successful(Map("gameId" -> axn.gameId))
+}

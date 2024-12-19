@@ -12,8 +12,7 @@ import scala.concurrent.Future
 case class PhaseCommit(
     input: PhaseCommit.Input,
     gameId: UUID,
-    event: PhaseCommit.CommitContext => StreamAction,
-    channel: PhaseCommit.CommitContext => String
+    event: PhaseCommit.CommitContext => StreamAction
 ) extends StrictLogging { 
   import GameStringDeserializer._
   import PhaseCommit._
@@ -33,7 +32,7 @@ case class PhaseCommit(
               case false => throw new RuntimeException(s"redis set failed: '$gameKey'")
               case true =>
                 val evt = event(commitContext)
-                val ch = channel(commitContext)
+                val ch = StreamingChannel.gameChange(commitContext.userId)
                 logger.info(s"publishing event=$evt to channel=$ch")
                 redisCli.publish(ch, Json.stringify(evt))
                   .map(_ => Selection(nextGame))

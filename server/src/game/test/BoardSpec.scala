@@ -5,7 +5,6 @@ import org.scalatest.wordspec.AnyWordSpec
 import monarchy.testutil.Ids
 
 class BoardSpec extends AnyWordSpec with Matchers {
-
   "Board$" should {
     "have correct Standard [[Board]]" in {
       assert(PlanarTooling.compare(
@@ -28,8 +27,8 @@ class BoardSpec extends AnyWordSpec with Matchers {
   }
 
   "Board" should {
-    val knight = PieceBuilder(PieceId(1), Knight, PlayerId(Ids.A), Vec(1, 0))
-    val shrub = PieceBuilder(PieceId(2), Shrub, PlayerId(Ids.A), Vec(1, 0))
+    val knight = PieceBuilder(PieceId(Ids.A), Knight, PlayerId(Ids.A), Vec(1, 0))
+    val shrub = PieceBuilder(PieceId(Ids.B), Shrub, PlayerId(Ids.A), Vec(1, 0))
     val board = BoardTooling.from(
       """
       |██░░░░░░░██

@@ -191,7 +191,7 @@ case class Game(
                   if (game.board.occupied(pt))
                     None
                   else
-                    Some(PieceAdd(pt, PieceBuilder(PieceId(0), Shrub, pid, piece.currentDirection)))
+                    Some(PieceAdd(pt, PieceBuilder(PieceId.Empty, Shrub, pid, piece.currentDirection)))
                 // Heals all units for the same player
                 case EffectLocation(pt, HealAll(power)) =>
                   game.board.piece(pt).map {

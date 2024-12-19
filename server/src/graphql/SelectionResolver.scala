@@ -20,8 +20,7 @@ trait SelectionResolver extends Resolver[Unit, Selection] with StrictLogging {
     val commit = PhaseCommit(
       input = in,
       gameId = extractGameId(in),
-      event = ctx => GameChangeSelection(ctx.gameId),
-      channel = ctx => StreamingChannel.gameSelectTile(ctx.userId)
+      event = ctx => GameChange(ctx.gameId)
     )
     commit { ctx =>
       val point = extractPoint(in)

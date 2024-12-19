@@ -1,5 +1,6 @@
 package monarchy.game
 
+import java.util.UUID
 object PieceBuilder {
   def apply(
     id: PieceId,
@@ -15,7 +16,11 @@ object PieceBuilder {
   )
 }
 
-case class PieceId(id: Int) extends AnyVal
+case class PieceId(id: UUID) extends AnyVal
+
+object PieceId {
+  val Empty = PieceId(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+}
 
 case class PieceEffect(casterId: PieceId, effect: Effect)
 

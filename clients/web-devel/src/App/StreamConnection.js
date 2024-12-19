@@ -11,6 +11,8 @@ const messageConverter = (message) => {
       return Actions.pong(message.data);
     case 'Matchmaking':
       return Actions.matchmakingSet(message.data);
+    case 'GameChange':
+      return Actions.gameFetch(message.data.gameId);
     default:
       return null;
   }

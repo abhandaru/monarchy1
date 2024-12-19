@@ -13,6 +13,7 @@ class ActionRendererProxy(implicit
 ) extends ActionRenderer[StreamAction] {
   // Cache the renderers
   val gameCreate = new GameCreateRenderer
+  val gameChange = new GameChangeRenderer
   val matchmaking = new MatchmakingRenderer
   val pong = new PongRenderer
   val redisRaw = new RedisRawRenderer
@@ -23,8 +24,7 @@ class ActionRendererProxy(implicit
       case axn: Matchmaking => matchmaking(axn)
       case axn: Pong => pong(axn)
       case axn: RedisRaw => redisRaw(axn)
-      // Just ignore these for now. Can forward to spectators later.
-      case axn: GameChangeSelection => Async.None
+      case axn: GameChange => gameChange(axn)
       case axn =>
         println(s"[action-renderer-proxy] unrecognized [[StreamAction]] of $axn")
         Async.None
