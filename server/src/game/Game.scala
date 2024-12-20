@@ -6,7 +6,7 @@ case class Game(
   rand: Random,
   players: Seq[Player],
   board: Board,
-  turns: Seq[Turn]
+  turns: Seq[Turn],
 ) {
   def currentTurn: Turn = turns.head
 
@@ -266,13 +266,11 @@ case class Game(
     }
   }
 
-  def playerGuard(pid: PlayerId): Change[Unit] = {
+  private def playerGuard(pid: PlayerId): Change[Unit] =
     if (currentPlayer.id == pid) Accept.Unit else Reject.ChangeOutOfTurn
-  }
 
-  def turnGuard(act: TurnAction): Change[Game] = {
+  private def turnGuard(act: TurnAction): Change[Game] =
     currentTurn.act(act).map(t => this.copy(turns = t +: turns.tail))
-  }
 }
 
 object Game {

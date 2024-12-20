@@ -6,7 +6,7 @@ export default function fetchGame(id) {
 }
 
 const query = gql`
-  query fetchGame($id: String!) {
+  query game($id: String!) {
     game(id: $id) {
       id
       status

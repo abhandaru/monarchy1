@@ -26,6 +26,7 @@ sealed trait Reject extends Change[Nothing] {
 }
 
 object Reject {
+  case object ReadOnly extends Reject
   case object CannotAttack extends Reject
   case object CannotChangeDirection extends Reject
   case object CannotDeselect extends Reject

@@ -6,7 +6,7 @@ export default function fetchEffects(gameId, attack) {
 }
 
 const query = gql`
-  query fetchEffects($q: AttackQuery!) {
+  query effects($q: AttackQuery!) {
     effects(q: $q) {
       point {
         i

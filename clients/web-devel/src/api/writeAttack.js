@@ -7,7 +7,7 @@ export default function writeAttack(gameId, attack) {
 }
 
 const query = gql`
-  mutation Attack($q: AttackQuery!) {
+  mutation attack($q: AttackQuery!) {
     attack(q: $q) {
       ${frags.Selection}
     }

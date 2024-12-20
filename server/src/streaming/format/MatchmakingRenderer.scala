@@ -12,12 +12,18 @@ object MatchmakingRenderer {
   case class Data(host: User)
 }
 
-class MatchmakingRenderer(implicit val ec: ExecutionContext, queryCli: dal.QueryClient, redisCli: RedisClient)
-  extends BasicActionRenderer[Matchmaking] {
+class MatchmakingRenderer(implicit
+    ec: ExecutionContext,
+    queryCli: dal.QueryClient,
+    redisCli: RedisClient
+) extends ActionRenderer.Impl[Matchmaking] {
   import dal.PostgresProfile.Implicits._
   import MatchmakingRenderer._
 
-  override def render(axn: Matchmaking): Future[Seq[Data]] = {
+  override def renderOpt(axn: Matchmaking): Future[Option[_]] =
+    render(axn).map { r => Some(r) }
+
+  private def render(axn: Matchmaking): Future[Seq[Data]] = {
     val fetchUsers = for {
       cursor <- redisCli.scan(cursor = 0, matchGlob = Some(StreamingKey.ChallengeScan))
       userIds = for {

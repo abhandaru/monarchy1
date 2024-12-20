@@ -42,6 +42,7 @@ object MutationSchema {
       Field("move", SelectionType, arguments = List(Args.Move), resolve = MoveResolver),
       Field("attack", SelectionType, arguments = List(Args.Attack), resolve = AttackResolver),
       Field("direct", SelectionType, arguments = List(Args.Direction), resolve = DirectionResolver),
+      Field("endTurn", SelectionType, arguments = List(Args.EndTurn), resolve = EndTurnResolver),
       Field("challengeSeek", QuerySchema.ChallengeType, resolve = ChallengeSeekResolver),
     )
   )

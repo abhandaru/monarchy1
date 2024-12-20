@@ -8,6 +8,7 @@ import writeAttack from '~/api/writeAttack';
 import writeDirection from '~/api/writeDirection';
 import writeMove from '~/api/writeMove';
 import writeSelect from '~/api/writeSelect';
+import writeEndTurn from '~/api/writeEndTurn';
 
 // Utilities
 const createAction = <T>(type: string, payload?: T) => ({ type, payload });
@@ -77,6 +78,14 @@ export const gameDir = (gameId: string, direction: Types.Vec) => (dispatch) => {
   dispatch(createAction(ActionTypes.GAME_DIR));
   return writeDirection(gameId, direction).then(r => {
     dispatch(gameSetSelections(r.data.direction));
+    return r.data.direction;
+  });
+};
+
+export const gameEndTurn = (gameId: string) => (dispatch) => {
+  dispatch(createAction(ActionTypes.GAME_END_TURN));
+  return writeEndTurn(gameId).then(r => {
+    dispatch(gameSetSelections(r.data.end));
     return r.data.direction;
   });
 };

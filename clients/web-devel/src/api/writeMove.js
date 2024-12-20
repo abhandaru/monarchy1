@@ -7,7 +7,7 @@ export default function writeMove(q) {
 }
 
 const query = gql`
-  mutation Move($q: MoveQuery!) {
+  mutation move($q: MoveQuery!) {
     move(q: $q) {
       ${frags.Selection}
     }

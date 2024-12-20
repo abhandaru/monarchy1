@@ -11,7 +11,7 @@ object AttackResolver extends Resolver[Unit, Selection] with StrictLogging {
     val commit = PhaseCommit(
       input = in,
       gameId = UUID.fromString(args.gameId),
-      event = ctx => GameChange(ctx.gameId)
+      event = ctx => GameChange(ctx.gameId, "ATTACK")
     )
     commit { ctx =>
       val attack = args.attack.map(extractVec).toSet

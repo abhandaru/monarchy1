@@ -1,9 +1,8 @@
 import * as Actions from '~/state/actions';
 import * as React from 'react';
 import Board from './Board';
-import classnames from 'classnames';
 import NavigationView from '~/components/layout/NavigationView';
-import PhaseBar from './PhaseBar';
+import PhasesView from './PhasesView';
 import styles from './index.css';
 import Tile from './Tile';
 import { useSelector, useDispatch } from 'react-redux';
@@ -29,7 +28,7 @@ const GameView = (props) => {
       <div className={styles.root}>
         {game ?
           <>
-            <PhaseBar className={styles.phase} />
+            <PhasesView gameId={gameId} className={styles.phase} />
             <Board
               gameId={game.id}
               playerId={player?.user.id}
