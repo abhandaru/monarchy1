@@ -13,12 +13,12 @@ type Matchmaking = {
 
 export type GameSelections = {
   phase: string | null;
+  phases: string[];
   selection: any;
   piece: any;
   movements: Types.Vec[];
   directions: Types.Vec[];
   attacks: Types.Vec[][];
-  attackConfirm: Types.Vec | null;
   effects: {point: Types.Vec}[];
 };
 
@@ -52,12 +52,12 @@ export const INITIAL_GAMES: Games = {
   game: null,
   gameSelections: {
     phase: null,
+    phases: [],
     selection: null,
     piece: null,
     movements: [],
     directions: [],
     attacks: [],
-    attackConfirm: null,
     effects: []
   }
 };

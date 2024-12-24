@@ -9,6 +9,8 @@ import sangria.schema._
 import scala.concurrent.ExecutionContext
 
 object QuerySchema {
+  import CommonSchema._
+
   lazy val Def = ObjectType(
     "Query",
     fields[GraphqlContext, Unit](
@@ -60,6 +62,7 @@ object QuerySchema {
   lazy val PlayerType = ObjectType(
     "Player",
     fields[GraphqlContext, dal.Player](
+      Field("id", StringType, resolve = _.value.id.toString),
       Field("status", StringType, resolve = _.value.status.toString),
       Field("user", OptionType(UserType), resolve = { node =>
         import dal.PostgresProfile.Implicits._
@@ -90,14 +93,11 @@ object QuerySchema {
     )
   )
 
-  lazy val PhaseType = EnumUtil.mkEnum[game.Phase]("Phase", game.Phase.values)
   lazy val GameStateType = ObjectType(
     "GameState",
     fields[GraphqlContext, game.Game](
       Field("currentPlayerId", StringType, resolve = _.value.currentPlayer.id.id.toString),
-      Field("currentSelection", OptionType(VecType), resolve = _.value.currentSelection),
-      Field("currentPhases", ListType(PhaseType), resolve = _.value.currentPhases),
-      Field("currentPiece", OptionType(PieceType), resolve = _.value.currentPiece),
+      Field("currentSelection", SelectionType, resolve = ctx => Selection(ctx.value)),
       Field("tiles", ListType(TileType), resolve = _.value.board.tiles)
     )
   )
@@ -107,36 +107,6 @@ object QuerySchema {
     fields[GraphqlContext, game.Tile](
       Field("point", VecType, resolve = _.value.point),
       Field("piece", OptionType(PieceType), resolve = _.value.piece)
-    )
-  )
-
-  lazy val VecType = ObjectType(
-    "Vec",
-    fields[GraphqlContext, game.Vec](
-      Field("i", IntType, resolve = _.value.i),
-      Field("j", IntType, resolve = _.value.j)
-    )
-  )
-
-  lazy val PieceType = ObjectType(
-    "Piece",
-    fields[GraphqlContext, game.Piece](
-      Field("id", StringType, resolve = _.value.id.id.toString),
-      Field("order", StringType, resolve = _.value.conf.toString),
-      Field("name", StringType, resolve = _.value.conf.name),
-      Field("playerId", StringType, resolve = _.value.playerId.id.toString),
-      Field("currentHealth", IntType, resolve = _.value.currentHealth),
-      Field("currentWait", IntType, resolve = _.value.currentWait),
-      Field("currentDirection", VecType, resolve = _.value.currentDirection),
-      Field("currentEffects", ListType(StringType), resolve = { node =>
-        node.value.currentEffects.collect {
-          case game.PieceEffect(_, e: game.Paralyze) => "Paralyzed"
-        }
-      }),
-      Field("currentFocus", BooleanType, resolve = _.value.currentFocus),
-      Field("currentBlocking", FloatType, resolve = { node =>
-        node.value.conf.blocking + node.value.blockingAjustment
-      })
     )
   )
 

@@ -17,7 +17,7 @@ const GameView = (props) => {
   // componentDidMount
   React.useEffect(() => {
     dispatch(Actions.gameFetch(gameId)).then(r => {
-      const point = r.state.currentSelection;
+      const point = r.state.currentSelection.selection;
       return point && dispatch(Actions.gameSelect(gameId, point));
     })
   }, []);
@@ -31,8 +31,8 @@ const GameView = (props) => {
             <PhasesView gameId={gameId} className={styles.phase} />
             <Board
               gameId={game.id}
-              playerId={player?.user.id}
-              currentSelection={game.state.currentSelection}
+              playerId={player?.id}
+              currentSelection={game.state.currentSelection.selection}
               currentPlayerId={game.state.currentPlayerId}
               tiles={game.state.tiles}
             />

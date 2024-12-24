@@ -57,13 +57,17 @@ const games = (state = State.INITIAL_GAMES, action) => {
         ...state,
         recent: action.payload
       };
+    // This also handles the initial game fetch and initial selection inference.
+    // Always prefer what is on the server. Certain fields on `GameSelections`
+    // only exist on the client, such `phase`, so we compute it here.
     case Types.GAME_FETCHED:
-      const phases = action.payload.state.currentPhases ?? [];
+      const phases = action.payload.state.currentSelection.phases;
       return {
         ...state,
         game: action.payload,
         gameSelections: {
           ...state.gameSelections,
+          ...action.payload.state.currentSelection,
           phase: phases[0] ?? null
         }
       };

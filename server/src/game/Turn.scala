@@ -1,15 +1,20 @@
 package monarchy.game
 
 sealed trait TurnAction
-case class TileSelect(p: Vec) extends TurnAction
-case object TileDeselect extends TurnAction
-case class MoveSelect(p: Vec) extends TurnAction
-case class AttackSelect(pat: Deltas) extends TurnAction
-case class DirSelect(dir: Vec) extends TurnAction
+
+object TurnAction {
+  case class TileSelect(p: Vec) extends TurnAction
+  case object TileDeselect extends TurnAction
+  case class MoveSelect(p: Vec) extends TurnAction
+  case class AttackSelect(pat: Deltas) extends TurnAction
+  case class DirSelect(dir: Vec) extends TurnAction
+  case object EndTurn extends TurnAction
+}
 
 case class Turn(actionStack: Seq[TurnAction] = Nil) {
   import Reject._
   import Turn._
+  import TurnAction._
 
   def act(action: TurnAction): Change[Turn] = {
     val error = Option(action).collect {
@@ -18,6 +23,7 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
       case MoveSelect(p) if !canMove => CannotMove
       case AttackSelect(pat) if !canAttack => CannotAttack
       case DirSelect(dir) if !canDir => CannotChangeDirection
+      case EndTurn if !canEnd => CannotEndTurn
     }
     error match {
       case Some(reject) => reject
@@ -40,21 +46,25 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
   def dir: Option[Vec] =
     actionStack.collectFirst { case DirSelect(dir) => dir }
 
+
   // State transition checks
   def canSelect: Boolean =
-    move.isEmpty && attack.isEmpty && dir.isEmpty
+    canEnd && move.isEmpty && attack.isEmpty && dir.isEmpty
 
   def canDeselect: Boolean =
-    move.isEmpty && attack.isEmpty && dir.isEmpty
+    canEnd && move.isEmpty && attack.isEmpty && dir.isEmpty
 
   def canMove: Boolean =
-    select.nonEmpty && move.isEmpty && dir.isEmpty
+    canEnd && select.nonEmpty && move.isEmpty && dir.isEmpty
 
   def canAttack: Boolean =
-    select.nonEmpty && attack.isEmpty && dir.isEmpty
+    canEnd && select.nonEmpty && attack.isEmpty && dir.isEmpty
 
   def canDir: Boolean =
-    select.nonEmpty && dir.isEmpty
+    canEnd && select.nonEmpty && dir.isEmpty
+
+  def canEnd: Boolean =
+    !actionStack.contains(TurnAction.EndTurn)
 
   def actions: Seq[TurnAction] =
     actionStack.reverse
@@ -62,15 +72,18 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
   // Ordered by suggested next phase
   def phases: Seq[Phase] = {
     Seq(
+      if (canSelect && select.isEmpty) Some(Phase.Select) else None,
       if (canMove) Some(Phase.Move) else None,
       if (canAttack) Some(Phase.Attack) else None,
       if (canDir) Some(Phase.Dir) else None,
-      Some(Phase.End),
+      if (canEnd) Some(Phase.End) else None,
     ).flatten
   }
 }
 
 object Turn {
+  import TurnAction._
+
   val TileSelectMatcher: TurnAction => Boolean = {
     case _: TileSelect => true
     case _ => false

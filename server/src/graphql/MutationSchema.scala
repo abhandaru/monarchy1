@@ -12,6 +12,8 @@ case class AuthResult(
 )
 
 object MutationSchema {
+  import CommonSchema._
+
   lazy val Def = ObjectType(
     "Mutation",
     fields[GraphqlContext, Unit](
@@ -54,17 +56,6 @@ object MutationSchema {
       Field("userId", OptionType(StringType), resolve = _.value.user.map(_.id.toString)),
       Field("bearerToken", OptionType(StringType), resolve = _.value.bearerToken),
       Field("loggedIn", BooleanType, resolve = _.value.bearerToken.nonEmpty),
-    )
-  )
-
-  private val SelectionType = ObjectType(
-    "Selection",
-    fields[GraphqlContext, Selection](
-      Field("selection", OptionType(QuerySchema.VecType), resolve = _.value.game.currentSelection),
-      Field("piece", OptionType(QuerySchema.PieceType), resolve = _.value.game.currentPiece),
-      Field("movements", ListType(QuerySchema.VecType), resolve = _.value.movements.toSeq),
-      Field("directions", ListType(QuerySchema.VecType), resolve = _.value.directions.toSeq),
-      Field("attacks", ListType(ListType(QuerySchema.VecType)), resolve = _.value.attacks.map(_.toSeq).toSeq),
     )
   )
 }

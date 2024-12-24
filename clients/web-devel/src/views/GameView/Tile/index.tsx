@@ -11,12 +11,13 @@ import { useSelector } from 'react-redux';
 
 type TileProps = {
   playerId: string;
+  currentPlayerId: string;
   tile: any;
-  size: number;
+  sizeCss: string;
 };
 
 const Tile = (props: TileProps) => {
-  const { playerId, tile, size } = props;
+  const { playerId, tile, sizeCss } = props;
   const { piece: pieceOccupying, point } = tile;
   const gameId = useSelector<State, string | null>(_ => _.games.game && _.games.game.id);
   const selections = useSelector<State, GameSelections>(_ => _.games.gameSelections);
@@ -49,7 +50,7 @@ const Tile = (props: TileProps) => {
   else if (paintAsDirection) Component = DirectionTile;
 
   // Stack display logic
-  const styleOverride = {width: size, height: size};
+  const styleOverride = {width: sizeCss, height: sizeCss};
   return (
     <Component
       style={styleOverride}

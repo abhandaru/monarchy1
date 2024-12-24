@@ -8,7 +8,10 @@ case class Game(
   board: Board,
   turns: Seq[Turn],
 ) {
-  def currentTurn: Turn = turns.head
+  import TurnAction._
+
+  def currentTurn: Turn =
+    turns.head
 
   def currentPlayer: Player =
     players((turns.size - 1) % players.size)
@@ -241,12 +244,15 @@ case class Game(
   }
 
   def commitTurn(pid: PlayerId): Change[Game] = {
-    playerGuard(pid).map { _ =>
+    for {
+      _ <- playerGuard(pid)
+      prevTurn <- currentTurn.act(EndTurn)
+    } yield {
       val updatesForAll = board.pieces.map {
         case PieceLocation(pt, piece) =>
           val waitDecrement = if (pid == piece.playerId) 1 else 0
           PieceUpdate(pt, _.copy(
-            currentWait = piece.currentWait - waitDecrement,
+            currentWait = math.max(piece.currentWait - waitDecrement, 0),
             blockingAjustment = piece.blockingAjustment * Game.BlockingAdjustmentDecay
           ))
       }
@@ -262,7 +268,8 @@ case class Game(
       }
       val updates = updatesForAll ++ updateForPiece.toSeq
       val nextBoard = board.commitAggregation(updates)
-      this.copy(board = nextBoard, turns = Turn() +: turns)
+      val nextTurns = Turn() +: (prevTurn +: turns.tail)
+      this.copy(board = nextBoard, turns = nextTurns)
     }
   }
 

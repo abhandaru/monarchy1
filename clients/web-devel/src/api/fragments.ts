@@ -20,5 +20,6 @@ export const Selection = `
     id
     playerId
   }
+  phases
 `;
 

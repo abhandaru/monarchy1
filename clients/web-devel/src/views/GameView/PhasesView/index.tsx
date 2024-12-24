@@ -8,6 +8,7 @@ import { State } from '~/state/state';
 import { useSelector, useDispatch } from 'react-redux';
 
 const Phases = {
+  SELECT: 'Select',
   MOVE: 'Move',
   ATTACK: 'Attack',
   DIR: 'Turn',
@@ -24,14 +25,14 @@ const PhasesView = (props: Props) => {
   const dispatch = useDispatch();
   const myTurn = useMyTurn();
   const phase = useSelector<State, string>(_ => _.games.gameSelections.phase);
-  const phasesAllowed = useSelector<State, string[] | null>(_ =>_.games.game?.state.currentPhases);
+  const phasesAllowed = useSelector<State, string[] | null>(_ =>_.games.gameSelections.phases);
 
   // Callbacks
   const onSelect = React.useCallback(p => dispatch(gameSetPhase(p)), [dispatch]);
   React.useEffect(() => {
-    console.log('PhasesView effect:', { phase, myTurn, gameId });
     if (phase === 'END' && myTurn) {
-      dispatch(Actions.gameEndTurn(gameId));
+      console.log('PhasesView would end turn:', { phase, myTurn, gameId });
+      // dispatch(Actions.gameEndTurn(gameId));
     }
   }, [phase, myTurn, gameId]);
 

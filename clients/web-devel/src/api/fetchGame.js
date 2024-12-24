@@ -1,3 +1,4 @@
+import * as frags from '~/api/fragments';
 import fetch from '~/api/fetch';
 import gql from 'graphql-tag';
 
@@ -11,6 +12,7 @@ const query = gql`
       id
       status
       players {
+        id
         status
         user {
           id
@@ -21,14 +23,11 @@ const query = gql`
       state {
         currentPlayerId
         currentSelection {
-          i
-          j
+          ${frags.Selection}
         }
-        currentPhases
         tiles {
           point {
-            i
-            j
+            ${frags.Vector}
           }
           piece {
             id
@@ -39,8 +38,7 @@ const query = gql`
             currentHealth
             currentBlocking
             currentDirection {
-              i
-              j
+              ${frags.Vector}
             }
             currentFocus
             currentEffects

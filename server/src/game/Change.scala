@@ -30,6 +30,7 @@ object Reject {
   case object CannotAttack extends Reject
   case object CannotChangeDirection extends Reject
   case object CannotDeselect extends Reject
+  case object CannotEndTurn extends Reject
   case object CannotMove extends Reject
   case object CannotSelect extends Reject
   case object ChangeOutOfTurn extends Reject
