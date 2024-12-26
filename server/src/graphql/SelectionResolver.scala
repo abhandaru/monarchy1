@@ -14,7 +14,7 @@ trait SelectionResolver extends Resolver[Unit, Selection] with StrictLogging {
   // Define the selection mutation
   def extractGameId(in: In): UUID
   def extractPoint(in: In): Vec
-  def change(game: Game, userId: UUID, point: Vec): Change[Game]
+  def change(game: Game, playerId: PlayerId, point: Vec): Change[Game]
 
   override def apply(in: In): Out = {
     val commit = PhaseCommit(
@@ -26,7 +26,7 @@ trait SelectionResolver extends Resolver[Unit, Selection] with StrictLogging {
       val point = extractPoint(in)
       val noop = ctx.game.currentSelection.contains(point)
       if (noop) Accept(ctx.game)
-      else change(ctx.game, ctx.userId, point)
+      else change(ctx.game, ctx.playerId, point)
     }
   }
 }
@@ -40,8 +40,8 @@ object SelectResolver extends SelectionResolver {
     Vec(i, j)
   }
 
-  override def change(game: Game, userId: UUID, point: Vec): Change[Game] =
-    game.tileSelect(PlayerId(userId), point)
+  override def change(game: Game, playerId: PlayerId, point: Vec): Change[Game] =
+    game.tileSelect(playerId, point)
 }
 
 object DeselectResolver extends SelectionResolver {
@@ -50,6 +50,6 @@ object DeselectResolver extends SelectionResolver {
 
   override def extractPoint(in: In) = Vec.Zero
 
-  override def change(game: Game, userId: UUID, point: Vec): Change[Game] =
-    game.tileDeselect(PlayerId(userId))
+  override def change(game: Game, playerId: PlayerId, point: Vec): Change[Game] =
+    game.tileDeselect(playerId)
 }

@@ -16,7 +16,7 @@ object LoggingModule extends StrictLogging {
         case (st, end) =>
           val timing = end - st
           val addr = ip.toOption.map(_.getHostAddress).getOrElse("0.0.0.0")
-          logger.info(s"$method $uri from <$addr> took ${timing}ms")
+          println(s"$method $uri from <$addr> took ${timing}ms")
       }
   }
 }

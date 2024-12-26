@@ -14,7 +14,7 @@ object MoveResolver extends Resolver[Unit, Selection] {
     )
     commit { ctx =>
       val point = Vec(args.point.i, args.point.j)
-      ctx.game.moveSelect(PlayerId(ctx.userId), point)
+      ctx.game.moveSelect(ctx.playerId, point)
     }
   }
 }

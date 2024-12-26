@@ -1,7 +1,7 @@
 import { State } from '~/state/state';
 import { useSelector } from 'react-redux';
 
-export default function useMyTurn(): Boolean {
+export default function useMyTurn(verbose?: boolean): Boolean {
   // Grab the viewer ID from the auth state.
   const userId = useSelector<State, String | null>(_ => _.auth.userId);
 
@@ -10,6 +10,13 @@ export default function useMyTurn(): Boolean {
   const players = useSelector<State, any[]>(_ => _.games.game.players);
   const playerId = players.find(_ => _.user.id === userId)?.id;
   const currentPlayerId = useSelector<State, String | null>(_ => _.games.game.state.currentPlayerId);
+
+  if (verbose) {
+    console.log('userId', userId);
+    console.log('players', players);
+    console.log('playerId', playerId);
+    console.log('currentPlayerId', currentPlayerId);
+  }
 
   // Finally, compare these two IDs.
   return playerId === currentPlayerId;

@@ -15,7 +15,7 @@ object AttackResolver extends Resolver[Unit, Selection] with StrictLogging {
     )
     commit { ctx =>
       val attack = args.attack.map(extractVec).toSet
-      ctx.game.attackSelect(PlayerId(ctx.userId), attack)
+      ctx.game.attackSelect(ctx.playerId, attack)
     }
   }
 

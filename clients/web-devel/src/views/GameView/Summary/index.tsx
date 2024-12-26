@@ -13,7 +13,7 @@ type Props = {
 
 const Summary = (props: Props) => {
   const { selections } = props;
-  const myTurn = useMyTurn();
+  const myTurn = useMyTurn(true);
   return (
     <div className={styles.root}>
       <Card>
