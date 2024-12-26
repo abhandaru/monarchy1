@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Jumbotron from 'react-bootstrap/Jumbotron';
+import Jumbotron from '~/components/Jumbotron';
 import Form from 'react-bootstrap/Form';
 import styles from './index.css';
 import writeLoginStart from './writeLoginStart';
