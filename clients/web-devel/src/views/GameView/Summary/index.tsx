@@ -19,13 +19,10 @@ const Summary = (props: Props) => {
   const myTurn = useMyTurn();
 
   const playerEl = currentPlayer ? (
-    <>
-      {myTurn && <Badge bg='success' text='light'>your move</Badge>}
-      {!myTurn && <Badge bg='light' text='dark'>waiting for…</Badge>}
-      <p>
-        <b>@{currentPlayer.user.username}</b>
-      </p>
-    </>
+    <p>
+      {myTurn && <Badge bg='success' text='light'>Your move</Badge>}
+      {!myTurn && <Badge bg='light' text='dark'>Opponent turn</Badge>}
+    </p>
   ) : null;
 
   const { piece } = selections;

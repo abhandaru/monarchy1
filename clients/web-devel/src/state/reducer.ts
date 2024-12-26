@@ -2,6 +2,11 @@ import * as Types from './types';
 import * as State from './state';
 import { combineReducers } from 'redux';
 
+// Just take the first one for now. We can do something smarter later, but the
+// client should own this logic.
+function getPhase(phases: string[]) {
+  return phases[0] ?? null;
+}
 
 const auth = (state = State.INITIAL_AUTH, action) => {
   switch (action.type) {
@@ -61,14 +66,13 @@ const games = (state = State.INITIAL_GAMES, action) => {
     // Always prefer what is on the server. Certain fields on `GameSelections`
     // only exist on the client, such `phase`, so we compute it here.
     case Types.GAME_FETCHED:
-      const phases = action.payload.state.currentSelection.phases;
       return {
         ...state,
         game: action.payload,
         gameSelections: {
           ...state.gameSelections,
           ...action.payload.state.currentSelection,
-          phase: phases[0] ?? null
+          phase: getPhase(action.payload.state.currentSelection.phases)
         }
       };
     case Types.GAME_SET_SELECTIONS:
@@ -76,7 +80,8 @@ const games = (state = State.INITIAL_GAMES, action) => {
         ...state,
         gameSelections: {
           ...state.gameSelections,
-          ...action.payload
+          ...action.payload,
+          phase: getPhase(action.payload.phases)
         }
       };
     case Types.GAME_SET_PHASE:

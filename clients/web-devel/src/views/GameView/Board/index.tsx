@@ -1,9 +1,7 @@
 import * as React from 'react';
-import writeSelect from '~/api/writeSelect';
 // @ts-ignore (adu) add support for css modules
 import styles from './index.css';
 import Tile from '~/views/GameView/Tile';
-import { Vec } from '~/util/types';
 
 function range(n: number) {
   return Array(n).fill(null).map((_, i) => i);
@@ -13,20 +11,11 @@ type Props = {
   gameId: string,
   playerId: string,
   currentPlayerId: string,
-  currentSelection: Vec | null,
   tiles: Array<any>,
 };
 
 const Board = (props: Props) => {
-  const { gameId, playerId, currentPlayerId, currentSelection, tiles } = props;
-
-  // Fetch selection for current selection, if any. Only do this once on mount.
-  React.useEffect(() => {
-    if (currentSelection != null) {
-      const query = { gameId, point: currentSelection };
-      writeSelect(query);
-    }
-  }, []);
+  const { gameId, playerId, currentPlayerId, tiles } = props;
 
   // Tile generation logic
   const maxRow = tiles.reduce((z, t) => Math.max(t.point.i, z), 0);

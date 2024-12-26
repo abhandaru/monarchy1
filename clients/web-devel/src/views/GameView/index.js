@@ -30,7 +30,6 @@ const GameView = (props) => {
             <Board
               gameId={game.id}
               playerId={player?.id}
-              currentSelection={game.state.currentSelection.selection}
               currentPlayerId={game.state.currentPlayerId}
               tiles={game.state.tiles}
             />

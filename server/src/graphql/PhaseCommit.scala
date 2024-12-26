@@ -24,20 +24,12 @@ case class PhaseCommit(
     val userId = Resolver.expectUserId(input)
     val gameKey = StreamingKey.Game(gameId)
     val gameReq = redisCli.get[Game](gameKey)
-    val playerReq = queryCli.first(
-      dal.Player.query
-        .filter(_.gameId === gameId)
-        .filter(_.userId === userId)
-    )
+    val playersReq = queryCli.all(dal.Player.query.filter(_.gameId === gameId))
 
-    Async.join(gameReq, playerReq).flatMap {
-      // Game not found
+    Async.join(gameReq, playersReq).flatMap {
       case (None, _) => Future.failed(NotFound(s"game '$gameId' not found"))
-      // User not found in game
-      case (_, None) => Future.failed(NotFound(s"user '$userId' not found in game '$gameId'"))
-      // Happy path
-      case (Some(game), Some(player)) =>
-        val playerId = PlayerId(player.id)
+      case (Some(game), players) =>
+        val playerId = actingPlayerId(userId, players)
         val commitContext = CommitContext(userId, playerId, gameId, gameKey, game)
         commit(commitContext) match {
           case r: Reject => Future.failed(Rejection(r))
@@ -45,14 +37,18 @@ case class PhaseCommit(
             redisCli.set(gameKey, GameJson.stringify(nextGame)).flatMap {
               case false => throw new RuntimeException(s"redis set failed: '$gameKey'")
               case true =>
-                val evt = event(commitContext)
-                val ch = StreamingChannel.gameChange(commitContext.userId)
-                logger.info(s"publishing event=$evt to channel=$ch")
-                redisCli.publish(ch, Json.stringify(evt))
-                  .map(_ => Selection(nextGame))
+                publish(commitContext, players).map(_ => Selection(nextGame))
             }
         }
     }
+  }
+
+  private def publish(ctx: CommitContext, players: Seq[dal.Player]): Future[Int] = {
+    import input.ctx._
+    val evt = event(ctx)
+    val channels = players.map { p => StreamingChannel.gameChange(p.userId) }
+    val fanout = channels.map(ch => redisCli.publish(ch, Json.stringify(evt)))
+    Future.sequence(fanout).map(_.sum.toInt)
   }
 }
 
@@ -66,4 +62,11 @@ object PhaseCommit {
       gameKey: StreamingKey.Game,
       game: Game
   )
+
+  private def actingPlayerId(userId: UUID, players: Seq[dal.Player]): PlayerId = {
+    players.find(_.userId == userId) match {
+      case Some(player) => PlayerId(player.id)
+      case None => throw new RuntimeException(s"user '$userId' not participating")
+    }
+  }
 }
