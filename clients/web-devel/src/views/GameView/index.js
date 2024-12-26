@@ -3,8 +3,8 @@ import * as React from 'react';
 import Board from './Board';
 import NavigationView from '~/components/layout/NavigationView';
 import PhasesView from './PhasesView';
+import Summary from './Summary';
 import styles from './index.css';
-import Tile from './Tile';
 import { useSelector, useDispatch } from 'react-redux';
 
 const GameView = (props) => {
@@ -16,10 +16,7 @@ const GameView = (props) => {
 
   // componentDidMount
   React.useEffect(() => {
-    dispatch(Actions.gameFetch(gameId)).then(r => {
-      const point = r.state.currentSelection.selection;
-      return point && dispatch(Actions.gameSelect(gameId, point));
-    })
+    dispatch(Actions.gameFetch(gameId));
   }, []);
 
   return (
@@ -28,6 +25,7 @@ const GameView = (props) => {
       <div className={styles.root}>
         {game ?
           <>
+            <Summary selections={game.state.currentSelection} />
             <PhasesView gameId={gameId} className={styles.phase} />
             <Board
               gameId={game.id}

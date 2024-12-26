@@ -30,18 +30,7 @@ const query = gql`
             ${frags.Vector}
           }
           piece {
-            id
-            order
-            name
-            playerId
-            currentWait
-            currentHealth
-            currentBlocking
-            currentDirection {
-              ${frags.Vector}
-            }
-            currentFocus
-            currentEffects
+            ${frags.Piece}
           }
         }
       }

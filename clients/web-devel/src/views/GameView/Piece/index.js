@@ -1,7 +1,6 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import styles from './index.css';
-import { useSelector, useDispatch } from 'react-redux';
 import Badge from 'react-bootstrap/Badge';
 import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
@@ -18,7 +17,7 @@ const StatusItem = (props) => {
   );
 };
 
-const Piece = (props) => {
+export const Piece = (props) => {
   const { piece } = props;
   const {
     id,
@@ -39,18 +38,18 @@ const Piece = (props) => {
   // Overlay structure (evolving).
   const overlayEl = (
     <Popover id={`popover-piece-${id}`}>
-      <Popover.Title as="h3">{name}</Popover.Title>
-      <Popover.Content>
+      <Popover.Header>{name}</Popover.Header>
+      <Popover.Body>
         <StatusItem label='Health'>
-          <Badge variant='light'>{currentHealth}</Badge>
+          <Badge bg='light'>{currentHealth}</Badge>
         </StatusItem>
         <StatusItem label='Wait'>
-          <Badge variant='light'>{currentWait}</Badge>
+          <Badge bg='light'>{currentWait}</Badge>
         </StatusItem>
         <StatusItem label='Blocking'>
-          <Badge variant='light'>{Math.round(100 * currentBlocking)}%</Badge>
+          <Badge bg='light'>{Math.round(100 * currentBlocking)}%</Badge>
         </StatusItem>
-      </Popover.Content>
+      </Popover.Body>
     </Popover>
   );
 

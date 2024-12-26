@@ -3,6 +3,21 @@ export const Vector = `
   j
 `;
 
+export const Piece = `
+  id
+  order
+  name
+  playerId
+  currentWait
+  currentHealth
+  currentBlocking
+  currentDirection {
+    ${Vector}
+  }
+  currentFocus
+  currentEffects
+`;
+
 export const Selection = `
   selection {
     ${Vector}
@@ -17,8 +32,7 @@ export const Selection = `
     ${Vector}
   }
   piece {
-    id
-    playerId
+    ${Piece}
   }
   phases
 `;

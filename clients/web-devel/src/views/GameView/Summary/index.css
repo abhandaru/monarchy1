@@ -1,0 +1,6 @@
+.root {
+  justify-content: flex-start;
+  align-self: flex-start;
+  height: 0;
+  overflow: visible;
+}

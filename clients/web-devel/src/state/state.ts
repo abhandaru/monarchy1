@@ -14,8 +14,8 @@ type Matchmaking = {
 export type GameSelections = {
   phase: string | null;
   phases: string[];
-  selection: any;
-  piece: any;
+  selection: Types.Vec | null;
+  piece: any | null;
   movements: Types.Vec[];
   directions: Types.Vec[];
   attacks: Types.Vec[][];
