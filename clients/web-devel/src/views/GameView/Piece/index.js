@@ -1,7 +1,6 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import styles from './index.css';
-import { useSelector, useDispatch } from 'react-redux';
 import Badge from 'react-bootstrap/Badge';
 import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
@@ -18,7 +17,7 @@ const StatusItem = (props) => {
   );
 };
 
-const Piece = (props) => {
+export const Piece = (props) => {
   const { piece } = props;
   const {
     id,

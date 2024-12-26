@@ -3,8 +3,8 @@ import * as React from 'react';
 import Board from './Board';
 import NavigationView from '~/components/layout/NavigationView';
 import PhasesView from './PhasesView';
+import Summary from './Summary';
 import styles from './index.css';
-import Tile from './Tile';
 import { useSelector, useDispatch } from 'react-redux';
 
 const GameView = (props) => {
@@ -28,6 +28,7 @@ const GameView = (props) => {
       <div className={styles.root}>
         {game ?
           <>
+            <Summary selections={game.state.currentSelection} />
             <PhasesView gameId={gameId} className={styles.phase} />
             <Board
               gameId={game.id}
