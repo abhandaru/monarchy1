@@ -4,6 +4,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class TurnSpec extends AnyWordSpec with Matchers {
+  import TurnAction._
+
   val turn = Turn()
 
   "Turn" should {

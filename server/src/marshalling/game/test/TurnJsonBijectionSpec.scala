@@ -6,6 +6,7 @@ import monarchy.game._
 import monarchy.util.Json
 
 class TurnJsonBijectionSpec extends AnyWordSpec with Matchers {
+  import TurnAction._
 
   val emptyTurn = Turn()
 
