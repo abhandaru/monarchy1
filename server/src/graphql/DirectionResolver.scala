@@ -14,7 +14,7 @@ object DirectionResolver extends Resolver[Unit, Selection] {
     )
     commit { ctx =>
       val direction = Vec(args.direction.i, args.direction.j)
-      ctx.game.directionSelect(PlayerId(ctx.userId), direction)
+      ctx.game.directionSelect(ctx.playerId, direction)
     }
   }
 }

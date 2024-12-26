@@ -2,10 +2,11 @@ package monarchy.graphql
 
 import com.typesafe.scalalogging.StrictLogging
 import java.util.UUID
+import monarchy.dal
 import monarchy.game._
 import monarchy.marshalling.game.{GameJson, GameStringDeserializer}
 import monarchy.streaming.core._
-import monarchy.util.Json
+import monarchy.util.{Async, Json}
 import sangria.schema.Context
 import scala.concurrent.Future
 
@@ -14,6 +15,7 @@ case class PhaseCommit(
     gameId: UUID,
     event: PhaseCommit.CommitContext => StreamAction
 ) extends StrictLogging { 
+  import dal.PostgresProfile.Implicits._
   import GameStringDeserializer._
   import PhaseCommit._
 
@@ -21,10 +23,22 @@ case class PhaseCommit(
     import input.ctx._
     val userId = Resolver.expectUserId(input)
     val gameKey = StreamingKey.Game(gameId)
-    redisCli.get[Game](gameKey).flatMap {
-      case None => Future.failed(NotFound(s"game '$gameId' not found"))
-      case Some(game) =>
-        val commitContext = CommitContext(userId, gameId, gameKey, game)
+    val gameReq = redisCli.get[Game](gameKey)
+    val playerReq = queryCli.first(
+      dal.Player.query
+        .filter(_.gameId === gameId)
+        .filter(_.userId === userId)
+    )
+
+    Async.join(gameReq, playerReq).flatMap {
+      // Game not found
+      case (None, _) => Future.failed(NotFound(s"game '$gameId' not found"))
+      // User not found in game
+      case (_, None) => Future.failed(NotFound(s"user '$userId' not found in game '$gameId'"))
+      // Happy path
+      case (Some(game), Some(player)) =>
+        val playerId = PlayerId(player.id)
+        val commitContext = CommitContext(userId, playerId, gameId, gameKey, game)
         commit(commitContext) match {
           case r: Reject => Future.failed(Rejection(r))
           case Accept(nextGame) =>
@@ -44,8 +58,10 @@ case class PhaseCommit(
 
 object PhaseCommit {
   type Input = Context[GraphqlContext, Unit]
+
   case class CommitContext(
       userId: UUID,
+      playerId: PlayerId,
       gameId: UUID,
       gameKey: StreamingKey.Game,
       game: Game

@@ -12,6 +12,6 @@ object EndTurnResolver extends Resolver[Unit, Selection] {
       gameId = UUID.fromString(args.gameId),
       event = ctx => GameChange(ctx.gameId, "END_TURN")
     )
-    commit { ctx => ctx.game.commitTurn(PlayerId(ctx.userId)) }
+    commit { ctx => ctx.game.commitTurn(ctx.playerId) }
   }
 }

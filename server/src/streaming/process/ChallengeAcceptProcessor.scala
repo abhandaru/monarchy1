@@ -70,7 +70,7 @@ class ChallengeAcceptProcessor(implicit
       seed = game.data.seed,
       players = game.players.map { player =>
         Player(
-          id = PlayerId(player.userId),
+          id = PlayerId(player.id),
           formation = DefaultFormation
         )
       }

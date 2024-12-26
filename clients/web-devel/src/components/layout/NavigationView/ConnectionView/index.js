@@ -6,14 +6,16 @@ import { useSelector } from 'react-redux'
 const ConnectionView = (props) => {
   const latency = useSelector(_ => _.connection.latency);
   const latencyText = latency != null ? latency + 'ms' : '--';
-  const latencyVariant = latency <= 50 ? 'primary' : 'warning';
+  const [latencyBg, latencyTheme] = latency <= 50
+    ? ['primary', 'light']
+    : ['warning', 'dark'];
 
   return (
     <div className={styles.root}>
       <div>
         ping
         {' '}
-        <Badge variant={latencyVariant}>{latencyText}</Badge>
+        <Badge bg={latencyBg} text={latencyTheme}>{latencyText}</Badge>
       </div>
     </div>
   );
