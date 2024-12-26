@@ -199,7 +199,8 @@ case class Game(
                 case EffectLocation(pt, HealAll(power)) =>
                   game.board.piece(pt).map {
                     case PieceLocation(_, pieceN) =>
-                      PieceUpdate(pt, _.copy(currentHealth = pieceN.currentHealth + power))
+                      val newHealth = math.min(pieceN.currentHealth + power, pieceN.conf.maxHealth)
+                      PieceUpdate(pt, _.copy(currentHealth = newHealth))
                   }
                 // Paralyzes the targeted tiles
                 case EffectLocation(pt, effect @ Paralyze(_)) =>

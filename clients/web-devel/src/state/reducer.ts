@@ -72,6 +72,7 @@ const games = (state = State.INITIAL_GAMES, action) => {
         gameSelections: {
           ...state.gameSelections,
           ...action.payload.state.currentSelection,
+          effects: [],
           phase: getPhase(action.payload.state.currentSelection.phases)
         }
       };
@@ -81,6 +82,7 @@ const games = (state = State.INITIAL_GAMES, action) => {
         gameSelections: {
           ...state.gameSelections,
           ...action.payload,
+          effects: [],
           phase: getPhase(action.payload.phases)
         }
       };

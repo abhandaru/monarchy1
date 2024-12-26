@@ -29,6 +29,7 @@ object CommonSchema {
     "Piece",
     fields[GraphqlContext, game.Piece](
       Field("id", StringType, resolve = _.value.id.id.toString),
+      Field("order", StringType, resolve = _.value.conf.toString),
       Field("name", StringType, resolve = _.value.conf.name),
       Field("stats", PieceStatsType, resolve = _.value.conf),
       Field("currentHealth", IntType, resolve = _.value.currentHealth),

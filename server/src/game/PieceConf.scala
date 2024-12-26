@@ -25,7 +25,7 @@ trait PieceConf {
 
 case object Assassin extends PieceConf {
   import Deltas._
-  val name = "Shadow Servant"
+  val name = "Royal Spearman"
   val maxHealth = 35
   val maxWait = 1
   val power = 18
@@ -42,7 +42,7 @@ case object Assassin extends PieceConf {
 
 case object Knight extends PieceConf {
   import Deltas._
-  val name = "Broad Sword"
+  val name = "Royal Guard"
   val maxHealth = 50
   val maxWait = 1
   val power = 22
@@ -55,7 +55,7 @@ case object Knight extends PieceConf {
 
 case object Scout extends PieceConf {
   import Deltas._
-  val name = "Noble Archer"
+  val name = "Royal Hunter"
   val maxHealth = 40
   val maxWait = 2
   val power = 18
@@ -69,7 +69,7 @@ case object Scout extends PieceConf {
 
 case object Witch extends PieceConf {
   import Deltas._
-  val name = "Avatar of Woe"
+  val name = "Shadow Bender"
   val maxHealth = 28
   val maxWait = 3
   val power = 24
@@ -96,7 +96,7 @@ case object Witch extends PieceConf {
 
 case object Pyromancer extends PieceConf {
   import Deltas._
-  val name = "Red Priestess"
+  val name = "Burning Priestess"
   val maxHealth = 30
   val maxWait = 3
   val power = 16
@@ -110,7 +110,7 @@ case object Pyromancer extends PieceConf {
 
 case object MudGolem extends PieceConf {
   import Deltas._
-  val name = "Shadow Sentinel"
+  val name = "Gloom Sentinel"
   val maxHealth = 60
   val maxWait = 2
   val power = 20
@@ -147,7 +147,7 @@ case object Furgon extends PieceConf {
 
 case object Cleric extends PieceConf {
   import Deltas._
-  val name = "High Priestess"
+  val name = "High Cleric"
   val maxHealth = 24
   val maxWait = 5
   val power = 12
