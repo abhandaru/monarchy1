@@ -261,8 +261,8 @@ case class Game(
         piece <- tile.piece
       } yield {
         val totalWait = currentTurn.actions.collect {
-          case MoveSelect(_) => math.floor(piece.conf.maxWait / 2.0).toInt
-          case AttackSelect(_) => math.ceil(piece.conf.maxWait / 2.0).toInt
+          case MoveSelect(_) => piece.conf.moveWait
+          case AttackSelect(_) => piece.conf.attackWait
         }.sum
         PieceUpdate(tile.point, _.copy(currentWait = totalWait))
       }

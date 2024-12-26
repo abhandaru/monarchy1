@@ -12,13 +12,25 @@ object CommonSchema {
     )
   )
 
+  // TODO (adu): Share this with the currentX fields. Then the client has a
+  // consistent way to format and diff stats, display state effects, etc.
+  lazy val PieceStatsType = ObjectType(
+    "PieceStats",
+    fields[GraphqlContext, game.PieceConf](
+      Field("health", IntType, resolve = _.value.maxHealth),
+      Field("maxWait", IntType, resolve = _.value.maxWait),
+      Field("power", IntType, resolve = _.value.power),
+      Field("armor", FloatType, resolve = _.value.armor),
+      Field("blocking", FloatType, resolve = _.value.blocking),
+    )
+  )
+
   lazy val PieceType = ObjectType(
     "Piece",
     fields[GraphqlContext, game.Piece](
       Field("id", StringType, resolve = _.value.id.id.toString),
-      Field("order", StringType, resolve = _.value.conf.toString),
       Field("name", StringType, resolve = _.value.conf.name),
-      Field("playerId", StringType, resolve = _.value.playerId.id.toString),
+      Field("stats", PieceStatsType, resolve = _.value.conf),
       Field("currentHealth", IntType, resolve = _.value.currentHealth),
       Field("currentWait", IntType, resolve = _.value.currentWait),
       Field("currentDirection", VecType, resolve = _.value.currentDirection),
@@ -30,7 +42,8 @@ object CommonSchema {
       Field("currentFocus", BooleanType, resolve = _.value.currentFocus),
       Field("currentBlocking", FloatType, resolve = { node =>
         node.value.conf.blocking + node.value.blockingAjustment
-      })
+      }),
+      Field("playerId", StringType, resolve = _.value.playerId.id.toString),
     )
   )
 

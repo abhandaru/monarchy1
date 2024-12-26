@@ -17,6 +17,10 @@ trait PieceConf {
   def attackRequiresFocus: Boolean = false
   def effectArea: EffectArea
   def blockable: Boolean = true
+
+  // derived properties
+  final def attackWait: Int = math.ceil(maxWait / 2.0).toInt
+  final def moveWait: Int = math.floor(maxWait / 2.0).toInt
 }
 
 case object Assassin extends PieceConf {
