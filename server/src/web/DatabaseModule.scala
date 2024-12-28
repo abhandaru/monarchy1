@@ -4,12 +4,16 @@ import monarchy.dal
 import scala.concurrent.ExecutionContext
 
 object DatabaseModule {
-  val DefaultDatabaseUrl = "jdbc:postgresql://localhost:5432/monarchy_local"
-  val DatabaseUrl = sys.env.getOrElse("JDBC_DATABASE_URL", DefaultDatabaseUrl)
-  val DatabaseUser = sys.env.getOrElse("USER", "")
-  val PostgresConfig = dal.PostgresConfig(DatabaseUrl, DatabaseUser)
+  private val DefaultThreads = 10
+
+  // Grab the database url from the environment
+  private val DefaultDatabaseUrl = "jdbc:postgresql://localhost:5432/monarchy_local"
+  private val DatabaseUrl = sys.env.getOrElse("JDBC_DATABASE_URL", DefaultDatabaseUrl)
+
 
   def queryClient(implicit ec: ExecutionContext): dal.QueryClient = {
-    dal.QueryClientImpl(PostgresConfig)
+    val config = dal.PgConfig(DatabaseUrl, DefaultThreads)
+    dal.QueryClientImpl(config)
   }
 }
+

@@ -15,5 +15,6 @@ scala_library(
     '@maven//:com_typesafe_slick_slick_2_13',
     '@maven//:com_github_tminglei_slick_pg_2_13',
     '@maven//:com_github_tminglei_slick_pg_core_2_13',
+    '@maven//:com_zaxxer_HikariCP',
   ]
 )
