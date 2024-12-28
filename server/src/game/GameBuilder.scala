@@ -36,7 +36,7 @@ object GameBuilder {
       (pt, pieceConf) <- player.formation
     } yield {
       val ptRotated = (rotation * (pt - (maxPt / 2))) + (maxPt / 2);
-      val dirRotated = rotation * Vec.I
+      val dirRotated = rotation * Vec.J
       val pieceId = mkPieceId(ptRotated)
       val piece = PieceBuilder(pieceId, pieceConf, player.id, dirRotated);
       val pAdd = PieceAdd(ptRotated, piece)
