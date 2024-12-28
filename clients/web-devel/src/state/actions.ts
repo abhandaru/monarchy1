@@ -77,16 +77,16 @@ export const gameAttack = (gameId: string, attack: Types.Attack) => (dispatch) =
 export const gameDir = (gameId: string, direction: Types.Vec) => (dispatch) => {
   dispatch(createAction(ActionTypes.GAME_DIR));
   return writeDirection(gameId, direction).then(r => {
-    dispatch(gameSetSelections(r.data.direction));
-    return r.data.direction;
+    dispatch(gameSetSelections(r.data.direct));
+    return r.data.direct;
   });
 };
 
 export const gameEndTurn = (gameId: string) => (dispatch) => {
   dispatch(createAction(ActionTypes.GAME_END_TURN));
   return writeEndTurn(gameId).then(r => {
-    dispatch(gameSetSelections(r.data.end));
-    return r.data.direction;
+    dispatch(gameSetSelections(r.data.endTurn));
+    return r.data.endTurn;
   });
 };
 
