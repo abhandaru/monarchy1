@@ -1,19 +1,18 @@
-.opponentCell {
-  width: 60%;
-}
-
-.opponent {
+.compact {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
-.opponentColor {
+.compactBadge {
   width: 1em;
   height: 1em;
   border-radius: 50%;
   display: inline-block;
-  margin-right: 1em;
+  margin-right: 0.5em;
   position: relative;
-  top: 0.15em;
+  top: 0.1em;
+}
+
+.compactRating {
+  margin-left: 0.5em;
 }

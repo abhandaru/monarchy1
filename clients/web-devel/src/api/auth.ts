@@ -1,9 +1,9 @@
 import Cookies from 'js-cookie';
-
+import * as Types from '~/util/types';
 export type Auth = {
   loggedIn: boolean;
   userId: string;
-  user: any;
+  user: Types.User;
   bearerToken: string;
 };
 

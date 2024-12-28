@@ -1,7 +1,7 @@
 package monarchy.dalwrite
 
 import scala.concurrent.ExecutionContext
-import monarchy.dal.PostgresProfile
+import monarchy.dal.{PostgresProfile, Queryable}
 
 object WriteQueryBuilder {
   import PostgresProfile.Implicits._
@@ -12,7 +12,6 @@ object WriteQueryBuilder {
     (q returning q).insertOrUpdate(e).map(_.getOrElse(e))
   }
 
-  def putAll[E: Queryable](entities: Seq[E])(implicit ec: ExecutionContext): DBIO[Seq[E]] = {
+  def putAll[E: Queryable](entities: Seq[E])(implicit ec: ExecutionContext): DBIO[Seq[E]] =
     DBIO.sequence { entities.map(put(_)) }
-  }
 }

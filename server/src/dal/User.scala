@@ -15,13 +15,13 @@ case class User(
   username: String,
   phoneNumber: String,
   rating: Int = 1000,
-  membership: Membership = Membership.Admin,
+  membership: Membership = Membership.Basic,
   createdAt: Instant = Instant.now,
   updatedAt: Instant = Instant.now
 )
 
 import PostgresProfile.Implicits._
-object User extends TableSchema(TableQuery[UserTable])
+object User extends TableSchema[User, UserTable](TableQuery[UserTable])
 
 class UserTable(tag: Tag) extends TableDef[User](tag, "users") {
   def secret = column[String]("secret")

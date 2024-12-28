@@ -18,7 +18,7 @@ case class Game(
 )
 
 import PostgresProfile.Implicits._
-object Game extends TableSchema(TableQuery[GameTable])
+object Game extends TableSchema[Game, GameTable](TableQuery[GameTable])
 
 class GameTable(tag: Tag) extends TableDef[Game](tag, "games") {
   def seed = column[Int]("seed")

@@ -13,4 +13,14 @@ abstract class TableDef[E](
   def updatedAt = column[Instant]("updated_at", O.AutoInc)
 }
 
-class TableSchema[TT <: Table[_]](val query: TableQuery[TT])
+class TableSchema[
+    E <: TableSchema.HasId,
+    TT <: TableDef[E]
+](val query: TableQuery[TT]) {
+  implicit val queryable: Queryable[E] =
+    new Queryable.Simple[E, TT](query, _.id)
+}
+
+object TableSchema {
+  type HasId = { def id: UUID }
+}

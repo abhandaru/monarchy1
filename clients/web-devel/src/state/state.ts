@@ -11,6 +11,11 @@ type Matchmaking = {
   challenges: any[];
 };
 
+export type Player = {
+  id: string;
+  user: Types.User;
+};
+
 export type GameSelections = {
   phase: string | null;
   phases: string[];
