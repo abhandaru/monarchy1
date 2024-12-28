@@ -7,7 +7,7 @@ import monarchy.streaming.core._
 
 object AttackResolver extends Resolver[Unit, Selection] with StrictLogging {
   override def apply(in: In): Out = {
-    val args = in.arg(Args.Attack)
+    val args = in.arg(GqlArgs.Attack)
     val commit = PhaseCommit(
       input = in,
       gameId = UUID.fromString(args.gameId),

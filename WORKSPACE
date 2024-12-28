@@ -25,7 +25,7 @@ load("@io_bazel_rules_scala//:scala_config.bzl", "scala_config")
 #   3.2 should be supported on master. Please note that Scala artifacts for version (3.2.2) are not defined in
 #   Rules Scala, they need to be provided by your WORKSPACE. You can use external loader like
 #   https://github.com/bazelbuild/rules_jvm_external
-scala_config()
+scala_config(scala_version = "2.13.12")
 
 # loads other rules Rules Scala depends on
 load("@io_bazel_rules_scala//scala:scala.bzl", "rules_scala_setup")
@@ -72,29 +72,29 @@ maven_install(
     "com.fasterxml.jackson.core:jackson-core:2.14.2",
     "com.fasterxml.jackson.core:jackson-databind:2.14.2",
     "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2",
-    "com.fasterxml.jackson.module:jackson-module-scala_2.12:2.14.2",
-    "com.github.etaty:rediscala_2.12:1.8.0",
-    "com.github.tminglei:slick-pg_2.12:0.16.1",
-    "com.github.tminglei:slick-pg_core_2.12:0.16.1",
-    "com.typesafe.akka:akka-actor_2.12:2.7.0",
-    "com.typesafe.akka:akka-http-core_2.12:10.4.0",
-    "com.typesafe.akka:akka-http_2.12:10.4.0",
-    "com.typesafe.akka:akka-slf4j_2.12:2.7.0",
-    "com.typesafe.akka:akka-stream_2.12:2.7.0",
-    "com.typesafe.scala-logging:scala-logging_2.12:3.9.2",
-    "com.typesafe.slick:slick-hikaricp_2.12:3.3.3",
-    "com.typesafe.slick:slick_2.12:3.3.3",
+    "com.fasterxml.jackson.module:jackson-module-scala_2.13:2.14.2",
+    "com.github.etaty:rediscala_2.13:1.9.0",
+    "com.github.tminglei:slick-pg_2.13:0.22.2",
+    "com.github.tminglei:slick-pg_core_2.13:0.22.2",
+    "com.typesafe.akka:akka-actor_2.13:2.7.0",
+    "com.typesafe.akka:akka-http-core_2.13:10.4.0",
+    "com.typesafe.akka:akka-http_2.13:10.4.0",
+    "com.typesafe.akka:akka-slf4j_2.13:2.7.0",
+    "com.typesafe.akka:akka-stream_2.13:2.7.0",
+    "com.typesafe.scala-logging:scala-logging_2.13:3.9.2",
+    "com.typesafe.slick:slick-hikaricp_2.13:3.3.3",
+    "com.typesafe.slick:slick_2.13:3.3.3",
     "com.typesafe:config:1.4.2",
     "io.jsonwebtoken:jjwt-api:0.11.5",
     "io.jsonwebtoken:jjwt-impl:0.11.5",
     "io.jsonwebtoken:jjwt-jackson:0.11.5",
-    "org.parboiled:parboiled_2.12:2.1.4",
+    "org.parboiled:parboiled_2.13:2.4.1",
     "org.reactivestreams:reactive-streams:1.0.4",
-    "org.sangria-graphql:sangria-marshalling-api_2.12:1.0.3",
-    "org.sangria-graphql:sangria_2.12:1.4.2",
-    "org.scala-lang.modules:scala-collection-compat_2.12:2.4.3",
-    "org.scalactic:scalactic_2.12:3.1.0",
-    "org.scalatest:scalatest_2.12:3.1.0",
+    "org.sangria-graphql:sangria-marshalling-api_2.13:1.1.3",
+    "org.sangria-graphql:sangria_2.13:2.0.1",
+    "org.scala-lang.modules:scala-collection-compat_2.13:2.4.3",
+    "org.scalactic:scalactic_2.13:3.1.0",
+    "org.scalatest:scalatest_2.13:3.1.0",
     "org.slf4j:slf4j-api:1.7.26",
   ],
   repositories = [

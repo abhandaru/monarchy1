@@ -11,7 +11,7 @@ object EffectsResolver extends Resolver[Unit, Seq[EffectLocation]] {
 
   override def apply(in: In): Out = {
     import in.ctx._
-    val args = in.arg(Args.Attack)
+    val args = in.arg(GqlArgs.Attack)
     val gameId = UUID.fromString(args.gameId)
     val attack = args.attack.map(extractVec).toSet
     redisCli.get[Game](StreamingKey.Game(gameId)).map {

@@ -16,7 +16,7 @@ object GraphOperations {
       val n = queue.dequeue
       val ns = neighbors(n).filterNot(visited)
       visited.add(n)
-      queue.enqueue(ns.toSeq: _*)
+      ns.foreach(queue.enqueue)
     }
     visited.toSet
   }

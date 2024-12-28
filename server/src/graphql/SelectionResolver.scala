@@ -33,10 +33,10 @@ trait SelectionResolver extends Resolver[Unit, Selection] with StrictLogging {
 
 object SelectResolver extends SelectionResolver {
   override def extractGameId(in: In) =
-    UUID.fromString(in.arg(Args.Select).gameId)
+    UUID.fromString(in.arg(GqlArgs.Select).gameId)
 
   override def extractPoint(in: In) = {
-    val VecQuery(i, j) = in.arg(Args.Select).point
+    val VecQuery(i, j) = in.arg(GqlArgs.Select).point
     Vec(i, j)
   }
 
@@ -46,7 +46,7 @@ object SelectResolver extends SelectionResolver {
 
 object DeselectResolver extends SelectionResolver {
   override def extractGameId(in: In) =
-    UUID.fromString(in.arg(Args.Deselect).gameId)
+    UUID.fromString(in.arg(GqlArgs.Deselect).gameId)
 
   override def extractPoint(in: In) = Vec.Zero
 

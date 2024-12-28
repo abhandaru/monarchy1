@@ -17,21 +17,21 @@ object MutationSchema {
   lazy val Def = ObjectType(
     "Mutation",
     fields[GraphqlContext, Unit](
-      Field("signup", AuthType, arguments = List(Args.Signup), resolve = SignupResolver),
+      Field("signup", AuthType, arguments = List(GqlArgs.Signup), resolve = SignupResolver),
       Field("loginStart", BooleanType,
-        arguments = List(Args.LoginStart),
+        arguments = List(GqlArgs.LoginStart),
         resolve = { node =>
-          val query = node.arg(Args.LoginStart)
+          val query = node.arg(GqlArgs.LoginStart)
           println(s"web-server >> initiating auth: $query")
           true
         }
       ),
       Field("login", AuthType,
-        arguments = List(Args.Login),
+        arguments = List(GqlArgs.Login),
         resolve = { node =>
           import dal.PostgresProfile.Implicits._
           import node.ctx.executionContext
-          val args = node.arg(Args.Login)
+          val args = node.arg(GqlArgs.Login)
           val phoneNumber = Format.normalizePhoneNumber(args.phoneNumber)
           val query = dal.User.query.filter(_.phoneNumber === phoneNumber)
           node.ctx.queryCli.first(query).map { user =>
@@ -40,12 +40,12 @@ object MutationSchema {
           }
         }
       ),
-      Field("select", SelectionType, arguments = List(Args.Select), resolve = SelectResolver),
-      Field("deselect", SelectionType, arguments = List(Args.Deselect), resolve = DeselectResolver),
-      Field("move", SelectionType, arguments = List(Args.Move), resolve = MoveResolver),
-      Field("attack", SelectionType, arguments = List(Args.Attack), resolve = AttackResolver),
-      Field("direct", SelectionType, arguments = List(Args.Direction), resolve = DirectionResolver),
-      Field("endTurn", SelectionType, arguments = List(Args.EndTurn), resolve = EndTurnResolver),
+      Field("select", SelectionType, arguments = List(GqlArgs.Select), resolve = SelectResolver),
+      Field("deselect", SelectionType, arguments = List(GqlArgs.Deselect), resolve = DeselectResolver),
+      Field("move", SelectionType, arguments = List(GqlArgs.Move), resolve = MoveResolver),
+      Field("attack", SelectionType, arguments = List(GqlArgs.Attack), resolve = AttackResolver),
+      Field("direct", SelectionType, arguments = List(GqlArgs.Direction), resolve = DirectionResolver),
+      Field("endTurn", SelectionType, arguments = List(GqlArgs.EndTurn), resolve = EndTurnResolver),
       Field("challengeSeek", QuerySchema.ChallengeType, resolve = ChallengeSeekResolver),
     )
   )

@@ -12,7 +12,7 @@ object SignupResolver extends Resolver[Unit, AuthResult] {
 
   override def apply(in: In): Out = {
     import in.ctx._
-    val args = in.arg(Args.Signup)
+    val args = in.arg(GqlArgs.Signup)
     val e164 = args.e164.trim
     val username = args.username.trim
     if (!validE164(e164)) Future.failed(Exceptions.BadArgs("invalid e164"))

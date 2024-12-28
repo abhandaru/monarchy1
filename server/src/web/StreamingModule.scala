@@ -14,7 +14,7 @@ object StreamingModule {
     redisCli: RedisClient
   ): ClientActionProxy = new ClientActionProxy
 
-  def streamActionRenderer(implicit
+  def actionRendererProxy(implicit
     ec: ExecutionContext,
     queryCli: QueryClient,
     redisCli: RedisClient

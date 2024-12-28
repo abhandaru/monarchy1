@@ -8,7 +8,7 @@ import com.github.tminglei.slickpg._
  */
 trait PostgresProfile extends ExPostgresProfile with PgDate2Support {
   override val api = Implicits
-  object Implicits extends API with DateTimeImplicits
+  object Implicits extends ExtPostgresAPI
 }
 
 object PostgresProfile extends PostgresProfile

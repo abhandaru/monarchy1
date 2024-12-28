@@ -4,7 +4,7 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '@maven//:com_typesafe_akka_akka_actor_2_12',
+    '@maven//:com_typesafe_akka_akka_actor_2_13',
     '//server/src/auth',
     '//server/src/game',
   ]

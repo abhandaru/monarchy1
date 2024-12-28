@@ -12,6 +12,6 @@ scala_library(
     '//server/src/marshalling/game-redis',
     '//server/src/streaming/core',
     '//server/src/util',
-    '@maven//:com_github_etaty_rediscala_2_12',
+    '@maven//:com_github_etaty_rediscala_2_13',
   ]
 )
