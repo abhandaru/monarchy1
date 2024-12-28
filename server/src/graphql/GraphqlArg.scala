@@ -48,8 +48,9 @@ object DirectionQuery extends GraphqlArg[DirectionQuery]
 case class EndTurnQuery(gameId: String)
 object EndTurnQuery extends GraphqlArg[EndTurnQuery]
 
-object Args {
-  implicit val VecQueryMacro = deriveInput[VecQuery]()
+object GqlArgs {
+  implicit val VecQueryMacro: InputObjectType[VecQuery] =
+    deriveInput[VecQuery]()
 
   // Argument types
   val Id = Argument("id", StringType, description = "ID of this entity.")

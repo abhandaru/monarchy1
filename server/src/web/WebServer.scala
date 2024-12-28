@@ -8,17 +8,23 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import monarchy.auth.AuthFilter
 import monarchy.controllers._
+import monarchy.dal.QueryClient
+import monarchy.graphql.GraphqlContext
+import monarchy.streaming.format.ActionRendererProxy
+import monarchy.streaming.process.ClientActionProxy
 import monarchy.streaming.topology.MessageTopologyBuilder
+import redis.RedisClient
+import scala.concurrent.ExecutionContext
 
 object WebServer extends App {
-  implicit val actorSys = ActorSystem("monarchy-web")
-  implicit val materializer = ActorMaterializer()
-  implicit val executionContext = actorSys.dispatcher
-  implicit val queryCli = DatabaseModule.queryClient
-  implicit val redisCli = RedisModule.redisClient
-  implicit val graphqlContext = GraphqlModule.graphqlContext
-  implicit val streamAxnRenderer = StreamingModule.streamActionRenderer
-  implicit val clientAxnProxy = StreamingModule.clientActionProxy
+  implicit val actorSys: ActorSystem = ActorSystem("monarchy-web")
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  implicit val executionContext: ExecutionContext = actorSys.dispatcher
+  implicit val queryCli: QueryClient = DatabaseModule.queryClient
+  implicit val redisCli: RedisClient = RedisModule.redisClient
+  implicit val graphqlContext: GraphqlContext = GraphqlModule.graphqlContext
+  implicit val axnRendererProxy: ActionRendererProxy = StreamingModule.actionRendererProxy
+  implicit val clientAxnProxy: ClientActionProxy = StreamingModule.clientActionProxy
 
   // Request handlers
   import AuthFilter._

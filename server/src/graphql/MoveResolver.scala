@@ -6,7 +6,7 @@ import monarchy.streaming.core._
 
 object MoveResolver extends Resolver[Unit, Selection] {
   override def apply(in: In): Out = {
-    val args = in.arg(Args.Move)
+    val args = in.arg(GqlArgs.Move)
     val commit = PhaseCommit(
       input = in,
       gameId = UUID.fromString(args.gameId),

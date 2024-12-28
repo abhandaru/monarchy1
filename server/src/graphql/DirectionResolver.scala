@@ -6,7 +6,7 @@ import monarchy.streaming.core._
 
 object DirectionResolver extends Resolver[Unit, Selection] {
   override def apply(in: In): Out = {
-    val args = in.arg(Args.Direction)
+    val args = in.arg(GqlArgs.Direction)
     val commit = PhaseCommit(
       input = in,
       gameId = UUID.fromString(args.gameId),

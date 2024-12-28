@@ -15,28 +15,28 @@ object QuerySchema {
     "Query",
     fields[GraphqlContext, Unit](
       Field("user", OptionType(UserType),
-        arguments = List(Args.Id),
+        arguments = List(GqlArgs.Id),
         resolve = { node =>
           import dal.PostgresProfile.Implicits._
-          val id = UUID.fromString(node.arg(Args.Id))
+          val id = UUID.fromString(node.arg(GqlArgs.Id))
           val query = dal.User.query.filter(_.id === id)
           node.ctx.queryCli.first(query)
         }
       ),
       Field("game", OptionType(GameType),
-        arguments = List(Args.Id),
+        arguments = List(GqlArgs.Id),
         resolve = { node =>
           import dal.PostgresProfile.Implicits._
-          val id = UUID.fromString(node.arg(Args.Id))
+          val id = UUID.fromString(node.arg(GqlArgs.Id))
           val query = dal.Game.query.filter(_.id === id)
           node.ctx.queryCli.first(query)
         }
       ),
       Field("games", ListType(GameType),
-        arguments = List(Args.Games),
+        arguments = List(GqlArgs.Games),
         resolve = { node =>
           import dal.PostgresProfile.Implicits._
-          val userId = UUID.fromString(node.arg(Args.Games).userId)
+          val userId = UUID.fromString(node.arg(GqlArgs.Games).userId)
           val query = dal.Player.query
             .filter(_.userId === userId)
             .join(dal.Game.query).on(_.gameId === _.id)
@@ -46,7 +46,7 @@ object QuerySchema {
         }
       ),
       Field("lobby", LobbyType, resolve = LobbyResolver),
-      Field("effects", ListType(EffectType), arguments = List(Args.Attack), resolve = EffectsResolver),
+      Field("effects", ListType(EffectType), arguments = List(GqlArgs.Attack), resolve = EffectsResolver),
     )
   )
 

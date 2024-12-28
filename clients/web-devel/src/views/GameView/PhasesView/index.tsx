@@ -26,7 +26,7 @@ const PhasesView = (props: Props) => {
   const myTurn = useMyTurn();
   const phase = useSelector<State, string>(_ => _.games.gameSelections.phase);
   const phasesAllowed = useSelector<State, string[] | null>(_ =>_.games.gameSelections.phases);
-  console.log('PhasesView.render', { phase, phasesAllowed });
+
   // Callbacks
   const onSelect = React.useCallback(p => dispatch(gameSetPhase(p)), [dispatch]);
   React.useEffect(() => {

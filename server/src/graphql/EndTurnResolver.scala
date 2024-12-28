@@ -6,7 +6,7 @@ import monarchy.streaming.core._
 
 object EndTurnResolver extends Resolver[Unit, Selection] {
   override def apply(in: In): Out = {
-    val args = in.arg(Args.EndTurn)
+    val args = in.arg(GqlArgs.EndTurn)
     val commit = PhaseCommit(
       input = in,
       gameId = UUID.fromString(args.gameId),

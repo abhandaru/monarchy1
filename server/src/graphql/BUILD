@@ -4,9 +4,9 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '@maven//:com_github_etaty_rediscala_2_12',
-    '@maven//:org_sangria_graphql_sangria_2_12',
-    '@maven//:org_sangria_graphql_sangria_marshalling_api_2_12',
+    '@maven//:com_github_etaty_rediscala_2_13',
+    '@maven//:org_sangria_graphql_sangria_2_13',
+    '@maven//:org_sangria_graphql_sangria_marshalling_api_2_13',
     '//server/src/auth',
     '//server/src/dal',
     '//server/src/dal-write',
@@ -17,7 +17,7 @@ scala_library(
     '//server/src/util',
   ],
   exports=[
-    '@maven//:org_parboiled_parboiled_2_12',
+    '@maven//:org_parboiled_parboiled_2_13',
   ],
   scalacopts=['-deprecation']
 )
