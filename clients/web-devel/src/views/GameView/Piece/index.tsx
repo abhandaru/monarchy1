@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Types from '~/util/types';
 import classnames from 'classnames';
 // @ts-ignore
 import styles from './index.css';
@@ -19,8 +20,26 @@ const StatusItem = (props) => {
   );
 };
 
+type DirectionProps = {
+  direction: Types.Vec;
+  color: string;
+};
+
+const Direction = (props: DirectionProps) => {
+  const { direction, color } = props;
+  const { i, j } = direction;
+  const angle = Math.atan2(i, j) * (180 / Math.PI);
+  const style = {
+    borderLeft: `16px solid ${color}`,
+    transform: `rotate(${angle}deg)`,
+    marginTop: (-i * 60) + '%',
+    marginLeft: (-j * 60) + '%',
+  };
+  return <div className={styles.direction} style={style} />;
+};
+
 export const Piece = (props) => {
-  const { piece } = props;
+  const { piece, point } = props;
   const {
     id,
     order,
@@ -29,6 +48,7 @@ export const Piece = (props) => {
     currentWait,
     currentHealth,
     currentBlocking,
+    currentDirection,
     currentFocus,
     currentEffects,
     blockingAjustment
@@ -45,8 +65,8 @@ export const Piece = (props) => {
     <Popover id={`popover-piece-${id}`}>
       <Popover.Header>{name}</Popover.Header>
       <Popover.Body>
-        <StatusItem label='Player'>
-          {player ? <Badge bg='light'>@{player.user.username}</Badge> : null}
+        <StatusItem label='Coord'>
+          <Badge bg='light'>{point.i}-{point.j}</Badge>
         </StatusItem>
         <StatusItem label='Health'>
           <Badge bg='light'>{currentHealth}</Badge>
@@ -66,6 +86,7 @@ export const Piece = (props) => {
       <div className={styles.root}>
         <div className={classnames(styles.avatar, avatarImage)} style={pieceStyle}>
           {avatarImage == null ? order : null}
+          <Direction direction={currentDirection} color={playerColor} />
         </div>
       </div>
     </OverlayTrigger>
