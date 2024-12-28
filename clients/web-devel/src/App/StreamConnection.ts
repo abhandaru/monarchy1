@@ -1,6 +1,7 @@
 import * as Actions from '~/state/actions';
 import * as React from 'react';
 import streamProxy from '~/api/streamProxy';
+import { State } from '~/state/state';
 import { useDispatch, useSelector } from 'react-redux'
 
 const PingPeriod = 15000;
@@ -20,12 +21,12 @@ const messageConverter = (message) => {
 
 const StreamConnection = () => {
   const dispatch = useDispatch();
-  const auth = useSelector(_ => _.auth);
+  const auth = useSelector<State, State['auth']>(_ => _.auth);
 
   // Equivalent of componentDidMount
-  React.useEffect(() => {
-    setInterval(() => dispatch(Actions.ping()), PingPeriod);
-  }, []);
+  // React.useEffect(() => {
+  //   setInterval(() => dispatch(Actions.ping()), PingPeriod);
+  // }, []);
 
   // Open port when auth changes
   React.useEffect(() => {

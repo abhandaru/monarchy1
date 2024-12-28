@@ -17,6 +17,7 @@ object MutationSchema {
   lazy val Def = ObjectType(
     "Mutation",
     fields[GraphqlContext, Unit](
+      Field("signup", AuthType, arguments = List(Args.Signup), resolve = SignupResolver),
       Field("loginStart", BooleanType,
         arguments = List(Args.LoginStart),
         resolve = { node =>

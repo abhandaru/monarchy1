@@ -29,7 +29,7 @@ case class Player(
 )
 
 import PostgresProfile.Implicits._
-object Player extends TableSchema(TableQuery[PlayerTable])
+object Player extends TableSchema[Player, PlayerTable](TableQuery[PlayerTable])
 
 class PlayerTable(tag: Tag) extends TableDef[Player](tag, "players") {
   def userId = column[UUID]("user_id")

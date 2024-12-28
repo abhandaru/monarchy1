@@ -1,17 +1,19 @@
 import * as React from 'react';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
+import Compact from '~/components/user/Compact';
 import fetchGames from './fetchGames';
+// @ts-ignore
 import styles from './index.css';
 import Table from 'react-bootstrap/Table';
 import { gamesSetRecent } from '~/state/actions';
+import { State } from '~/state/state';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom'
-
 const GameRow = (props) => {
   const { viewerId, game, onView } = props;
   const { id, status, players } = game;
-  const onViewClick = React.useCallback(() => onView(id));
+  const onViewClick = React.useCallback(() => onView(id), [id, onView]);
   // Property formatting
   const opponent = players.filter(_ => _.user.id != viewerId)[0];
   const opponentName = opponent ? opponent.user.username : '–';
@@ -21,7 +23,7 @@ const GameRow = (props) => {
     <tr>
       <td className={styles.opponentCell}>
         <div className={styles.opponent}>
-          <div>{opponentName} @ {opponentRating}</div>
+          <Compact user={opponent.user} rating />
           <Button variant='outline-primary' size='sm' onClick={onViewClick}>View</Button>
         </div>
       </td>
@@ -34,7 +36,7 @@ const GameRow = (props) => {
 
 const GamesTable = withRouter((props) => {
   const { viewerId, games, history } = props;
-  const onView = React.useCallback((id) => history.push('/games/' + id));
+  const onView = React.useCallback((id: string) => history.push('/games/' + id), [history]);
   return (
     <div>
       <h3>Active games</h3>   
@@ -62,8 +64,8 @@ const GamesTable = withRouter((props) => {
 
 const GamesView = (props) => {
   const dispatch = useDispatch();
-  const userId = useSelector(_ => _.auth.userId);
-  const recent = useSelector(_ => _.games.recent);
+  const userId = useSelector<State, string>(_ => _.auth.userId);
+  const recent = useSelector<State, State['games']['recent']>(_ => _.games.recent);
   const active = recent.filter(_ => _.status === 'Started');
   // onComponentDidMount, load data
   React.useEffect(() => {

@@ -50,12 +50,26 @@ object QuerySchema {
     )
   )
 
+  lazy val ProfileType = ObjectType(
+    "Profile",
+    fields[GraphqlContext, dal.Profile](
+      Field("avatar", StringType, resolve = _.value.avatar),
+      Field("color", StringType, resolve = _.value.color),
+    )
+  )
+
   lazy val UserType = ObjectType(
     "User",
     fields[GraphqlContext, dal.User](
       Field("id", StringType, resolve = _.value.id.toString),
       Field("username", StringType, resolve = _.value.username),
       Field("rating", IntType, resolve = _.value.rating),
+      Field("profile", OptionType(ProfileType), resolve = { node =>
+        import dal.PostgresProfile.Implicits._
+        val userId = node.value.id
+        val query = dal.Profile.query.filter(_.userId === userId)
+        node.ctx.queryCli.first(query)
+      })
     )
   )
 

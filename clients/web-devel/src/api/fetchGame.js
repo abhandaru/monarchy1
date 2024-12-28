@@ -15,9 +15,7 @@ const query = gql`
         id
         status
         user {
-          id
-          username
-          rating
+          ${frags.User}
         }
       },
       state {

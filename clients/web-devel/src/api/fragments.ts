@@ -18,6 +18,16 @@ export const Piece = `
   currentEffects
 `;
 
+export const User = `
+  id
+  username
+  rating
+  profile {
+    avatar
+    color
+  }
+`;
+
 export const Selection = `
   selection {
     ${Vector}

@@ -9,6 +9,7 @@ scala_library(
     '@maven//:org_sangria_graphql_sangria_marshalling_api_2_12',
     '//server/src/auth',
     '//server/src/dal',
+    '//server/src/dal-write',
     '//server/src/game',
     '//server/src/streaming/core',
     '//server/src/marshalling/game',

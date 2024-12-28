@@ -1,3 +1,4 @@
+import * as frags from '~/api/fragments';
 import fetch from '~/api/fetch';
 import gql from 'graphql-tag';
 
@@ -13,9 +14,7 @@ const query = gql`
       players {
         status
         user {
-          id
-          username
-          rating
+          ${frags.User}
         }
       }
     }
