@@ -59,7 +59,7 @@ const Tile = (props: TileProps) => {
       point={point}
       attack={attackCanonical}
       direction={directionCanonical}>
-      {pieceOccupying ? <Piece piece={pieceOccupying} /> : null}
+      {pieceOccupying ? <Piece piece={pieceOccupying} point={point} /> : null}
     </Component>
   );
 }

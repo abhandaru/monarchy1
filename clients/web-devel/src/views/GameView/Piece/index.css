@@ -1,7 +1,11 @@
 .root,
 .avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   align-self: stretch;
   flex-grow: 1;
+  overflow: hidden;
 }
 
 .root {
@@ -18,6 +22,7 @@
 
 .statusItemLabel {
   margin-right: 8px;
+  font-size: 80%;
 }
 
 .avatar {
@@ -42,4 +47,14 @@
 
 .avatar.Pyromancer {
   background-image: url(./images/pyromancer.png);
+}
+
+.direction {
+  width: 0;
+  height: 0;
+  /* border-left added in JSX */
+  border-bottom: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-top: 16px solid transparent;
+  transform-origin: center;
 }
