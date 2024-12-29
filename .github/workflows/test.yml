@@ -27,9 +27,9 @@ jobs:
         with:
           node-version: '20'
           cache: 'yarn'
-          cache-dependency-path: 'clients/web-devel/yarn.lock'
+          cache-dependency-path: './clients/web-devel/yarn.lock'
       - name: Running tests
+        working-directory: ./clients/web-devel
         run: |
-          cd clients/web-devel
           yarn
           yarn tsc
