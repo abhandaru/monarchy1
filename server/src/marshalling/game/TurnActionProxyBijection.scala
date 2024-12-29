@@ -22,6 +22,7 @@ object TurnActionProxyBijection extends Bijection[TurnAction, TurnActionProxy] {
     case AttackSelect(pat) => TurnActionProxy("AttackSelect", pat = Some(pat))
     case DirSelect(dir) => TurnActionProxy("DirSelect", dir = Some(dir))
     case EndTurn => TurnActionProxy("EndTurn")
+    case Forfeit => TurnActionProxy("Forfeit")
   }
 
   override def invert(proxy: TurnActionProxy) = {
@@ -32,6 +33,7 @@ object TurnActionProxyBijection extends Bijection[TurnAction, TurnActionProxy] {
       case TurnActionProxy("AttackSelect", _, Some(pat), _) => AttackSelect(pat)
       case TurnActionProxy("DirSelect", _, _, Some(dir)) => DirSelect(dir)
       case TurnActionProxy("EndTurn", _, _, _) => EndTurn
+      case TurnActionProxy("Forfeit", _, _, _) => Forfeit
     }
     result.getOrElse(throw FormatException(proxy))
   }

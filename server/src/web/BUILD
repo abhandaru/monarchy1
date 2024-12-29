@@ -33,7 +33,7 @@ tar(
 oci_image(
   name = 'web-image',
   base = '@distroless_java',
-  entrypoint = ['java', '-jar', '/web_deploy.jar'],
+  entrypoint = ['java', '-jar', '/app/web_deploy.jar'],
   tars = [':web-layer'],
 )
 
