@@ -7,6 +7,10 @@ sealed trait Change[+T] {
   def rejected: Boolean
 }
 
+object Change {
+  def apply[T](t: T): Change[T] = Accept(t)
+}
+
 case class Accept[+T](mut: T) extends Change[T] {
   override def map[U](f: T => U) = Accept(f(mut))
   override def flatMap[U](f: T => Change[U]) = f(mut)

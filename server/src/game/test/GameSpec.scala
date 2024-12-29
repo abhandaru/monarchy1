@@ -2,12 +2,14 @@ package monarchy.game
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalactic.TolerantNumerics
+import org.scalactic.{Equality, TolerantNumerics}
 import monarchy.testutil.Ids
 
 class GameSpec extends AnyWordSpec with Matchers {
   import PlanarTooling.PlanarStringOps
-  implicit val DoubleEq = TolerantNumerics.tolerantDoubleEquality(1e-3)
+  
+  implicit val DoubleEq: Equality[Double] =
+    TolerantNumerics.tolerantDoubleEquality(1e-3)
 
   val game = GameBuilder(
     seed = 77,

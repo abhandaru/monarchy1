@@ -35,7 +35,8 @@ case class Board(private val tileIndex: Map[Vec, Tile]) {
     updated.getOrElse(this)
   }
 
-  def commit(c: TileChange): Board = commitAggregation(Seq(c))
+  def commit(c: TileChange): Board =
+    commitAggregation(Seq(c))
 
   def commitAggregation(changes: Seq[TileChange]): Board = {
     changes.foldLeft(this) { case (b, change) =>

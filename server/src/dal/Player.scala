@@ -8,6 +8,7 @@ object PlayerStatus extends EnumColumnDef[PlayerStatus] {
   case object Pending extends PlayerStatus(0)
   case object Won extends PlayerStatus(1)
   case object Lost extends PlayerStatus(2)
+  case object Drawn extends PlayerStatus(3)
 }
 
 sealed class PlayerRole(val id: Int) extends EnumColumn

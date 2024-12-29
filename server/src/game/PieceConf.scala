@@ -11,6 +11,7 @@ trait PieceConf {
   def movement: PointPattern
   def movesAside: Boolean = true
   def teleports: Boolean = false
+  def living: Boolean = true
 
   def attackPatterns: AttackPatterns
   def attackAlongLos: Boolean = false

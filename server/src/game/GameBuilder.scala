@@ -50,7 +50,8 @@ object GameBuilder {
       rand = rand,
       players = playersOrdered,
       board = BoardSelection.commitAggregation(piecesAdditions),
-      turns = Seq(Turn())
+      turns = Seq(Turn()),
+      status = Game.Status.Started
     )
   }
 
