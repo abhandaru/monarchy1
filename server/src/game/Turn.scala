@@ -9,6 +9,7 @@ object TurnAction {
   case class AttackSelect(pat: Deltas) extends TurnAction
   case class DirSelect(dir: Vec) extends TurnAction
   case object EndTurn extends TurnAction
+  case object Forfeit extends TurnAction
 }
 
 case class Turn(actionStack: Seq[TurnAction] = Nil) {
@@ -46,6 +47,12 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
   def dir: Option[Vec] =
     actionStack.collectFirst { case DirSelect(dir) => dir }
 
+  def forfeit: Boolean =
+    actionStack.contains(Forfeit)
+
+  // If the entire stack is `EndTurn`, the player passed.
+  def passed: Boolean =
+    actionStack == Seq(EndTurn)
 
   // State transition checks
   def canSelect: Boolean =
@@ -64,7 +71,7 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
     canEnd && select.nonEmpty && dir.isEmpty
 
   def canEnd: Boolean =
-    !actionStack.contains(TurnAction.EndTurn)
+    TerminalActions.forall { axn => !actionStack.contains(axn) }
 
   def actions: Seq[TurnAction] =
     actionStack.reverse
@@ -83,6 +90,9 @@ case class Turn(actionStack: Seq[TurnAction] = Nil) {
 
 object Turn {
   import TurnAction._
+
+  val TerminalActions =
+    Set[TurnAction](EndTurn, Forfeit)
 
   val TileSelectMatcher: TurnAction => Boolean = {
     case _: TileSelect => true

@@ -1,8 +1,8 @@
-name: Build
-run-name: ${{ github.actor }} kicked off a build
-on: [push]
+name: Test
+on:
+  workflow_call:
 jobs:
-  Build:
+  Server:
     runs-on: ubuntu-latest
     steps:
       - name: Cloning source
@@ -17,3 +17,14 @@ jobs:
       - name: Running tests
         run: |
           bazel test //...
+  Client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloning source
+        uses: actions/checkout@v4
+      # TODO (adu): Add caching here.
+      - name: Running tests
+        run: |
+          cd clients/web-devel
+          yarn
+          yarn tsc

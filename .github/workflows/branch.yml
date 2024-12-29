@@ -1,0 +1,8 @@
+name: Branch
+run-name: '${{ github.actor }} pushed: ${{ github.event.pull_request.title }}'
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+jobs:
+  Test:
+    uses: ./.github/workflows/test.yml

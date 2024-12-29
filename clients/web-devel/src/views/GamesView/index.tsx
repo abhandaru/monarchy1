@@ -9,7 +9,7 @@ import Table from 'react-bootstrap/Table';
 import { gamesSetRecent } from '~/state/actions';
 import { State } from '~/state/state';
 import { useSelector, useDispatch } from 'react-redux';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 const GameRow = (props) => {
   const { viewerId, game, onView } = props;
   const { id, status, players } = game;

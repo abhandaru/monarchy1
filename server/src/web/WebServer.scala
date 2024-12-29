@@ -29,7 +29,7 @@ object WebServer extends App {
   // Request handlers
   import AuthFilter._
   // val statusController = new StatusController
-  val rootController = AuthRoute(All, new RootController)
+  val statusController = AuthRoute(All, new StatusController)
   val adminController = AuthRoute(Admin, new AdminController)
   val graphqlController = CorsModule.corsHandler(AuthRoute(All, new GraphqlController))
   val connectController = AuthRoute(LoggedIn, { c =>
@@ -39,7 +39,8 @@ object WebServer extends App {
 
   val port = HerokuModule.Port
   val route = logRequestResult("monarchy-web") {
-    pathSingleSlash(rootController) ~
+    pathSingleSlash(statusController) ~
+      path("healthz")(statusController) ~
       path("admin")(adminController) ~
       path("graphql")(graphqlController) ~
       path("connect")(connectController)

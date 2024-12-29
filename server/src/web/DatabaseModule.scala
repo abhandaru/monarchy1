@@ -10,10 +10,8 @@ object DatabaseModule {
   private val DefaultDatabaseUrl = "jdbc:postgresql://localhost:5432/monarchy_local"
   private val DatabaseUrl = sys.env.getOrElse("JDBC_DATABASE_URL", DefaultDatabaseUrl)
 
-
   def queryClient(implicit ec: ExecutionContext): dal.QueryClient = {
     val config = dal.PgConfig(DatabaseUrl, DefaultThreads)
     dal.QueryClientImpl(config)
   }
 }
-

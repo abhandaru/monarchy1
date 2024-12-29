@@ -7,6 +7,7 @@ case class Game(
   players: Seq[Player],
   board: Board,
   turns: Seq[Turn],
+  status: Game.Status
 ) {
   import TurnAction._
 
@@ -282,6 +283,13 @@ case class Game(
 }
 
 object Game {
+  sealed trait Status
+  object Status {
+    case object Started extends Status
+    case object Complete extends Status
+    case object Invalid extends Status
+  }
+
   val BlockingAdjustmentDecay = 0.9
 
   def reachablePoints(b: Board, piece: Piece, p0: Vec, points: Deltas): Deltas = {
