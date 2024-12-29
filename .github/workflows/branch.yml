@@ -1,5 +1,5 @@
 name: Branch
-run-name: ${{ github.actor }} push ${{ github.event.pull_request.title }}
+run-name: '${{ github.actor }} pushed: ${{ github.event.pull_request.title }}'
 on:
   pull_request:
     types: [opened, reopened, synchronize]

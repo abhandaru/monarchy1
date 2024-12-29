@@ -1,5 +1,5 @@
 name: Merge
-run-name: ${{ github.actor }} kicked off a build
+run-name: ${{ github.actor }} pushed to master
 on:
   push:
     branches:
@@ -9,6 +9,28 @@ jobs:
   Test:
     uses: ./.github/workflows/test.yml
 
-# REPO=930597685973.dkr.ecr.us-east-1.amazonaws.com
-# aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPO
-# bazel run //server/web:web-image-push
+  Push:
+    needs: [Test]
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Cloning source
+        uses: actions/checkout@v4
+      - name: Installing bazel
+        uses: bazelbuild/setup-bazelisk@v2
+      - name: Installing bazel cache
+        uses: actions/cache@v3
+        with:
+          path: "~/.cache/bazel"
+          key: bazel
+      - name: Pushing image
+        if: github.event.ref == 'refs/heads/master'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          AWS_ACCOUNT_ID: '930597685973'
+        run: |
+          REPO="$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com"
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPO
+          bazel run //server/web:web-image-push
