@@ -22,7 +22,12 @@ jobs:
     steps:
       - name: Cloning source
         uses: actions/checkout@v4
-      # TODO (adu): Add caching here.
+      - name: Installing module cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: 'clients/web-devel/yarn.lock'
       - name: Running tests
         run: |
           cd clients/web-devel
