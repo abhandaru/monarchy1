@@ -1,3 +1,4 @@
+import * as frags from '~/api/fragments';
 import fetch from '~/api/fetch';
 import gql from 'graphql-tag';
 
@@ -9,15 +10,11 @@ const query = gql`
   query lobby {
     lobby {
       usersOnline {
-        id
-        username
-        rating
+        ${frags.User}
       }
       challenges {
         host {
-          id
-          username
-          rating
+          ${frags.User}
         }
       }
     }

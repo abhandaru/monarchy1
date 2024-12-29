@@ -14,3 +14,7 @@ export type User = {
     color: string;
   };
 };
+
+export type Challenge = {
+  host: User
+};
