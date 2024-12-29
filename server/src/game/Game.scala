@@ -166,17 +166,20 @@ case class Game(
                           case NoRotation(dir) =>         (0,          0.0, -dir)
                         }
                         val blockingOutcome = rand.nextDouble <= blockingProb
+                        val canApplyAdjustment = anchor > 0
                         if (blockingOutcome) {
+                          val adjustment = if (canApplyAdjustment) blockingBase - anchor else 0
                           PieceUpdate(pt, _.copy(
                             currentDirection = blockingDir,
-                            blockingAjustment = pieceN.blockingAjustment - (anchor - blockingBase)
+                            blockingAjustment = pieceN.blockingAjustment + adjustment
                           ))
                         } else {
+                          val adjustment = if (canApplyAdjustment) blockingBase else 0
                           val health = math.max(pieceN.currentHealth - damage, 0)
                           health match {
                             case 0 => PieceRemoval(pt)
                             case h => PieceUpdate(pt, _.copy(
-                              blockingAjustment = pieceN.blockingAjustment + blockingBase,
+                              blockingAjustment = pieceN.blockingAjustment + adjustment,
                               currentHealth = h
                             ))
                           }
