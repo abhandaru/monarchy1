@@ -26,11 +26,11 @@ object GameModule extends SimpleModule {
   addSerializer(classOf[Board], BoardTo)
   addSerializer(classOf[PieceConf], PieceConfTo)
   addSerializer(classOf[PlayerId], PlayerIdTo)
-  addSerializer(classOf[PlayerStatus], PlayerStatusTo)
+  addSerializer(classOf[Player.Status], PlayerStatusTo)
   addSerializer(classOf[Random], RandomTo)
   addSerializer(classOf[TurnAction], TurnActionTo)
   addSerializer(classOf[Effect], EffectTo)
-  addSerializer(classOf[GameStatus], GameStatusTo)
+  addSerializer(classOf[Game.Status], GameStatusTo)
 }
 
 object TypeUtil {
