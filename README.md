@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/abhandaru/monarchy1/actions/workflows/monarchy.yml/badge.svg)](https://github.com/abhandaru/monarchy1/actions?query=branch%3Amaster)
+[![Merge](https://github.com/eusphere/monarchy/actions/workflows/merge.yml/badge.svg)](https://github.com/eusphere/monarchy/actions/workflows/merge.yml)
 
 # Monarchy project
 
