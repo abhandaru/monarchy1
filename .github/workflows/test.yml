@@ -1,8 +1,8 @@
-name: Build
-run-name: ${{ github.actor }} kicked off a build
-on: [push]
+name: Test
+on:
+  workflow_call:
 jobs:
-  Build:
+  Test:
     runs-on: ubuntu-latest
     steps:
       - name: Cloning source

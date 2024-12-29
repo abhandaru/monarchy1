@@ -1,0 +1,14 @@
+name: Merge
+run-name: ${{ github.actor }} kicked off a build
+on:
+  push:
+    branches:
+      - master
+  
+jobs:
+  Test:
+    uses: ./.github/workflows/test.yml
+
+# REPO=930597685973.dkr.ecr.us-east-1.amazonaws.com
+# aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPO
+# bazel run //server/web:web-image-push
