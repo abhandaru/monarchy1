@@ -34,3 +34,6 @@ jobs:
           REPO="$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com"
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPO
           bazel run //server/src/web:web-image-push
+      - name: Deploying
+        run: |
+          curl -i ${{ secrets.RENDER_DEPLOY_URL }}
