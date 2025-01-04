@@ -8,8 +8,9 @@ trait PieceConf {
   def armor: Double
   def blocking: Double
 
-  def movement: PointPattern
+  def movementRange: Int
   def movesAside: Boolean = true
+
   def teleports: Boolean = false
   def living: Boolean = true
 
@@ -32,7 +33,7 @@ case object Assassin extends PieceConf {
   val power = 18
   val armor = 0.12
   val blocking = 0.7
-  val movement = PointPattern(rangeDeltasNoCenter(4))
+  val movementRange = 4
   val attackPatterns = SimpleAttackPatterns(AdjecentDeltas)
   val effectArea = new EffectArea {
     override def apply(p0: Vec, pat: PointPattern): Set[Effect] = {
@@ -49,7 +50,7 @@ case object Knight extends PieceConf {
   val power = 22
   val armor = 0.25
   val blocking = 0.8
-  val movement = PointPattern(rangeDeltasNoCenter(3))
+  val movementRange = 3
   val attackPatterns = SimpleAttackPatterns(AdjecentDeltas)
   val effectArea = UniformAttackArea(NoDelta, power)
 }
@@ -62,7 +63,7 @@ case object Scout extends PieceConf {
   val power = 18
   val armor = 0.08
   val blocking = 0.6
-  val movement = PointPattern(rangeDeltasNoCenter(4))
+  val movementRange = 4
   val attackPatterns = SimpleAttackPatterns(rangeDeltasNoCenter(6))
   val effectArea = UniformAttackArea(NoDelta, power)
   override val attackAlongLos = true
@@ -76,9 +77,10 @@ case object Witch extends PieceConf {
   val power = 24
   val armor = 0.0
   val blocking = 0.2
-  val movement = PointPattern(rangeDeltasNoCenter(3))
+  val movementRange = 3
 
   override val blockable = false
+
   val attackPatterns = new AttackPatterns {
     val max = 4
     override val patterns: Set[PointPattern] = {
@@ -103,7 +105,7 @@ case object Pyromancer extends PieceConf {
   val power = 16
   val armor = 0.0
   val blocking = 0.3
-  val movement = PointPattern(rangeDeltasNoCenter(3))
+  val movementRange = 3
   val attackPatterns = SimpleAttackPatterns(rangeDeltas(3))
   val effectArea = UniformAttackArea(rangeDeltas(1), power)
   override val blockable = false
@@ -117,7 +119,7 @@ case object MudGolem extends PieceConf {
   val power = 20
   val armor = 0.0
   val blocking = 0.0
-  val movement = PointPattern(rangeDeltasNoCenter(5))
+  val movementRange = 5
   val attackPatterns = SimpleAttackPatterns(AdjecentDeltas)
   val effectArea = UniformAttackArea(NoDelta, power)
   override val teleports = true
@@ -131,7 +133,7 @@ case object Furgon extends PieceConf {
   val power = 0
   val armor = 0.0
   val blocking = 0.5
-  val movement = PointPattern(rangeDeltasNoCenter(3))
+  val movementRange = 3
   val attackPatterns = SimpleAttackPatterns(rangeDeltas(2))
   val effectArea = new EffectArea {
     val deltas = rangeDeltas(1)
@@ -154,7 +156,7 @@ case object Cleric extends PieceConf {
   val power = 12
   val armor = 0.0
   val blocking = 0.0
-  val movement = PointPattern(rangeDeltasNoCenter(3))
+  val movementRange = 3
   val attackPatterns = SimpleAttackPatterns(NoDelta)
   val effectArea = new EffectArea {
     override def apply(p0: Vec, pat: PointPattern): Set[Effect] = {
@@ -172,7 +174,7 @@ case object FrostGolem extends PieceConf {
   val power = 0
   val armor = 0.0
   val blocking = 0.0
-  val movement = PointPattern(rangeDeltasNoCenter(2))
+  val movementRange = 2
   val attackPatterns = SimpleAttackPatterns(rangeDeltasNoCenter(4))
   val effectArea = new EffectArea {
     override def apply(p0: Vec, pat: PointPattern): Set[Effect] = {
@@ -190,8 +192,9 @@ case object Shrub extends PieceConf {
   val power = 0
   val armor = 0.0
   val blocking = 0.0
-  val movement = PointPattern(Deltas.empty)
+  val movementRange = 0
+  override val movesAside = false
+
   val attackPatterns = SimpleAttackPatterns(Deltas.empty)
   val effectArea = NullEffectArea
-  override val movesAside = false
 }

@@ -29,12 +29,27 @@ object PlanarTooling {
     if (ref == test) true else {
       println(s"[PlanarTooling] missing - ${(ref -- test).mkString(", ")}")
       println(s"[PlanarTooling] extra   + ${(test -- ref).mkString(", ")}")
+      println(s"[PlanarTooling] candidate:\n${render(ts)}")
       false
     }
   }
 
-  def compare[T: PlanarToolingSupport](ts: Iterable[T], rep: String): Boolean = {
+  def compare[T: PlanarToolingSupport](ts: Iterable[T], rep: String): Boolean =
     compare(ts, rep.plane)
+
+  // Useful for debugging and printing vector sets received by the caller
+  // method. When `compare` fails it will automatically dump the test value.
+  def render[T](ts: Iterable[T])(implicit pts: PlanarToolingSupport[T]): String = {
+    if (ts.isEmpty) return ""
+    val vectors = ts.map(pts).toSet
+    val iMax = vectors.map(_.i).max
+    val jMax = vectors.map(_.j).max
+    val chars2D = for (i <- 0 to iMax) yield {
+      for (j <- 0 to jMax) yield {
+        if (vectors(Vec(i, j))) '░' else '█'
+      }
+    }
+    chars2D.map(_.mkString).mkString("\n")
   }
 
   implicit class PlanarStringOps(val rep: String) extends AnyVal {

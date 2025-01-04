@@ -42,10 +42,7 @@ case class Game(
       piece <- currentPiece
       if currentTurn.canMove
       if piece.canAct
-    } yield {
-      val points = piece.conf.movement(tile.point)
-      Game.reachablePoints(board, piece, tile.point, points)
-    }
+    } yield Movement.reachablePoints(board, PieceLocation(tile.point, piece))
     moveSet.getOrElse { Deltas.empty }
   }
 
@@ -304,26 +301,4 @@ object Game {
   }
 
   val BlockingAdjustmentDecay = 0.9
-
-  def reachablePoints(b: Board, piece: Piece, p0: Vec, points: Deltas): Deltas = {
-    def neighbors(p: Vec): Deltas = {
-      for {
-        d <- Deltas.AdjecentDeltas
-        pNext = p + d
-        if points(pNext)
-        if canPassThrough(b, piece, pNext)
-      } yield pNext
-    }
-    GraphOperations.reachableFrom(p0, neighbors)
-      .filterNot(b.occupied)
-  }
-
-  def canPassThrough(b: Board, piece: Piece, p: Vec): Boolean = {
-    b.tile(p).exists { tile =>
-      tile.piece.forall { occupant =>
-        def canPass = piece.playerId == occupant.playerId && occupant.conf.movesAside
-        piece.conf.teleports || canPass
-      }
-    }
-  }
 }

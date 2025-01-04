@@ -7,20 +7,6 @@ class WitchSpec extends AnyWordSpec with Matchers {
   import PlanarTooling.PlanarStringOps
 
   "Witch" should {
-    "correctly generate movement pattern" in {
-      assert(PlanarTooling.compare(
-        Witch.movement(Vec(3, 3)),
-        """
-        |███░███
-        |██░░░██
-        |█░░░░░█
-        |░░░█░░░
-        |█░░░░░█
-        |██░░░██
-        |███░███
-        """
-      ))
-    }
 
     "correctly generate attack patterns" in {
       val patterns = Witch.attackPatterns.pointSets(Vec(4, 4))

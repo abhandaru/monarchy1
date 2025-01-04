@@ -1,6 +1,7 @@
 package monarchy.game
 
 import java.util.UUID
+
 object PieceBuilder {
   def apply(
     id: PieceId,
