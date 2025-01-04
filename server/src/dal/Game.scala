@@ -7,6 +7,7 @@ sealed class GameStatus(val id: Int) extends EnumColumn
 object GameStatus extends EnumColumnDef[GameStatus] {
   case object Started extends GameStatus(0)
   case object Complete extends GameStatus(1)
+  case object Invalid extends GameStatus(2)
 }
 
 case class Game(

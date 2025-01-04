@@ -10,8 +10,9 @@ object EndTurnResolver extends Resolver[Unit, Selection] {
     val commit = PhaseCommit(
       input = in,
       gameId = UUID.fromString(args.gameId),
-      event = ctx => GameChange(ctx.gameId, "END_TURN")
+      event = ctx => GameChange(ctx.gameId, "END_TURN"),
+      continuation = _.game.nextTurn
     )
-    commit { ctx => ctx.game.commitTurn(ctx.playerId) }
+    commit { ctx => ctx.game.endTurn(ctx.playerId) }
   }
 }

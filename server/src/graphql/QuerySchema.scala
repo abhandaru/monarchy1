@@ -87,11 +87,14 @@ object QuerySchema {
     )
   )
 
+  lazy val GameStatusType =
+    EnumUtil.mkEnum[dal.GameStatus]("GameStatus", dal.GameStatus.values.toSet)
+
   lazy val GameType = ObjectType(
     "Game",
     fields[GraphqlContext, dal.Game](
       Field("id", StringType, resolve = _.value.id.toString),
-      Field("status", StringType, resolve = _.value.status.toString),
+      Field("status", GameStatusType, resolve = _.value.status),
       Field("players", ListType(PlayerType), resolve = { node =>
         import dal.PostgresProfile.Implicits._
         val gameId = node.value.id

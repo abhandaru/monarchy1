@@ -7,20 +7,22 @@ import monarchy.game._
 import monarchy.marshalling.game.{GameJson, GameStringDeserializer}
 import monarchy.streaming.core._
 import monarchy.util.{Async, Json}
+import redis.RedisClient
 import sangria.schema.Context
 import scala.concurrent.Future
 
 case class PhaseCommit(
     input: PhaseCommit.Input,
     gameId: UUID,
-    event: PhaseCommit.CommitContext => StreamAction
+    event: PhaseCommit.CommitContext => StreamAction,
+    continuation: PhaseCommit.CommitContext => Change[Game] = PhaseCommit.NoContinuation
 ) extends StrictLogging { 
   import dal.PostgresProfile.Implicits._
+  import input.ctx._
   import GameStringDeserializer._
   import PhaseCommit._
 
   def apply(commit: CommitContext => Change[Game]): Future[Selection] = {
-    import input.ctx._
     val userId = Resolver.expectUserId(input)
     val gameKey = StreamingKey.Game(gameId)
     val gameReq = redisCli.get[Game](gameKey)
@@ -29,34 +31,86 @@ case class PhaseCommit(
     Async.join(gameReq, playersReq).flatMap {
       case (None, _) => Future.failed(NotFound(s"game '$gameId' not found"))
       case (Some(game), players) =>
+        val userFanout = players.map(_.userId).toSet
         val playerId = actingPlayerId(userId, players)
-        val commitContext = CommitContext(userId, playerId, gameId, gameKey, game)
+        val commitContext = CommitContext(userId, userFanout, playerId, gameId, gameKey, game)
         commit(commitContext) match {
           case r: Reject => Future.failed(Rejection(r))
           case Accept(nextGame) =>
-            redisCli.set(gameKey, GameJson.stringify(nextGame)).flatMap {
-              case false => throw new RuntimeException(s"redis set failed: '$gameKey'")
-              case true =>
-                publish(commitContext, players).map(_ => Selection(nextGame))
+            val nextCommitContext = commitContext.copy(game = nextGame)
+            Completion(nextGame) match {
+              case Completion.Incomplete => commitContinue(nextCommitContext)
+              case cmpl: Completion.Complete => commitComplete(nextCommitContext, cmpl)
             }
         }
     }
   }
 
-  private def publish(ctx: CommitContext, players: Seq[dal.Player]): Future[Int] = {
-    import input.ctx._
+  private def commitContinue(ctx: CommitContext): Future[Selection] = {
+    continuation(ctx) match {
+      case r: Reject => Future.failed(Rejection(r))
+      case Accept(game) =>
+        val nextCommitContext = ctx.copy(game = game)
+        persistRedis(nextCommitContext)
+    }
+  }
+
+  // If the REDIS update fails, do not update the postgres database. We can
+  // always retry the phase commit using the previous redis state.
+  private def commitComplete(ctx: CommitContext, cmpl: Completion.Complete): Future[Selection] = {
+    val players = ctx.game.players.map { p =>
+      val status = cmpl.playerStatuses.getOrElse(p.id, p.status)
+      p.copy(status = status)
+    }
+    val game = ctx.game.copy(status = cmpl.gameStatus, players = players)
+    val nextCommitContext = ctx.copy(game = game)
+    for {
+      sel <- persistRedis(nextCommitContext)
+      _ <- persist(nextCommitContext)
+    } yield sel 
+  }
+
+  private def persist(ctx: CommitContext): Future[Boolean] = {
+    val status = getGameStatus(ctx.game.status)
+    val dbio = for {
+      gc <- dal.Game.query.filter(_.id === ctx.gameId).map(_.status).update(status)
+      pc <- DBIO.sequence {
+        ctx.game.players.map { p =>
+          val playerStatus = getPlayerStatus(p.status)
+          dal.Player.query.filter(_.id === p.id.id).map(_.status).update(playerStatus)
+        }
+      }
+    } yield pc.sum + gc
+    // Just ensure the returned number of rows is non-zero for now.
+    queryCli.read(dbio).map(_ > 0)
+  }
+
+  private def persistRedis(ctx: CommitContext): Future[Selection] = {
+    val key = ctx.gameKey
+    val gameJson = GameJson.stringify(ctx.game)
+    redisCli.set(key, gameJson).flatMap {
+      case false => throw new RuntimeException(s"redis set failed: '$key'")
+      case true => publish(ctx).map(_ => Selection(ctx.game))
+    }
+  }
+  
+  private def publish(ctx: CommitContext): Future[Int] = {
     val evt = event(ctx)
-    val channels = players.map { p => StreamingChannel.gameChange(p.userId) }
+    val channels = ctx.userFanout.map { userId => StreamingChannel.gameChange(userId) }
     val fanout = channels.map(ch => redisCli.publish(ch, Json.stringify(evt)))
-    Future.sequence(fanout).map(_.sum.toInt)
+    Future.sequence(fanout.toSeq).map(_.sum.toInt)
   }
 }
 
 object PhaseCommit {
   type Input = Context[GraphqlContext, Unit]
 
+  val NoContinuation: CommitContext => Change[Game] =
+    ctx => Accept(ctx.game)
+
   case class CommitContext(
       userId: UUID,
+      userFanout: Set[UUID],
       playerId: PlayerId,
       gameId: UUID,
       gameKey: StreamingKey.Game,
@@ -67,6 +121,24 @@ object PhaseCommit {
     players.find(_.userId == userId) match {
       case Some(player) => PlayerId(player.id)
       case None => throw new RuntimeException(s"user '$userId' not participating")
+    }
+  }
+
+  private def getGameStatus(status: Game.Status): dal.GameStatus = {
+    status match {
+      case Game.Status.Started => dal.GameStatus.Started
+      case Game.Status.Complete => dal.GameStatus.Complete
+      case Game.Status.Invalid => dal.GameStatus.Invalid
+    }
+  }
+
+  private def getPlayerStatus(status: Player.Status): dal.PlayerStatus = {
+    status match {
+      case Player.Status.Playing => dal.PlayerStatus.Playing
+      case Player.Status.Won => dal.PlayerStatus.Won
+      case Player.Status.Lost => dal.PlayerStatus.Lost
+      case Player.Status.Drawn => dal.PlayerStatus.Drawn
+      case Player.Status.Invalid => dal.PlayerStatus.Invalid
     }
   }
 }

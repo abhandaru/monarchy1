@@ -81,15 +81,14 @@ case class Game(
   }
 
   def tileSelect(pid: PlayerId, p: Vec): Change[Game] =
-    playerGuard(pid).flatMap(_ => turnGuard(TileSelect(p)))
+    actionGuard(pid, TileSelect(p))
 
   def tileDeselect(pid: PlayerId): Change[Game] =
-    playerGuard(pid).flatMap(_ => turnGuard(TileDeselect))
+    actionGuard(pid, TileDeselect)
 
   def moveSelect(pid: PlayerId, p: Vec): Change[Game] = {
     for {
-      _ <- playerGuard(pid)
-      game <- turnGuard(MoveSelect(p))
+      game <- actionGuard(pid, MoveSelect(p))
       nextGame <- currentTile match {
         case None => Reject.PieceActionWithoutSelection
         case Some(tile) =>
@@ -106,8 +105,7 @@ case class Game(
 
   def directionSelect(pid: PlayerId, dir: Vec): Change[Game] = {
     for {
-      _ <- playerGuard(pid)
-      game <- turnGuard(DirSelect(dir))
+      game <- actionGuard(pid, DirSelect(dir))
       nextGame <- currentTile match {
         case None => Reject.PieceActionWithoutSelection
         case Some(tile) =>
@@ -127,8 +125,7 @@ case class Game(
   def attackSelect(pid: PlayerId, attack: Deltas): Change[Game] = {
     import EffectGeometry._
     for {
-      _ <- playerGuard(pid)
-      game <- turnGuard(AttackSelect(attack))
+      game <- actionGuard(pid, AttackSelect(attack))
       nextGame <- currentTile match {
         case None => Reject.PieceActionWithoutSelection
         case Some(tile) =>
@@ -248,10 +245,9 @@ case class Game(
     } yield nextGame
   }
 
-  def commitTurn(pid: PlayerId): Change[Game] = {
+  def endTurn(pid: PlayerId): Change[Game] = {
     for {
-      _ <- playerGuard(pid)
-      prevTurn <- currentTurn.act(EndTurn)
+      nextGame <- actionGuard(pid, EndTurn)
     } yield {
       val updatesForAll = board.pieces.map {
         case PieceLocation(pt, piece) =>
@@ -273,9 +269,20 @@ case class Game(
       }
       val updates = updatesForAll ++ updateForPiece.toSeq
       val nextBoard = board.commitAggregation(updates)
-      val nextTurns = Turn() +: (prevTurn +: turns.tail)
-      this.copy(board = nextBoard, turns = nextTurns)
+      nextGame.copy(board = nextBoard)
     }
+  }
+
+  def nextTurn: Change[Game] =
+    endGuard.map { _ => copy(turns = Turn() +: turns) }
+
+  // The most common validation-stack
+  private def actionGuard(pid: PlayerId, axn: TurnAction): Change[Game] = {
+    for {
+      _ <- endGuard
+      _ <- playerGuard(pid)
+      game <- turnGuard(axn)
+    } yield game
   }
 
   private def playerGuard(pid: PlayerId): Change[Unit] =
@@ -283,6 +290,9 @@ case class Game(
 
   private def turnGuard(act: TurnAction): Change[Game] =
     currentTurn.act(act).map(t => this.copy(turns = t +: turns.tail))
+
+  private def endGuard: Change[Unit] =
+    if (status == Game.Status.Complete) Reject.ReadOnly else Accept.Unit
 }
 
 object Game {

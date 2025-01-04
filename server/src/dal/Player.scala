@@ -5,10 +5,11 @@ import java.util.UUID
 
 sealed class PlayerStatus(val id: Int) extends EnumColumn
 object PlayerStatus extends EnumColumnDef[PlayerStatus] {
-  case object Pending extends PlayerStatus(0)
+  case object Playing extends PlayerStatus(0)
   case object Won extends PlayerStatus(1)
   case object Lost extends PlayerStatus(2)
   case object Drawn extends PlayerStatus(3)
+  case object Invalid extends PlayerStatus(4)
 }
 
 sealed class PlayerRole(val id: Int) extends EnumColumn

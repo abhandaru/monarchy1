@@ -45,10 +45,12 @@ class CompletionSpec extends AnyWordSpec with Matchers {
       val playerIds = game.players.map(_.id).toArray
       val sequence = (0 until n).map { i => playerIds(i % playerIds.size) }
       val intermediate = sequence
-        .foldLeft(Change(game2Pieces)) { case (c, id) => c.flatMap(_.commitTurn(id)) }
+        .foldLeft(Change(game2Pieces)) {
+          case (c, id) => c.flatMap(_.endTurn(id)).flatMap(_.nextTurn)
+        }
       // This method is reliable except that the next turn is always appended.
-      // In practice, `Completion` will be call within `commitTurn` before that
-      // is appended.
+      // In practice, `Completion` will be called right after `endTurn` and
+      // before the next turn is appended.
       intermediate.map { g => g.copy(turns = g.turns.drop(1)) }
     }
 
