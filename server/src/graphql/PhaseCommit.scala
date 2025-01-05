@@ -31,9 +31,8 @@ case class PhaseCommit(
     Async.join(gameReq, playersReq).flatMap {
       case (None, _) => Future.failed(NotFound(s"game '$gameId' not found"))
       case (Some(game), players) =>
-        val userFanout = players.map(_.userId).toSet
         val playerId = actingPlayerId(userId, players)
-        val commitContext = CommitContext(userId, userFanout, playerId, gameId, gameKey, game)
+        val commitContext = CommitContext(userId, playerId, players, gameId, gameKey, game)
         commit(commitContext) match {
           case r: Reject => Future.failed(Rejection(r))
           case Accept(nextGame) =>
@@ -72,12 +71,21 @@ case class PhaseCommit(
 
   private def persist(ctx: CommitContext): Future[Boolean] = {
     val status = getGameStatus(ctx.game.status)
+    val ratings = {
+      val assoc = ctx.players.map { p => (PlayerId(p.id), p.rating) }.toMap.withDefaultValue(0)
+      val players = ctx.game.players.map { p => Rating.Player(p.id, p.status, assoc(p.id)) }
+      Rating.compute(players)
+    }
     val dbio = for {
       gc <- dal.Game.query.filter(_.id === ctx.gameId).map(_.status).update(status)
       pc <- DBIO.sequence {
         ctx.game.players.map { p =>
           val playerStatus = getPlayerStatus(p.status)
-          dal.Player.query.filter(_.id === p.id.id).map(_.status).update(playerStatus)
+          val ratingDelta = ratings.get(p.id).map(_.delta)
+          dal.Player.query
+            .filter(_.id === p.id.id)
+            .map { p => (p.status, p.ratingDelta) }
+            .update((playerStatus, ratingDelta))
         }
       }
     } yield pc.sum + gc
@@ -96,7 +104,7 @@ case class PhaseCommit(
   
   private def publish(ctx: CommitContext): Future[Int] = {
     val evt = event(ctx)
-    val channels = ctx.userFanout.map { userId => StreamingChannel.gameChange(userId) }
+    val channels = ctx.players.map { player => StreamingChannel.gameChange(player.userId) }
     val fanout = channels.map(ch => redisCli.publish(ch, Json.stringify(evt)))
     Future.sequence(fanout.toSeq).map(_.sum.toInt)
   }
@@ -109,9 +117,11 @@ object PhaseCommit {
     ctx => Accept(ctx.game)
 
   case class CommitContext(
+      // User & player who is committing the phase.
       userId: UUID,
-      userFanout: Set[UUID],
       playerId: PlayerId,
+      // Persisted players.
+      players: Seq[dal.Player],
       gameId: UUID,
       gameKey: StreamingKey.Game,
       game: Game
