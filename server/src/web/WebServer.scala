@@ -28,25 +28,30 @@ object WebServer extends App {
 
   // Request handlers
   import AuthFilter._
+
+  def public(c: AuthController): Route = AuthRoute(All, c)
+
   // val statusController = new StatusController
-  val statusController = AuthRoute(All, new StatusController)
+  val statusController = public(new StatusController)
   val adminController = AuthRoute(Admin, new AdminController)
-  val graphqlController = CorsModule.corsHandler(AuthRoute(All, new GraphqlController))
+  val graphqlController = CorsModule.corsHandler(public(new GraphqlController))
   val connectController = AuthRoute(LoggedIn, { c =>
     val messageFlow = MessageTopologyBuilder(RedisModule.RedisSocketAddr, c.auth).build
     handleWebSocketMessages(messageFlow)(c.request)
   })
 
-  val port = HerokuModule.Port
+  val port = CloudModule.Port
   val route = logRequestResult("monarchy-web") {
     pathSingleSlash(statusController) ~
-      path("healthz")(statusController) ~
       path("admin")(adminController) ~
+      path("connect")(connectController) ~
       path("graphql")(graphqlController) ~
-      path("connect")(connectController)
+      path("healthz")(statusController) ~
+      path("oauth2" / "discord" / "authorize")(public(DiscordAuthorizeController)) ~
+      path("oauth2" / "discord" / "exchange")(public(DiscordExchangeController))
   }
   val routeLogged = LoggingModule.log(route)
-  val routeBindings = Http().bindAndHandle(routeLogged, HerokuModule.Host, port)
+  val routeBindings = Http().bindAndHandle(routeLogged, CloudModule.Host, port)
 
   println(s"[monarchy-web] online at port=$port")
 }

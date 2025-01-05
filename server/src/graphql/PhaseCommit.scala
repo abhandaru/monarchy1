@@ -90,7 +90,7 @@ case class PhaseCommit(
       }
     } yield pc.sum + gc
     // Just ensure the returned number of rows is non-zero for now.
-    queryCli.read(dbio).map(_ > 0)
+    queryCli.write(dbio).map(_ > 0)
   }
 
   private def persistRedis(ctx: CommitContext): Future[Selection] = {
