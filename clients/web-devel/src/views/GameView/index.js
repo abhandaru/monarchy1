@@ -25,7 +25,7 @@ const GameView = (props) => {
       <div className={styles.root}>
         {game ?
           <>
-            <Summary selections={game.state.currentSelection} />
+            <Summary game={game} />
             <PhasesView gameId={gameId} className={styles.phase} />
             <Board
               gameId={game.id}

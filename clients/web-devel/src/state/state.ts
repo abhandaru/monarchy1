@@ -13,6 +13,7 @@ type Matchmaking = {
 
 export type Player = {
   id: string;
+  status: string;
   user: Types.User;
 };
 
@@ -27,9 +28,18 @@ export type GameSelections = {
   effects: {point: Types.Vec}[];
 };
 
+export type Game = {
+  id: string;
+  status: string;
+  players: Player[];
+  state: {
+    currentSelection: GameSelections;
+  };
+};
+
 type Games = {
   recent: any[];
-  game: any;
+  game: Game;
   gameSelections: GameSelections;
 };
 

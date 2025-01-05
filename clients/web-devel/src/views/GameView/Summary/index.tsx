@@ -5,27 +5,52 @@ import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 // @ts-ignore
 import styles from './index.css';
-import useCurrentPlayer from '~/state-hooks/useCurrentPlayer';
+import useMyPlayer from '~/state-hooks/useMyPlayer';
 import useMyTurn from '~/state-hooks/useMyTurn';
-import { GameSelections } from '~/state/state';
+import { Game, Player } from '~/state/state';
 
 type Props = {
-  selections: GameSelections;
+  game: Game;
+};
+
+const GameStatus = (props: { status: string }) => {
+  const bg = props.status === 'COMPLETE' ? 'primary' : 'secondary';
+  return (
+    <Badge bg={bg} text='light' className={styles.gameStatus}>
+      {props.status}
+    </Badge>
+  );
+};
+
+const Player = (props: { player: Player }) => {
+  const { player } = props;
+  const myTurn = useMyTurn();
+  const myPlayer = useMyPlayer();
+
+  let statusEl = null;
+  if (player.status === 'WON') statusEl = <Badge bg='success' text='light'>won</Badge>;
+  else if (player.status === 'LOST') statusEl = <Badge bg='danger' text='light'>lost</Badge>;
+  else if (player.status === 'DRAWN') statusEl = <Badge bg='secondary' text='light'>drawn</Badge>;
+  else statusEl = (
+    <>
+      {player.id === myPlayer.id ? <Badge bg='primary' text='light'>you</Badge> : null}
+      {player.id === myPlayer.id && myTurn ? <Badge bg='success' text='light'>playing</Badge> : null}
+    </>
+  );
+
+  return (
+    <div className={styles.player} key={player.id}>
+      <div>{player.user.username}</div>
+      {statusEl}
+    </div>
+  );
 };
 
 const Summary = (props: Props) => {
-  const { selections } = props;
-  const currentPlayer = useCurrentPlayer();
-  const myTurn = useMyTurn();
+  const { game } = props;
+  const playerEls = game.players.map(player => <Player player={player} key={player.id} />);
 
-  const playerEl = currentPlayer ? (
-    <p>
-      {myTurn && <Badge bg='success' text='light'>Your move</Badge>}
-      {!myTurn && <Badge bg='light' text='dark'>Opponent turn</Badge>}
-    </p>
-  ) : null;
-
-  const { piece } = selections;
+  const { piece } = game.state.currentSelection;
   const pieceEl = piece ? (
     <Table striped bordered size='sm'>
       <tbody>
@@ -49,7 +74,10 @@ const Summary = (props: Props) => {
     <div className={styles.root}>
       <Card>
         <Card.Body>
-          {playerEl}
+          <GameStatus status={game.status} />
+          <div className={styles.players}>
+            {playerEls}
+          </div>
           {pieceEl}
         </Card.Body>
       </Card>

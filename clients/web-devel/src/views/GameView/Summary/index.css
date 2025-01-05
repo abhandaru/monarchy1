@@ -3,4 +3,28 @@
   align-self: flex-start;
   height: 0;
   overflow: visible;
+  z-index: 1000;
+}
+
+.players {
+  margin-bottom: 16px;
+  border: 1px solid #EEE;
+  border-radius: 4px;
+}
+
+.player {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+}
+
+.player > * {
+  margin-right: 8px;
+}
+
+.gameStatus {
+  text-transform: lowercase;
+  margin-bottom: 16px;
 }
