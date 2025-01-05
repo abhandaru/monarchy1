@@ -33,6 +33,7 @@ export type Game = {
   status: string;
   players: Player[];
   state: {
+    currentPlayerId: string;
     currentSelection: GameSelections;
   };
 };
