@@ -1,4 +1,4 @@
-# Backend Architecture
+# Backend architecture
 
 `monarchy-api` is a JVM application written in Scala 2.13. It exposes a GraphQL
 API over HTTP and support websocket connections.
