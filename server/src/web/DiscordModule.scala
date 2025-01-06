@@ -19,11 +19,11 @@ object DiscordModule {
     sys.env.getOrElse("DISCORD_REDIRECT_URL", "http://localhost:8080/oauth2/discord/exchange")
 
   private object Config extends Oauth2.Config(
-    baseUrl = "https://discord.com/api/oauth2",
+    baseUrl = "https://discord.com/api/v10/oauth2",
     clientId = clientId,
     clientSecret = clientSecret,
     redirectUri = redirectUrl,
-    scopes = Set("identify", "openid") // consider also: "email", "guilds"
+    scopes = Set("identify", "email", "openid") // consider also: "guilds"
   )
 
   def exchangeClient(
