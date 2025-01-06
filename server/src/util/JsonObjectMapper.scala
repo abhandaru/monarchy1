@@ -23,6 +23,9 @@ class JsonObjectMapper extends ObjectMapper with ScalaObjectMapper {
   configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
   configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false)
 
+  // Omit null values from serialization
+  setSerializationInclusion(Include.NON_NULL)
+  
   // Do not fail when serializing Scala.Unit to json
   configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
 

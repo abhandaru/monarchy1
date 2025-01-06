@@ -16,16 +16,23 @@ object DiscordModule {
     sys.env.getOrElse("DISCORD_CLIENT_SECRET", "drUn5j62dtzSUuJDEf__mK6-3-e3IZaj")
 
   private def redirectUrl: String =
-    sys.env.getOrElse("DISCORD_REDIRECT_URL", "http://localhost:8080/oauth2/discord/callback")
+    sys.env.getOrElse("DISCORD_REDIRECT_URL", "http://localhost:8080/oauth2/discord/exchange")
 
-  def oauth2Client(
+  private object Config extends Oauth2.Config(
+    baseUrl = "https://discord.com/api/oauth2",
+    clientId = clientId,
+    clientSecret = clientSecret,
+    redirectUri = redirectUrl,
+    scopes = Set("identify", "openid") // consider also: "email", "guilds"
+  )
+
+  def exchangeClient(
       implicit
       system: ActorSystem,
       mat: ActorMaterializer,
       ec: ExecutionContext
-  ): OAuth2Client = {
+  ): ExchangeClient = {
     implicit val httpCli = new HttpClient
-    // OAuth2Client(clientId, clientSecret)
-    ???
+    new ExchangeClient(Config)
   }
 }

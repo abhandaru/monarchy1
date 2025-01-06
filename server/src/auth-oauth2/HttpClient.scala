@@ -19,7 +19,7 @@ class HttpClient(
   import HttpClient._
   private val http = Http()
 
-  def apply(request: Request): Future[HttpResponse] = {
+  def apply(request: Request): Future[Response] = {
     val fetch = http.singleRequest(HttpRequest(
       method = request.method,
       uri = request.url,
@@ -66,7 +66,7 @@ object HttpClient {
       core.status
 
     def as[A: TypeTag]: Try[A] =
-      Json.tryParse[A](body)
+      Json.parseAttempt[A](body)
   }
 
   // For now just filter out the invalid headers.
@@ -78,11 +78,13 @@ object HttpClient {
   }
 
   // Add more special cases as needed.
-  private def formatBody(req: Request): Option[HttpEntity] = {
-    req.body.map {
-      case e: HttpEntity.Strict => e
-      case s: String => HttpEntity(ContentTypes.`application/json`, s)
-      case ref => HttpEntity(ContentTypes.`application/json`, Json.stringify(ref))
+  private def formatBody(req: Request): RequestEntity = {
+    req.body match {
+      case Some(e: HttpEntity.Strict) => e
+      case Some(s: String) => HttpEntity(ContentTypes.`application/json`, s)
+      case Some(d: FormData) => d.toEntity
+      case Some(ref) => HttpEntity(ContentTypes.`application/json`, Json.stringify(ref))
+      case None => HttpEntity.Empty
     }
   }
 }

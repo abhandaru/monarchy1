@@ -5,9 +5,10 @@ scala_library(
   srcs=glob(['*.scala']),
   visibility=['//visibility:public'],
   deps=[
-    '@maven//:io_jsonwebtoken_jjwt_api',
-    '@maven//:io_jsonwebtoken_jjwt_impl',
-    '@maven//:io_jsonwebtoken_jjwt_jackson',
+    '@maven//:com_typesafe_akka_akka_actor_2_13',
+    '@maven//:com_typesafe_akka_akka_http_core_2_13',
+    '@maven//:com_typesafe_akka_akka_parsing_2_13',
+    '@maven//:com_typesafe_akka_akka_stream_2_13',
     '//server/src/util',
   ]
 )

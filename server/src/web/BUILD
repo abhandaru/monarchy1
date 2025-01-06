@@ -14,6 +14,7 @@ scala_binary(
     '@maven//:com_github_etaty_rediscala_2_13',
     '@maven//:org_reactivestreams_reactive_streams',
     '//server/src/auth',
+    '//server/src/auth-oauth2',
     '//server/src/controllers',
     '//server/src/dal',
     '//server/src/graphql',

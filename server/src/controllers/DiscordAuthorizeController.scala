@@ -1,16 +1,20 @@
 package monarchy.controllers
 
-import scala.concurrent.Future
 import akka.http.scaladsl.model._
+import monarchy.auth.oauth2.ExchangeClient
+import monarchy.util.Json
+import scala.concurrent.{ExecutionContext, Future}
 
-object DiscordAuthorizeController extends PostController[String] {
-  def action(ctx: AuthContext, t: String): Future[HttpResponse] = {
-    Future.successful(HttpResponse(StatusCodes.OK))
-  }
-}
+class DiscordAuthorizeController(implicit
+    ec: ExecutionContext,
+    exchangeCli: ExchangeClient
+) extends GetController {
+  import DiscordExchangeController._
 
-object DiscordExchangeController extends PostController[String] {
-  def action(ctx: AuthContext, t: String): Future[HttpResponse] = {
-    Future.successful(HttpResponse(StatusCodes.OK))
+  def action(ctx: AuthContext): Future[HttpResponse] = {
+    val stateJson = Json.stringify(State(referrerUrl = "http://localhost:8081"))
+    exchangeCli.fetchAuthorizeUrl(stateJson).map { url =>
+      HttpResponse(StatusCodes.TemporaryRedirect, headers = List(headers.Location(url)))
+    }
   }
 }

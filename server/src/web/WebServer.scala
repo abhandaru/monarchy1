@@ -4,9 +4,10 @@ import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.{Directives, Route}
 import akka.stream.ActorMaterializer
 import monarchy.auth.AuthFilter
+import monarchy.auth.oauth2.ExchangeClient
 import monarchy.controllers._
 import monarchy.dal.QueryClient
 import monarchy.graphql.GraphqlContext
@@ -25,11 +26,14 @@ object WebServer extends App {
   implicit val graphqlContext: GraphqlContext = GraphqlModule.graphqlContext
   implicit val axnRendererProxy: ActionRendererProxy = StreamingModule.actionRendererProxy
   implicit val clientAxnProxy: ClientActionProxy = StreamingModule.clientActionProxy
+  implicit val exchangeCli: ExchangeClient = DiscordModule.exchangeClient
 
   // Request handlers
   import AuthFilter._
+  import Directives._
 
-  def public(c: AuthController): Route = AuthRoute(All, c)
+  def public(c: AuthController): Route =
+    AuthRoute(All, c)
 
   // val statusController = new StatusController
   val statusController = public(new StatusController)
@@ -47,8 +51,8 @@ object WebServer extends App {
       path("connect")(connectController) ~
       path("graphql")(graphqlController) ~
       path("healthz")(statusController) ~
-      path("oauth2" / "discord" / "authorize")(public(DiscordAuthorizeController)) ~
-      path("oauth2" / "discord" / "exchange")(public(DiscordExchangeController))
+      path("oauth2" / "discord" / "authorize")(public(new DiscordAuthorizeController)) ~
+      path("oauth2" / "discord" / "exchange")(public(new DiscordExchangeController))
   }
   val routeLogged = LoggingModule.log(route)
   val routeBindings = Http().bindAndHandle(routeLogged, CloudModule.Host, port)
