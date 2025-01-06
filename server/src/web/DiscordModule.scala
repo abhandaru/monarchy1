@@ -1,8 +1,9 @@
 package monarchy.web
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import monarchy.auth.oauth2._
+import monarchy.dal.QueryClient
+import monarchy.users.DiscordFlow
+import monarchy.util.http.HttpClient
 import scala.concurrent.ExecutionContext
 
 object DiscordModule {
@@ -26,13 +27,14 @@ object DiscordModule {
     scopes = Set("identify", "email", "openid") // consider also: "guilds"
   )
 
-  def exchangeClient(
-      implicit
-      system: ActorSystem,
-      mat: ActorMaterializer,
+  def exchangeClient(implicit
+      httpCli: HttpClient,
       ec: ExecutionContext
-  ): ExchangeClient = {
-    implicit val httpCli = new HttpClient
-    new ExchangeClient(Config)
-  }
+  ): ExchangeClient = new ExchangeClient(Config)
+
+  def discordFlow(implicit
+      httpCli: HttpClient,
+      queryCli: QueryClient,
+      ec: ExecutionContext
+  ): DiscordFlow = new DiscordFlow
 }

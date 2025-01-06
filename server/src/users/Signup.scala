@@ -1,45 +1,55 @@
-package monarchy.graphql
+package monarchy.users
 
 import java.util.UUID
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import monarchy.auth.AuthTooling
 import monarchy.dal
 import monarchy.dalwrite.WriteQueryBuilder
 import monarchy.util.Async
 
-object SignupResolver extends Resolver[Unit, AuthResult] {
+class Signup(implicit
+    ec: ExecutionContext,
+    queryCli: dal.QueryClient
+) {
   import dal.PostgresProfile.Implicits._
+  import Signup._
+  import Flow._
 
-  override def apply(in: In): Out = {
-    import in.ctx._
-    val args = in.arg(GqlArgs.Signup)
-    val e164 = args.e164.trim
-    val username = args.username.trim
-    if (!validE164(e164)) Future.failed(Exceptions.BadArgs("invalid e164"))
-    else if (!validUsername(username)) Future.failed(Exceptions.BadArgs("invalid username"))
+  def apply(ctx: Context): Future[Result] = {
+    val email = ctx.email.trim
+    val username = ctx.username.trim
+    if (!validEmail(email)) Future.successful(Result.Error("invalid email"))
+    else if (!validUsername(username)) Future.successful(Result.Error("invalid username"))
     else {
       val existingUsername = queryCli.count(dal.User.query.filter(_.username === username)).map(_ > 0)
-      val existingE164 = queryCli.count(dal.User.query.filter(_.phoneNumber === e164)).map(_ > 0)
-      Async.join(existingUsername, existingE164).flatMap {
-        case (true, _) => Future.failed(Exceptions.BadArgs("username in use"))
-        case (_, true) => Future.failed(Exceptions.BadArgs("e164 in use"))
+      val existingEmail = queryCli.count(dal.User.query.filter(_.email === email)).map(_ > 0)
+      Async.join(existingUsername, existingEmail).flatMap {
+        case (true, _) => Future.successful(Result.Error("username in use"))
+        case (_, true) => Future.successful(Result.Error("email in use"))
         case _ =>
           val secret = AuthTooling.generateSecret
-          val user = dal.User(phoneNumber = e164, username = username, secret = secret)
+          val user = dal.User(email = email, username = username, secret = secret)
           val dbio = for {
             userWr <- WriteQueryBuilder.put(user)
             profileWr <- WriteQueryBuilder.put(mkProfile(userWr.id))
           } yield userWr
           queryCli.write(dbio).map { u =>
             val bearer = AuthTooling.generateSignature(u.id, secret)
-            AuthResult(Some(u), Some(bearer))
+            Result.Signup(Credentials(u, bearer))
           }
       }
     }
   }
+}
 
-  private def validE164(e164: String): Boolean =
-    e164.matches("^\\+[1-9]\\d{1,14}$")
+object Signup {
+  case class Context(
+      username: String,
+      email: String,
+  )
+
+  private def validEmail(email: String): Boolean =
+    email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
 
   private def validUsername(username: String): Boolean =
     username.matches("^[a-zA-Z0-9_]{3,20}$")

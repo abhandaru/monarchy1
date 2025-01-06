@@ -36,9 +36,11 @@ object DiscordAuthorizeController {
   case class CallerContext(referrerUrl: String, embedded: Boolean)
 
   private def mkCallerContext(query: Uri.Query): CallerContext = {
-    val referrerDefaultUrl = if (isLocal) "http://localhost:8081" else "https://monarchy1.com"
-    val referrerUrl = query.getOrElse("referrerUrl", "https")
+    val referrerUrl = query.getOrElse("referrerUrl", mkBaseUrl)
     val embedded = query.get("embedded").nonEmpty
     CallerContext(referrerUrl = referrerUrl, embedded = embedded)
   }
+
+  private[controllers] def mkBaseUrl: String =
+    if (isLocal) "http://localhost:8081" else "https://monarchy1.com"
 }

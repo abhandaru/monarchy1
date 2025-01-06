@@ -1,4 +1,4 @@
-package monarchy.auth.oauth2
+package monarchy.util.http
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -9,7 +9,6 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.runtime.universe.TypeTag
 import scala.util.Try
 
-// TODO (adu): Hoist this out.
 class HttpClient(
     implicit
     system: ActorSystem,

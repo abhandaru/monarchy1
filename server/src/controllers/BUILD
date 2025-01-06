@@ -17,6 +17,7 @@ scala_library(
     '//server/src/auth-oauth2',
     '//server/src/dal',
     '//server/src/graphql',
+    '//server/src/users',
     '//server/src/util',
   ]
 )
