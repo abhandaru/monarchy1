@@ -15,13 +15,14 @@ CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
   secret TEXT NOT NULL,
   username TEXT NOT NULL,
-  phone_number TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone_number TEXT,
   rating INTEGER DEFAULT 1000 NOT NULL,
   membership SMALLINT DEFAULT 1 NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   UNIQUE(username),
-  UNIQUE(phone_number)
+  UNIQUE(email)
 );
 
 CREATE TRIGGER updated_at

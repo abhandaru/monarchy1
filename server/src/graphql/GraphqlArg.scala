@@ -15,9 +15,6 @@ abstract class GraphqlArg[T: TypeTag] {
   }
 }
 
-case class SignupQuery(e164: String, username: String, otp: String)
-object SignupQuery extends GraphqlArg[SignupQuery]
-
 case class LoginStartQuery(phoneNumber: String)
 object LoginStartQuery extends GraphqlArg[LoginStartQuery]
 
@@ -54,7 +51,6 @@ object GqlArgs {
 
   // Argument types
   val Id = Argument("id", StringType, description = "ID of this entity.")
-  val Signup = Argument("q", deriveInput[SignupQuery](), description = "Signup query")
   val LoginStart = Argument("q", deriveInput[LoginStartQuery](), description = "Query to initiate auth request")
   val Login = Argument("q", deriveInput[LoginQuery](), description = "Query to verify login credentials")
   val Games = Argument("q", deriveInput[GamesQuery](), description = "Query for games matching the criteria")

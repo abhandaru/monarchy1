@@ -14,6 +14,8 @@ import monarchy.graphql.GraphqlContext
 import monarchy.streaming.format.ActionRendererProxy
 import monarchy.streaming.process.ClientActionProxy
 import monarchy.streaming.topology.MessageTopologyBuilder
+import monarchy.users.DiscordFlow
+import monarchy.util.http.HttpClient
 import redis.RedisClient
 import scala.concurrent.ExecutionContext
 
@@ -26,7 +28,9 @@ object WebServer extends App {
   implicit val graphqlContext: GraphqlContext = GraphqlModule.graphqlContext
   implicit val axnRendererProxy: ActionRendererProxy = StreamingModule.actionRendererProxy
   implicit val clientAxnProxy: ClientActionProxy = StreamingModule.clientActionProxy
+  implicit val httpCli: HttpClient = new HttpClient
   implicit val exchangeCli: ExchangeClient = DiscordModule.exchangeClient
+  implicit val discordFlow: DiscordFlow = DiscordModule.discordFlow
 
   // Request handlers
   import AuthFilter._
