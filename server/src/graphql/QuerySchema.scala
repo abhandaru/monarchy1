@@ -1,6 +1,7 @@
 package monarchy.graphql
 
 import java.util.UUID
+import monarchy.auth.Authenticated
 import monarchy.dal
 import monarchy.game
 import monarchy.marshalling.game.GameStringDeserializer
@@ -14,6 +15,14 @@ object QuerySchema {
   lazy val Def = ObjectType(
     "Query",
     fields[GraphqlContext, Unit](
+      Field("self", UserType,
+        resolve = { node =>
+          node.ctx.auth match {
+            case Authenticated(user) => user
+            case _ => throw new Exceptions.Unauthorized("Not authenticated")
+          }
+        }
+      ),
       Field("user", OptionType(UserType),
         arguments = List(GqlArgs.Id),
         resolve = { node =>

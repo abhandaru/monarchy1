@@ -1,3 +1,23 @@
 .login {
   margin: 20px 30px;
 }
+
+.discord {
+  background-color: #5865F2;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.discord:hover {
+  background-color: #5865F2;
+  color: white;
+  text-decoration: none;
+}

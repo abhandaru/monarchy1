@@ -2,7 +2,7 @@ package monarchy.users
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
-import monarchy.auth.AuthTooling
+import monarchy.auth.Tooling
 import monarchy.dal
 import monarchy.dalwrite.WriteQueryBuilder
 import monarchy.util.Async
@@ -27,14 +27,14 @@ class Signup(implicit
         case (true, _) => Future.successful(Result.Error("username in use"))
         case (_, true) => Future.successful(Result.Error("email in use"))
         case _ =>
-          val secret = AuthTooling.generateSecret
+          val secret = Tooling.generateSecret
           val user = dal.User(email = email, username = username, secret = secret)
           val dbio = for {
             userWr <- WriteQueryBuilder.put(user)
             profileWr <- WriteQueryBuilder.put(mkProfile(userWr.id))
           } yield userWr
           queryCli.write(dbio).map { u =>
-            val bearer = AuthTooling.generateSignature(u.id, secret)
+            val bearer = Tooling.generateSignature(u.id, secret)
             Result.Signup(Credentials(u, bearer))
           }
       }

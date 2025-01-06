@@ -57,7 +57,6 @@ case class AuthRoute[T](filter: AuthFilter, controller: AuthController)(implicit
 
 object AuthRoute {
   val AuthorizationKey = "Authorization"
-  val IdKey = "X-M1-User-Id"
   val Reject = HttpResponse(StatusCodes.Unauthorized)
 
   private def headers(hs: Seq[HttpHeader]): Option[(UUID, String)] =
@@ -68,10 +67,10 @@ object AuthRoute {
 
   private def extract(props: Map[String, String]): Option[(UUID, String)] = {
     for {
-      rawUserId <- props.get(IdKey)
-      userId <- Try(UUID.fromString(rawUserId)).toOption
-      bearerToken <- props.get(AuthorizationKey)
-    } yield (userId, bearerToken.stripPrefix("Bearer "))
+      authorization <- props.get(AuthorizationKey)
+      bearer = authorization.stripPrefix("Bearer ")
+      userId <- Untrusted.extractUserId(bearer).toOption
+    } yield (userId, bearer)
   }
 
   private def normalize(raw: String): String =

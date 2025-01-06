@@ -6,3 +6,4 @@ bazel-*
 .metals
 .env
 .env.local
+MODULE.bazel*

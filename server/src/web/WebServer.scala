@@ -36,14 +36,15 @@ object WebServer extends App {
   import AuthFilter._
   import Directives._
 
-  def public(c: AuthController): Route =
-    AuthRoute(All, c)
+  // Route decorators
+  def public(c: AuthController): Route = AuthRoute(All, c)
+  def loggedIn(c: AuthController): Route = AuthRoute(LoggedIn, c)
 
-  // val statusController = new StatusController
+  // Routes
   val statusController = public(new StatusController)
   val adminController = AuthRoute(Admin, new AdminController)
-  val graphqlController = CorsModule.corsHandler(public(new GraphqlController))
-  val connectController = AuthRoute(LoggedIn, { c =>
+  val graphqlController = CorsModule.corsHandler(loggedIn(new GraphqlController))
+  val connectController = loggedIn({ c =>
     val messageFlow = MessageTopologyBuilder(RedisModule.RedisSocketAddr, c.auth).build
     handleWebSocketMessages(messageFlow)(c.request)
   })

@@ -1,45 +1,24 @@
 import Cookies from 'js-cookie';
 import * as Types from '~/util/types';
+
 export type Auth = {
   loggedIn: boolean;
-  userId: string;
-  user: Types.User;
-  bearerToken: string;
+  userId: null | string;
+  user: null | Types.User;
 };
 
-const AuthorizationKey = 'Authorization';
-const UserKey = 'X-M1-User-Id';
 const UserDataKey = 'X-M1-User-Data';
 
 export const poll = (): Auth => {
-  const userId = Cookies.get(UserKey);
-  const bearerToken = Cookies.get(AuthorizationKey);
   const user = JSON.parse(Cookies.get(UserDataKey) || 'null');
   return {
-    loggedIn: Boolean(userId),
-    userId,
+    loggedIn: Boolean(user?.id),
+    userId: user?.id,
     user,
-    bearerToken
   }
 };
 
-export const headers = () => {
-  const { userId, bearerToken } = poll();
-  return {
-    [UserKey]: userId,
-    [AuthorizationKey]: bearerToken
-  };
-};
-
 export const apply = (auth: Auth) => {
-  const { userId, user, bearerToken } = auth;
-  userId && Cookies.set(UserKey, userId);
+  const { user } = auth;
   user && Cookies.set(UserDataKey, JSON.stringify(user));
-  bearerToken && Cookies.set(AuthorizationKey, bearerToken);
-};
-
-export default {
-  poll,
-  headers,
-  apply
 };
