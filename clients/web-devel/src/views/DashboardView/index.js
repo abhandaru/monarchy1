@@ -4,7 +4,6 @@ import GamesView from '~/views/GamesView';
 import MatchmakingView from '~/views/MatchmakingView';
 import NavigationView from '~/components/layout/NavigationView';
 import styles from './index.css';
-import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 
 const DashboardView = (props) => {

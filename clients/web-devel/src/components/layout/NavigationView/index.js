@@ -11,7 +11,7 @@ const NavigationView = (props) => {
       <Navbar.Brand href='/'>Monarchy</Navbar.Brand>
       <Navbar.Collapse>
         <Nav className='mr-auto'>
-          <Link to='/performance'>Match performance</Link>
+          <Link to='/matches'>Matches</Link>
         </Nav>
         <ConnectionView />
         <ProfileView />

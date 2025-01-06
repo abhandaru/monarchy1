@@ -10,15 +10,33 @@ import { gamesSetRecent } from '~/state/actions';
 import { State } from '~/state/state';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+
+const GameStatus = (props: { status: string, playerStatus: null | string }) => {
+  const { status, playerStatus } = props;
+  const statusText = status.toLowerCase();
+
+  let colors = ['dark', 'light'];
+  if (playerStatus === 'WON') colors = ['light', 'success', playerStatus];
+  else if (playerStatus === 'LOST') colors = ['light', 'danger', playerStatus];
+  else if (playerStatus === 'DRAW') colors = ['light', 'secondary', playerStatus];
+  else if (status === 'STARTED') colors = ['light', 'primary', status];
+  else if (status === 'COMPLETED') colors = ['light', 'success', status];
+
+  const [color, bg, text] = colors;
+  const textFormatted = text.toLowerCase();
+  // @ts-ignore
+  return <Badge bg={bg} text={color}>{textFormatted}</Badge>;
+};
+
 const GameRow = (props) => {
   const { viewerId, game, onView } = props;
   const { id, status, players } = game;
   const onViewClick = React.useCallback(() => onView(id), [id, onView]);
   // Property formatting
+  const self = players.find(_ => _.user.id == viewerId);
   const opponent = players.filter(_ => _.user.id != viewerId)[0];
   const opponentName = opponent ? opponent.user.username : '–';
   const opponentRating = opponent ? opponent.user.rating : '–';
-  const statusBg = status == 'Started' ? 'success' : 'secondary';
   return (
     <tr>
       <td className={styles.opponentCell}>
@@ -28,7 +46,7 @@ const GameRow = (props) => {
         </div>
       </td>
       <td>
-        <Badge bg={statusBg} text='light'>{status}</Badge>
+        <GameStatus status={status} playerStatus={self?.status} />
       </td>
     </tr>
   );
@@ -66,14 +84,13 @@ const GamesView = (props) => {
   const dispatch = useDispatch();
   const userId = useSelector<State, string>(_ => _.auth.userId);
   const recent = useSelector<State, State['games']['recent']>(_ => _.games.recent);
-  const active = recent.filter(_ => _.status === 'Started');
   // onComponentDidMount, load data
   React.useEffect(() => {
     const query = { userId };
     fetchGames(query).then(_ => dispatch(gamesSetRecent(_.data.games)))
   }, []);
   // Conditionally render games, if any.
-  return active.length > 0 ? <GamesTable viewerId={userId} games={active} /> : null;
+  return recent.length > 0 ? <GamesTable viewerId={userId} games={recent} /> : null;
 };
 
 export default GamesView;
