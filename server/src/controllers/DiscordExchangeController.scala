@@ -77,7 +77,7 @@ class DiscordExchangeController(implicit
       // For non-embedded clients, redirect to the referrer URL with a cookie.
       case Some((creds, url)) =>
         val location = headers.Location(url)
-        val auth = mkAuthHeader(token.accessToken, token.expiresIn)
+        val auth = mkAuthHeader(creds.bearer, creds.ttl.toSeconds)
         HttpResponse(StatusCodes.TemporaryRedirect, headers = List(location, auth))
     }
   }
@@ -96,11 +96,11 @@ object DiscordExchangeController {
     s"$mkBaseUrl/profile"
 
   // Sets a cookie
-  private def mkAuthHeader(jwt: String, ttl: Int): HttpHeader = {
+  private def mkAuthHeader(bearer: String, ttl: Long): HttpHeader = {
     headers.`Set-Cookie`(headers.HttpCookie(
       name = "Authorization",
-      value = URLEncoder.encode(s"Bearer $jwt", "UTF-8"),
-      maxAge = Some(ttl),
+      value = URLEncoder.encode(s"Bearer $bearer", "UTF-8"),
+      maxAge = Some(ttl.toInt),
       path = Some("/"),
       secure = !isLocal,
       httpOnly = true

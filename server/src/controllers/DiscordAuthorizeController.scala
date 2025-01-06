@@ -23,7 +23,7 @@ class DiscordAuthorizeController(implicit
 
 object DiscordAuthorizeController {
   private[controllers] def isLocal: Boolean =
-    sys.env.get("ENV").nonEmpty
+    sys.env.get("ENV").forall(_ == "local")
 
   /**
    * A caller context defines under what conditions the authorization flow is
@@ -36,7 +36,7 @@ object DiscordAuthorizeController {
   case class CallerContext(referrerUrl: String, embedded: Boolean)
 
   private def mkCallerContext(query: Uri.Query): CallerContext = {
-    val referrerUrl = query.getOrElse("referrerUrl", mkBaseUrl)
+    val referrerUrl = query.getOrElse("referrer", mkBaseUrl)
     val embedded = query.get("embedded").nonEmpty
     CallerContext(referrerUrl = referrerUrl, embedded = embedded)
   }

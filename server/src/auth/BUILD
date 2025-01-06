@@ -9,6 +9,8 @@ scala_library(
     '@maven//:io_jsonwebtoken_jjwt_impl',
     '@maven//:io_jsonwebtoken_jjwt_jackson',
     '//server/src/dal',
+    '//server/src/util',
   ]
 )
+
 

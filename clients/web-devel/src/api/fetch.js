@@ -1,10 +1,9 @@
 import { print } from 'graphql/language/printer';
-import Auth from './auth';
+import { host } from '~/util/host';
 
-const graphqlRoute = 'http://localhost:8080/graphql';
+const graphqlRoute = `${host}/graphql`;
 
 const fetchGql = (graphqlAst) => {
-  const { userId, bearerToken } = Auth.poll();
   const definition = graphqlAst.definitions[0];
   const operationName = definition.name.value;
   const query = print(graphqlAst);
@@ -14,7 +13,6 @@ const fetchGql = (graphqlAst) => {
       method: 'POST',
       mode: 'cors',
       headers: {
-        ...Auth.headers(),
         'Content-Type': 'application/json'
       },
       credentials: 'include',

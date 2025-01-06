@@ -1,6 +1,6 @@
 import * as ActionTypes from './types';
+import * as Auth from '~/api/auth';
 import * as Types from '~/util/types';
-import Auth from '~/api/auth';
 import streamProxy from '~/api/streamProxy';
 import fetchEffects from '~/api/fetchEffects';
 import fetchGame from '~/api/fetchGame';
@@ -15,7 +15,7 @@ const createAction = <T>(type: string, payload?: T) => ({ type, payload });
 const clockAt = () => (new Date).getTime();
 
 // Actions below
-export const authSet = (auth) => {
+export const authSet = (auth: Auth.Auth) => {
   Auth.apply(auth);
   return createAction(ActionTypes.AUTH_SET, auth);
 };

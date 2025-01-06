@@ -1,3 +1,4 @@
+import AuthConnection from './AuthConnection';
 import GameView from '~/views/GameView';
 import importedComponent from 'react-imported-component';
 import LandingView from '~/views/LandingView';
@@ -6,8 +7,8 @@ import React from 'react';
 import StreamConnection from './StreamConnection';
 import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 
-const PerformanceView = importedComponent(
-  () => import(/* webpackChunkName:'PerformanceView' */ '../views/PerformanceView'),
+const MatchesView = importedComponent(
+  () => import(/* webpackChunkName:'MatchesView' */ '../views/MatchesView'),
   { LoadingComponent: Loading }
 );
 
@@ -20,10 +21,11 @@ const App = () => {
   return (
     <Router>
       <>
-        <StreamConnection />
+      <AuthConnection />
+      <StreamConnection />
         <Switch>
           <Route exact path="/" component={LandingView} />
-          <Route exact path="/performance" component={PerformanceView} />
+          <Route exact path="/matches" component={MatchesView} />
           <Route path="/games/:gameId" component={GameView} />
           <Route component={NotFound} />
         </Switch>

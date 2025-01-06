@@ -77,7 +77,6 @@ object ExchangeClient {
 
   private def mkTokenData(data: Oauth2.Token.Request): FormData = {
     val map = Json.parse[Map[String, String]](Json.stringify(data))
-    println(s"map: $map")
     FormData(map)
   }
 }

@@ -14,7 +14,7 @@ import scala.concurrent.duration._
   * and https://ali.actor
   */
 object CorsModule {
-  val AllowHeaders = List("Content-Type", AuthRoute.AuthorizationKey, AuthRoute.IdKey)
+  val AllowHeaders = List("Content-Type", AuthRoute.AuthorizationKey)
   val AllowOrigins = HttpOriginRange(HttpOrigin("http://localhost:8081"))
 
   val ResponseHeaders = List(

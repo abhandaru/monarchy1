@@ -2,7 +2,7 @@ package monarchy.users
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
-import monarchy.auth.AuthTooling
+import monarchy.auth.Tooling
 import monarchy.dal
 import monarchy.util.http.{HttpClient, UrlBuilder}
 
@@ -28,7 +28,7 @@ class DiscordFlow(implicit
   }
 
   private def handleLogin(user: dal.User): Future[Flow.Result] = {
-    val bearer = AuthTooling.generateSignature(user.id, user.secret)
+    val bearer = Tooling.generateSignature(user.id, user.secret)
     val result = Flow.Result.LoggedIn(Flow.Credentials(user, bearer))
     Future.successful(result)
   }

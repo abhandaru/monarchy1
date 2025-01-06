@@ -4,7 +4,7 @@ import java.util.{Base64, UUID}
 import io.jsonwebtoken.impl.crypto.MacProvider
 import io.jsonwebtoken.{Jwts, SignatureAlgorithm}
 
-object AuthTooling {
+object Tooling {
   def generateSecret: String =
     Base64.getEncoder.encodeToString(MacProvider.generateKey.getEncoded)
 
