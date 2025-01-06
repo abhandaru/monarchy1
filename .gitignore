@@ -4,3 +4,5 @@ bazel-*
 .ijwb
 .vscode
 .metals
+.env
+.env.local
