@@ -7,6 +7,11 @@ import React from 'react';
 import StreamConnection from './StreamConnection';
 import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 
+const ProfileView = importedComponent(
+  () => import(/* webpackChunkName:'MatchesView' */ '../views/ProfileView'),
+  { LoadingComponent: Loading }
+);
+
 const MatchesView = importedComponent(
   () => import(/* webpackChunkName:'MatchesView' */ '../views/MatchesView'),
   { LoadingComponent: Loading }
@@ -25,6 +30,7 @@ const App = () => {
       <StreamConnection />
         <Switch>
           <Route exact path="/" component={LandingView} />
+          <Route exact path="/profile" component={ProfileView} />
           <Route exact path="/matches" component={MatchesView} />
           <Route path="/games/:gameId" component={GameView} />
           <Route component={NotFound} />

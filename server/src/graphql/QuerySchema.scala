@@ -109,6 +109,7 @@ object QuerySchema {
     fields[GraphqlContext, dal.Game](
       Field("id", StringType, resolve = _.value.id.toString),
       Field("status", GameStatusType, resolve = _.value.status),
+      Field("createdAt", StringType, resolve = _.value.createdAt.toString),
       Field("players", ListType(PlayerType), resolve = { node =>
         import dal.PostgresProfile.Implicits._
         val gameId = node.value.id
