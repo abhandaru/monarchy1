@@ -1,8 +1,11 @@
 import * as frags from '~/api/fragments';
+import * as Types from '~/util/types';
 import fetch from '~/api/fetch';
 import gql from 'graphql-tag';
 
-export default function fetchGames(q) {
+type Result = { games: Types.Game[] };
+
+export default function fetchGames(q): Promise<Types.GqlFetch<Result>> {
   return fetch(query)({ q });
 }
 
@@ -13,6 +16,8 @@ const query = gql`
       status
       players {
         status
+        rating
+        ratingDelta
         user {
           ${frags.User}
         }

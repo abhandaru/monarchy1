@@ -36,12 +36,12 @@ const GameRow = (props) => {
   const self = players.find(_ => _.user.id == viewerId);
   const opponent = players.filter(_ => _.user.id != viewerId)[0];
   const opponentName = opponent ? opponent.user.username : '–';
-  const opponentRating = opponent ? opponent.user.rating : '–';
+  const opponentRating = opponent ? opponent.rating : '–';
   return (
     <tr>
       <td className={styles.opponentCell}>
         <div className={styles.opponent}>
-          <Compact user={opponent.user} rating />
+          <Compact user={opponent.user} rating={opponentRating} />
           <Button variant='outline-primary' size='sm' onClick={onViewClick}>View</Button>
         </div>
       </td>

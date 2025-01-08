@@ -11,12 +11,6 @@ type Matchmaking = {
   challenges: any[];
 };
 
-export type Player = {
-  id: string;
-  status: string;
-  user: Types.User;
-};
-
 export type GameSelections = {
   phase: string | null;
   phases: string[];
@@ -31,7 +25,7 @@ export type GameSelections = {
 export type Game = {
   id: string;
   status: string;
-  players: Player[];
+  players: Types.Player[];
   state: {
     currentPlayerId: string;
     currentSelection: GameSelections;

@@ -11,9 +11,12 @@ const query = gql`
     game(id: $id) {
       id
       status
+      createdAt
       players {
         id
         status
+        rating
+        ratingDelta
         user {
           ${frags.User}
         }

@@ -10,6 +10,9 @@ const NavigationView = (props) => {
     <Navbar bg='light' variant='light'>
       <Navbar.Brand href='/'>Monarchy</Navbar.Brand>
       <Navbar.Collapse>
+        <Nav style={{ marginRight: '16px' }}>
+          <Link to='/profile'>Profile</Link>
+        </Nav>
         <Nav className='mr-auto'>
           <Link to='/matches'>Matches</Link>
         </Nav>

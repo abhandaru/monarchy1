@@ -5,17 +5,18 @@ import * as Types from '~/util/types';
 
 type Props = {
   user: Types.User;
-  rating?: boolean;
+  rating?: boolean | number;
 };
 
 const Compact = (props: Props) => {
   const { user, rating } = props;
   const color = user.profile?.color ?? '#FFFFFF';
+  const ratingOverride = rating && (typeof rating === 'number' ? rating : user.rating);
   return (
     <div className={styles.compact}>
       <div className={styles.compactBadge} style={{ backgroundColor: color }} />
       <div>{user.username}</div>
-      {rating && <div className={styles.compactRating}>@ {user.rating}</div>}
+      {ratingOverride && <div className={styles.compactRating}>@ {ratingOverride}</div>}
     </div>
   );
 };

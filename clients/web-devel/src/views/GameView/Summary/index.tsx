@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import * as Types from '~/util/types';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
@@ -7,7 +7,7 @@ import Table from 'react-bootstrap/Table';
 import styles from './index.css';
 import useMyPlayer from '~/state-hooks/useMyPlayer';
 import useMyTurn from '~/state-hooks/useMyTurn';
-import { Game, Player } from '~/state/state';
+import { Game } from '~/state/state';
 
 type Props = {
   game: Game;
@@ -22,7 +22,7 @@ const GameStatus = (props: { status: string }) => {
   );
 };
 
-const Player = (props: { player: Player }) => {
+const Player = (props: { player: Types.Player }) => {
   const { player } = props;
   const myTurn = useMyTurn();
   const myPlayer = useMyPlayer();
