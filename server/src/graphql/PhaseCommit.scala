@@ -88,7 +88,13 @@ case class PhaseCommit(
             .update((playerStatus, ratingDelta))
         }
       }
-    } yield pc.sum + gc
+      uc <- DBIO.sequence {
+        ctx.players.map { p =>
+          val rating = ratings.get(PlayerId(p.id)).map(_.next).getOrElse(p.rating)
+          dal.User.query.filter(_.id === p.userId).map(_.rating).update(rating)
+        }
+      }
+    } yield pc.sum + gc + uc.sum + uc.sum
     // Just ensure the returned number of rows is non-zero for now.
     queryCli.write(dbio).map(_ > 0)
   }

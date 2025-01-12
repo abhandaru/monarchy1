@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Types from '~/util/types';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Compact from '~/components/user/Compact';
@@ -13,8 +14,6 @@ import { withRouter } from 'react-router-dom';
 
 const GameStatus = (props: { status: string, playerStatus: null | string }) => {
   const { status, playerStatus } = props;
-  const statusText = status.toLowerCase();
-
   let colors = ['dark', 'light'];
   if (playerStatus === 'WON') colors = ['light', 'success', playerStatus];
   else if (playerStatus === 'LOST') colors = ['light', 'danger', playerStatus];
@@ -33,15 +32,13 @@ const GameRow = (props) => {
   const { id, status, players } = game;
   const onViewClick = React.useCallback(() => onView(id), [id, onView]);
   // Property formatting
-  const self = players.find(_ => _.user.id == viewerId);
-  const opponent = players.filter(_ => _.user.id != viewerId)[0];
-  const opponentName = opponent ? opponent.user.username : '–';
-  const opponentRating = opponent ? opponent.user.rating : '–';
+  const self: Types.Player = players.find(_ => _.user.id == viewerId);
+  const opponent: Types.Player = players.filter(_ => _.user.id != viewerId)[0];
   return (
     <tr>
       <td className={styles.opponentCell}>
         <div className={styles.opponent}>
-          <Compact user={opponent.user} rating />
+          <Compact user={opponent.user} rating={opponent.rating} ratingDelta={opponent.ratingDelta} />
           <Button variant='outline-primary' size='sm' onClick={onViewClick}>View</Button>
         </div>
       </td>

@@ -15,6 +15,14 @@ export type User = {
   };
 };
 
+export type Player = {
+  id: string;
+  status: string;
+  rating: number;
+  ratingDelta: null | number;
+  user: User;
+};
+
 export type Challenge = {
   host: User
 };

@@ -28,6 +28,16 @@ export const User = `
   }
 `;
 
+export const Player = `
+  id
+  status
+  rating
+  ratingDelta
+  user {
+    ${User}
+  }
+`;
+
 export const Selection = `
   selection {
     ${Vector}

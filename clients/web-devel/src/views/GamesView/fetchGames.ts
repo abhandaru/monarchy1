@@ -12,10 +12,7 @@ const query = gql`
       id
       status
       players {
-        status
-        user {
-          ${frags.User}
-        }
+        ${frags.Player}
       }
     }
   }
